@@ -28,7 +28,7 @@ public class BasicAsteroidTest {
         double newy = ((y * DT) + FRAME_HEIGHT) % FRAME_HEIGHT;
         x = a.getX();
         y = a.getY();
-        assertEquals(x, newx, 2);
+        assertEquals(x, newx, 4);
     }
 
     @Test
@@ -40,6 +40,6 @@ public class BasicAsteroidTest {
         Thread.sleep(DELAY);
         double newy = ((y + (a.getVx() * DT)) + FRAME_HEIGHT) % FRAME_HEIGHT;
         y = a.getY();
-        assertEquals(y, newy, 2);
+        assertEquals(y, newy, 4);
     }
 }

@@ -61,38 +61,52 @@ public class BasicAsteroid {
         g.setColor(Color.red);
         double[] x = new double[RADIUS * 4];
         double[] y = new double[RADIUS * 4];
-        for (int i = 0, j = RADIUS * 2; i < RADIUS * 2; i++, j--)
+        for (int x1 = -RADIUS, x2 = RADIUS; x1 < RADIUS * 2; x1++, x2--)
         {
-            if (i > 1)
-            {
-                x[i] = Math.random() * 1 + i;
-                if (i < RADIUS / 2)
-                {
-                    y[i] = Math.random() * 1 + i;
-                }
-                else
-                {
-                    y[i] = RADIUS - Math.random() * 1 - (i % RADIUS);
-                }
-            }
-            else
-            {
-                x[i] = i;
-                y[i] = i;
-            }
-            x[j + i * 2] = Math.random() * 1 + j;
-            if (j > RADIUS / 2)
-            {
-                y[j + i * 2] = (Math.random() * 1 + i) * -1;
-            }
-            else
-            {
-                y[j + i * 2] = (RADIUS - Math.random() * 1 - (i % RADIUS)) * -1;
-            }
+            x[x1 + RADIUS] = x1 + this.x - RADIUS;
+            y[x1 + RADIUS] = -Math.sqrt(Math.pow(RADIUS, 2) - Math.pow(x1, 2)) + this.y - RADIUS;
+            x[x1 + (2 * RADIUS)] = x2 + this.x + RADIUS;
+            y[x1 + (2 * RADIUS)] = +(Math.sqrt(Math.pow(RADIUS, 2) - Math.pow(x2, 2))) + this.y - RADIUS;
         }
-        g.fill(new Path2D.Double());
-        g.fillOval((int) this.x - RADIUS, (int) this.y - RADIUS, 2 * RADIUS,
-                2 * RADIUS);
+//        for (int i = 0, j = RADIUS * 2; i < RADIUS * 2; i++, j--)
+//        {
+//            if (i > 1)
+//            {
+//                x[i] = Math.random() * 1 + i + this.x;
+//                if (i < RADIUS / 2)
+//                {
+//                    y[i] = Math.random() * 1 + i + this.y;
+//                }
+//                else
+//                {
+//                    y[i] = RADIUS - Math.random() * 1 - (i % RADIUS) + this.y;
+//                }
+//            }
+//            else
+//            {
+//                x[i] = i + this.x;
+//                y[i] = i + this.y;
+//            }
+//            x[j + i * 2] = Math.random() * 1 + j + this.x;
+//            if (j > RADIUS / 2)
+//            {
+//                y[j + i * 2] = (Math.random() * 1 + i) * -1 + this.y;
+//            }
+//            else
+//            {
+//                y[j + i * 2] = (RADIUS - Math.random() * 1 - (i % RADIUS)) * -1 + this.y;
+//            }
+//        }
+        Path2D path = new Path2D.Double();
+        path.moveTo(x[0], y[0]);
+        for (int i = 1; i < x.length; i++)
+        {
+            path.lineTo(x[i], y[i]);
+        }
+        path.closePath();
+        g.fill(path);
+        //g.fillOval((int) this.x - RADIUS, (int) this.y - RADIUS, 2 * RADIUS,
+        //        2 * RADIUS);
     }
 
     public double getX() {
