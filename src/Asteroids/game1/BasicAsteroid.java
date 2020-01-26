@@ -1,5 +1,7 @@
 package Asteroids.game1;
 
+import Asteroids.utilities.Vector2D;
+
 import javax.imageio.ImageIO;
 import javax.xml.crypto.dsig.Transform;
 import java.awt.*;
@@ -18,8 +20,8 @@ public class BasicAsteroid {
     public final int RADIUS; // size of the asteroid
     public static final double MAX_SPEED = 100; // maximum speed an asteroid can have
 
-    private double x, y; // positional values of the asteroid
-    private double vx, vy; // velocity values of the asteroid
+    private Vector2D velocityVec;
+    private Vector2D positionalVec;
 
     private BufferedImage surface;
 
@@ -34,10 +36,8 @@ public class BasicAsteroid {
      * @param vy Velocity values to instantiate an asteroid with
      */
     public BasicAsteroid(double x, double y, double vx, double vy, int rad) {
-        this.x = x;
-        this.y = y;
-        this.vx = vx;
-        this.vy = vy;
+        positionalVec = new Vector2D(x, y);
+        velocityVec = new Vector2D(vx, vy);
         RADIUS = rad;
         this.astShape = getShapeCoords();
         try
@@ -73,11 +73,8 @@ public class BasicAsteroid {
      * and change in time DT
      */
     public void update() {
-        x += vx * DT;
-        y += vy * DT;
-        // below accounts for frame wrap
-        x = (x + FRAME_WIDTH) % FRAME_WIDTH;
-        y = (y + FRAME_HEIGHT) % FRAME_HEIGHT;
+        positionalVec.add(velocityVec.x * DT, velocityVec.y * DT);
+        positionalVec.wrap(FRAME_WIDTH, FRAME_HEIGHT);
     }
 
     /**
@@ -118,16 +115,20 @@ public class BasicAsteroid {
      *      Graphics2D, the jswing graphics object to draw unto
      */
     public void draw(Graphics2D g) {
+        double degree = (360 * positionalVec.x) / FRAME_WIDTH;
+        double radians = (degree * Math.PI) / 180;
         // sets fill image
-        TexturePaint tp = new TexturePaint(surface, new Rectangle((int) this.x - RADIUS,(int) this.y - RADIUS,
-                50, 48));
+        TexturePaint tp = new TexturePaint(surface, new Rectangle((int) positionalVec.x - RADIUS,
+                (int) positionalVec.y - RADIUS,50, 48));
         g.setPaint(tp);
         // creates polygon/path of this asteroid given it's shape
         Path2D path = new Path2D.Double();
-        path.moveTo(astShape[0][0] + this.x, astShape[1][0] + this.y);
+        path.moveTo((astShape[0][0] * Math.cos(radians) - astShape[1][0] * Math.sin(radians)) + positionalVec.x,
+                (astShape[0][0] * Math.sin(radians) + astShape[1][0] * Math.cos(radians))  +positionalVec.y);
         for (int i = 1; i < astShape[0].length; i++)
         {
-            path.lineTo(astShape[0][i] + this.x, astShape[1][i] + this.y);
+            path.lineTo((astShape[0][i] * Math.cos(radians) - astShape[1][i] * Math.sin(radians)) + positionalVec.x,
+                    (astShape[0][i] * Math.sin(radians) + astShape[1][i] * Math.cos(radians)) + positionalVec.y);
         }
         path.closePath();
         g.fill(path);
@@ -135,21 +136,5 @@ public class BasicAsteroid {
         g.setColor(new Color(153, 43, 43));
         BasicStroke stroke = new BasicStroke(1f);
         g.draw(new Area(stroke.createStrokedShape(path)));
-    }
-
-    public double getX() {
-        return x;
-    }
-
-    public double getY() {
-        return y;
-    }
-
-    public double getVx() {
-        return vx;
-    }
-
-    public double getVy() {
-        return vy;
     }
 }
