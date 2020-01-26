@@ -1,6 +1,5 @@
 package Asteroids.game1;
 
-import Asteroids.utilities.JEasyFrame;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -9,6 +8,12 @@ import static org.junit.Assert.*;
 
 public class BasicAsteroidTest {
     public static BasicGame game;
+
+    @Test
+    public void testHyp()
+    {
+        assertEquals(Math.hypot(10,10), Math.sqrt(10*10 + 10*10), 0.1);
+    }
 
     @Before
     public void BasicAsteroidTest()
