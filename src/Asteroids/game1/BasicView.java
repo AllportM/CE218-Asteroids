@@ -38,6 +38,7 @@ public class BasicView extends JComponent {
         {
             ast.draw(g);
         }
+        game.ship.draw(g);
     }
 
     @Override

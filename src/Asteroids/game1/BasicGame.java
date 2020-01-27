@@ -16,6 +16,8 @@ public class BasicGame
 {
     public static final int N_INITIAL_ASTEROIDS = 10;
     public List<BasicAsteroid> asteroids;
+    BasicKeys ctrl;
+    BasicShip ship;
 
     /**
      * No arg constructor, instantiates BasicAsteroids and adds to asteroids list
@@ -23,6 +25,8 @@ public class BasicGame
     public BasicGame()
     {
         asteroids = new ArrayList<>();
+        ctrl = new BasicKeys();
+        ship = new BasicShip(ctrl);
         for (int i = 0; i < N_INITIAL_ASTEROIDS; i++)
         {
             asteroids.add(BasicAsteroid.makeRandomAsteroid());
@@ -38,7 +42,7 @@ public class BasicGame
     {
         BasicGame game = new BasicGame();
         BasicView view = new BasicView(game);
-        new JEasyFrame(view, "Basic Game");
+        new JEasyFrame(view, "Basic Game").addKeyListener(game.ctrl);
         // below may improve game graphics at later date
 //        Graphics2D g = (Graphics2D) view.getGraphics();
 //        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
@@ -76,5 +80,6 @@ public class BasicGame
         {
             ast.update();
         }
+        ship.update();
     }
 }

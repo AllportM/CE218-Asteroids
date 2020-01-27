@@ -89,7 +89,7 @@ public class Vector2D {
     @Override
     public String toString()
     {
-        return String.format("posX = %.2d, posY = $.2d", x, y);
+        return String.format("posX = %.2f, posY = %.2f", x, y);
     }
 
     /**
