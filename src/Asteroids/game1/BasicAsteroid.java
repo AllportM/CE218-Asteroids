@@ -1,5 +1,6 @@
 package Asteroids.game1;
 
+import Asteroids.utilities.Refresh;
 import Asteroids.utilities.Vector2D;
 import com.sun.imageio.plugins.common.ImageUtil;
 
@@ -17,10 +18,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 
 import static Asteroids.game1.Constants.*;
 
-public class BasicAsteroid {
+public class BasicAsteroid implements Refresh {
     public final int RADIUS; // size of the asteroid
     public static final double MAX_SPEED = 100; // maximum speed an asteroid can have
 
@@ -31,6 +33,7 @@ public class BasicAsteroid {
     private BufferedImage surface;
 
     private Vector2D[] shape;
+    private LinkedList<Vector2D> texture;
 
     /**
      * Standard constructor for an asteroid
@@ -45,7 +48,7 @@ public class BasicAsteroid {
         velocityVec = new Vector2D(vx, vy);
         RADIUS = rad;
         rotationalVec = (new Vector2D(velocityVec));
-        shape = getShapeCoords();
+        makeShapeCoords();
         try
         {
             surface = ImageIO.read(new File("resources/astSurface.gif"));
@@ -79,43 +82,54 @@ public class BasicAsteroid {
     }
 
     /**
+     * getShapeCord's purpose is to generate x/y coordinates for a slightly random shape given it's radius
+     * @return
+     *      int[][], [0][..] and [1][..] being randomly generated x and y coordinates respectively
+     */
+    public void makeShapeCoords()
+    {
+        // init arays
+        shape = new Vector2D[(RADIUS * 2) - (2* (RADIUS / 3))];
+        texture = new LinkedList<>();
+        int count = 0; // count for coordinates for 0-(2*radius)coordinates for x
+        int count2 = RADIUS - (RADIUS / 3); // count for coordinates (2*radius) - 0 coordinates for x starting at the
+                                            // end of above count
+
+        // draws oval, slightly randomized y coord +/- 3pixels
+        for (int xCoord = -RADIUS; xCoord < RADIUS; xCoord+=3)
+        {
+            double x = xCoord;
+            double y = (Math.random()*8-4) + Math.sqrt(RADIUS * RADIUS - xCoord * xCoord);
+            shape[count] = new Vector2D(x, y);
+            shape[count2] = new Vector2D(-x, -y);
+            count++;
+            count2++;
+        }
+
+        for (int i = 0; i < 100; i++)
+        {
+            texture.add(new Vector2D(Math.random()*50 - RADIUS, Math.random()*50-RADIUS));
+        }
+    }
+
+    /**
      * update's purpose is to update the asteroids position given it's velocity
      * and change in time DT
      */
     public void update() {
         positionalVec.add(velocityVec.x * DT, velocityVec.y * DT);
         positionalVec.wrap(FRAME_WIDTH, FRAME_HEIGHT);
-    }
 
-    /**
-     * getShapeCord's purpose is to generate x/y coordinates for a slightly random shape given it's radius
-     * @return
-     *      int[][], [0][..] and [1][..] being randomly generated x and y coordinates respectively
-     */
-    public Vector2D[] getShapeCoords()
-    {
-        // init arays
-        Vector2D[] arr = new Vector2D[(RADIUS * 2) - (2* (RADIUS / 3))];
-        int count = 0; // count for coordinates for 0-(2*radius)coordinates for x
-        int count2 = RADIUS - (RADIUS / 3); // count for coordinates (2*radius) - 0 coordinates for x starting at the
-                                            // end of above count
-        for (int xCoord = 1; xCoord <= RADIUS * 2; xCoord+=3)
+        final double angle = rotationalVec.angle() * 0.02;
+        // rotates the shape in a given direction related to its velocity and scaled
+        for (Vector2D vec: shape)
         {
-            // positive x moving coordinates, 0 - rad*2
-            double x = (Math.random()*5) + xCoord - RADIUS -1;
-            double y = (xCoord <= RADIUS)? (int) (Math.random() * 5) + xCoord - 1:
-                    (int) (Math.random()*5) + (RADIUS*2) - xCoord - 1;
-            arr[count] = new Vector2D(x, y);
-
-            // negative x moving coords, rad*2 - 0
-            x = -( (Math.random()*5) + xCoord - RADIUS - 1);
-            y = (xCoord <= RADIUS)? -( (Math.random() * 5) + xCoord - 1):
-                    -( (Math.random()*5) + (RADIUS*2) - xCoord - 1);
-            arr[count2] = new Vector2D(x, y);
-            count++;
-            count2++;
+            vec.rotate(angle);
         }
-        return arr;
+        for (Vector2D vec: texture)
+        {
+            vec.rotate(-angle);
+        }
     }
 
     /**
@@ -125,19 +139,12 @@ public class BasicAsteroid {
      *      Graphics2D, the jswing graphics object to draw unto
      */
     public void draw(Graphics2D g) {
-
-        final double angle = rotationalVec.angle() * 0.02;
-        // rotates the shape in a given direction related to its velocity and scaled
-        for (Vector2D vec: shape)
-        {
-            vec.rotate(angle);
-        }
-
-        // sets fill image
+        //sets fill image
         TexturePaint tp = new TexturePaint(surface, new Rectangle((int) positionalVec.x - RADIUS,
                 (int) positionalVec.y - RADIUS,50, 48));
         g.setPaint(tp);
 
+//        g.setColor(Color.BLUE);
         // creates polygon/path of this asteroid given it's shape
         Path2D path = new Path2D.Double();
         path.moveTo(shape[0].x + positionalVec.x,shape[0].y + positionalVec.y);
@@ -151,5 +158,15 @@ public class BasicAsteroid {
         g.setColor(new Color(153, 43, 43));
         BasicStroke stroke = new BasicStroke(1f);
         g.draw(new Area(stroke.createStrokedShape(path)));
+
+//        Shape s = g.getClip();
+//        g.clip(path);
+//        g.setColor(Color.red);
+//        for (Vector2D vec: texture)
+//        {
+//            g.fillOval((int) (vec.x + positionalVec.x), (int) (vec.y + positionalVec.y),
+//                    2, 2);
+//        }
+//        g.setClip(s);
     }
 }

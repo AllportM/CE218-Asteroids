@@ -1,6 +1,7 @@
 package Asteroids.game1;
 
 import Asteroids.utilities.Action;
+import Asteroids.utilities.Refresh;
 import Asteroids.utilities.Vector2D;
 import javafx.scene.shape.Ellipse;
 import sun.print.ProxyGraphics2D;
@@ -12,7 +13,7 @@ import java.awt.geom.Path2D;
 
 import static Asteroids.game1.Constants.*;
 
-public class BasicShip {
+public class BasicShip implements Refresh {
     public static final int RADIUS = 8;
 
     public static final double MAX_SPEED = 10;
@@ -59,19 +60,6 @@ public class BasicShip {
         shapeBase[8] = new Vector2D(0, 15);
         shapeBase[9] = new Vector2D(-20, 20);
         oval = new Ellipse2D.Double(-5, -20, 10, 40);
-//        shapeBase[0] = new Vector2D(5, 45);
-//        shapeBase[1] = new Vector2D(5, 40);
-//        shapeBase[2] = new Vector2D(10, 30);
-//        shapeBase[3] = new Vector2D(20, 25);
-//        shapeBase[4] = new Vector2D(30, 25);
-//        shapeBase[5] = new Vector2D(40, 30);
-//        shapeBase[6] = new Vector2D(45, 40);
-//        shapeBase[7] = new Vector2D(45, 45);
-//        shapeBase[8] = new Vector2D(25, 40);
-//        shapeBase[9] = new Vector2D(5, 45);
-//        oval = new Vector2D[2];
-//        oval[0] = new Vector2D(20, 5);
-//        oval[1] = new Vector2D(30, 45);
     }
 
     public void update()

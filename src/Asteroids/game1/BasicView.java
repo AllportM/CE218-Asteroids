@@ -1,5 +1,7 @@
 package Asteroids.game1;
 
+import Asteroids.utilities.Refresh;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -34,11 +36,10 @@ public class BasicView extends JComponent {
         // paint the background
         g.setColor(BG_COLOR);
         g.fillRect(0, 0, getWidth(), getHeight());
-        for (BasicAsteroid ast: game.asteroids)
+        for (Refresh obj: game.gameObjects)
         {
-            ast.draw(g);
+            obj.draw(g);
         }
-        game.ship.draw(g);
     }
 
     @Override
