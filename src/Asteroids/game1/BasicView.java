@@ -38,7 +38,7 @@ public class BasicView extends JComponent {
         g.fillRect(0, 0, getWidth(), getHeight());
         for (Refresh obj: game.gameObjects)
         {
-            obj.draw(g);
+            obj.draw(g, this);
         }
     }
 

@@ -1,10 +1,12 @@
 package Asteroids.game1;
 
 import Asteroids.utilities.Refresh;
+import Asteroids.utilities.RotatableImage;
 import Asteroids.utilities.Vector2D;
 import com.sun.imageio.plugins.common.ImageUtil;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import javax.xml.crypto.dsig.Transform;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -30,7 +32,7 @@ public class BasicAsteroid implements Refresh {
     private Vector2D positionalVec;
     private Vector2D rotationalVec;
 
-    private BufferedImage surface;
+    private RotatableImage img;
 
     private Vector2D[] shape;
     private LinkedList<Vector2D> texture;
@@ -49,18 +51,7 @@ public class BasicAsteroid implements Refresh {
         RADIUS = rad;
         rotationalVec = (new Vector2D(velocityVec));
         makeShapeCoords();
-        try
-        {
-            surface = ImageIO.read(new File("resources/astSurface.gif"));
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException("Image '/resources/astSurface.gif' not found");
-        }
-        ColorModel cm = surface.getColorModel();
-        boolean isAlp = cm.isAlphaPremultiplied();
-        WritableRaster rast = surface.copyData(null);
-        surface = new BufferedImage(cm, rast, isAlp, null);
+        img = new RotatableImage("resources/astSurface2.gif");
     }
 
     /**
@@ -126,10 +117,11 @@ public class BasicAsteroid implements Refresh {
         {
             vec.rotate(angle);
         }
-        for (Vector2D vec: texture)
-        {
-            vec.rotate(-angle);
-        }
+        img.setRotate(angle);
+//        for (Vector2D vec: texture)
+//        {
+//            vec.rotate(-angle);
+//        }
     }
 
     /**
@@ -138,12 +130,17 @@ public class BasicAsteroid implements Refresh {
      * @param g
      *      Graphics2D, the jswing graphics object to draw unto
      */
-    public void draw(Graphics2D g) {
+    public void draw(Graphics2D g, Component c) {
         //sets fill image
-        TexturePaint tp = new TexturePaint(surface, new Rectangle((int) positionalVec.x - RADIUS,
-                (int) positionalVec.y - RADIUS,50, 48));
-        g.setPaint(tp);
+//        TexturePaint tp = new TexturePaint(surface, new Rectangle((int) positionalVec.x - RADIUS,
+//                (int) positionalVec.y - RADIUS,50, 48));
+//        g.setPaint(tp);
 
+//        Icon huh = new ImageIcon("resources/astSurface.gif");
+//        int x = (int) positionalVec.x - (huh.getIconWidth() / 2);
+//        int y = (int) positionalVec.y - (huh.getIconHeight() / 2);
+//        huh.paintIcon(c, g, x, y);
+        g.setColor(new Color(0,0,0,0));
 //        g.setColor(Color.BLUE);
         // creates polygon/path of this asteroid given it's shape
         Path2D path = new Path2D.Double();
@@ -155,10 +152,15 @@ public class BasicAsteroid implements Refresh {
         path.closePath();
         g.fill(path);
         // adds outline
-        g.setColor(new Color(153, 43, 43));
-        BasicStroke stroke = new BasicStroke(1f);
+        BasicStroke stroke = new BasicStroke(2f);
         g.draw(new Area(stroke.createStrokedShape(path)));
 
+        Shape clip = g.getClip();
+        g.setClip(path);
+        int x = (int) positionalVec.x - (img.getIconWidth() / 2);
+        int y = (int) positionalVec.y - (img.getIconHeight() / 2);
+        img.paintIcon(c, g, x, y);
+        g.setClip(clip);
 //        Shape s = g.getClip();
 //        g.clip(path);
 //        g.setColor(Color.red);
