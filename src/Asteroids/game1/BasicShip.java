@@ -2,6 +2,7 @@ package Asteroids.game1;
 
 import Asteroids.utilities.Action;
 import Asteroids.utilities.Refresh;
+import Asteroids.utilities.RotatableImage;
 import Asteroids.utilities.Vector2D;
 import javafx.scene.shape.Ellipse;
 import sun.print.ProxyGraphics2D;
@@ -10,6 +11,8 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
 
 import static Asteroids.game1.Constants.*;
 
@@ -21,6 +24,8 @@ public class BasicShip implements Refresh {
     public static final double MAG_ACC = 20; // accelleration when thrust is applied
     public static final double DRAG = 0.1; // constant speed loss factor
     public static final Color COLOR = Color.cyan;
+    private RotatableImage img;
+    BufferedImage img2;
 
     public Vector2D position; // on frame
     public Vector2D velocity; // per second
@@ -44,6 +49,7 @@ public class BasicShip implements Refresh {
         direction = new Vector2D(0, -20);
         shipRot = new Vector2D(direction);
         makeShape();
+        img = new RotatableImage("resources/ship1.gif");
     }
 
     private void makeShape()
@@ -86,9 +92,10 @@ public class BasicShip implements Refresh {
             // updates shipRot
             shipRot.set(direction);
         }
+        img.setRotate(angle);
     }
 
-    public void draw(Graphics2D g)
+    public void draw(Graphics2D g, Component c)
     {
         Path2D path = new Path2D.Double();
         path.moveTo(shapeBase[0].x + position.x, shapeBase[0].y +position.y);
@@ -97,17 +104,21 @@ public class BasicShip implements Refresh {
             path.lineTo(shapeBase[i].x + position.x, shapeBase[i].y + position.y);
         }
         path.closePath();
-        g.setColor(Color.gray);
-        g.fill(path);
         g.setColor(COLOR);
         g.draw(path);
         // draws oval
-        Graphics2D g2 = (Graphics2D) g.create();
-        g2.translate(position.x, position.y);
-        g2.setColor(Color.gray);
-        g2.fill(oval);
-        g2.setColor(COLOR);
-        g2.draw(oval);
+        AffineTransform temp = g.getTransform();
+        g.translate(position.x, position.y);
+        g.draw(oval);
+        g.setTransform(temp);
+        Shape clip = g.getClip();
+        int x = (int) position.x - (img.getIconWidth()/2);
+        int y = (int) position.y - (img.getIconHeight()/2);
+        g.setClip(oval);
+        img.paintIcon(c, g, x, y);
+        g.setClip(path);
+        img.paintIcon(c, g, x, y);
+        g.setClip(clip);
 //        g.fillOval((int) position.x - 10, (int) position.y - 10, 20, 20);
 //        g.drawLine((int) position.x, (int) position.y, (int) direction.x + (int) position.x,
 //                (int) direction.y + (int) position.y);
