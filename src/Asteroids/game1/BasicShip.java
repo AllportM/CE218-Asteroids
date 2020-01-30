@@ -81,6 +81,7 @@ public class BasicShip implements Refresh {
             velocity.add(Vector2D.polar(direction.angle(), (MAG_ACC * act.thrust * DT)));
         if (velocity.mag() >= DRAG)
             velocity.subtract(Vector2D.polar(velocity.angle(), DRAG));
+        else velocity.set(0,0);
         position.add(velocity.x, velocity.y);
         position.wrap(FRAME_WIDTH, FRAME_HEIGHT);
         double angle = shipRot.angle(direction); // calcs if any rotation has been made
@@ -104,8 +105,9 @@ public class BasicShip implements Refresh {
         int y = - (img.getIconHeight()/2);
         Path2D base = shapeBase.getPolygon();
 //        g.setColor(new Color(23, 166, 116));
-//        BasicStroke stroke = new BasicStroke(3f);
-//        g.draw(new Area(stroke.createStrokedShape(base)));
+//        BasicStroke stroke = new BasicStroke(2f);
+//        g.fill(new Area(stroke.createStrokedShape(base)));
+        g.fill(base);
         g.setClip(base);
         img.paintIcon(c, g, x, y);
         g.setClip(clip);
@@ -113,6 +115,7 @@ public class BasicShip implements Refresh {
         Path2D ov = oval.getPolygon();
 //        g.draw(new Area(stroke.createStrokedShape(ov)));
         g.setClip(ov);
+        img.setScale(0.2, 0.9);
         img.paintIcon(c, g, x, y);
 
         g.setClip(clip);

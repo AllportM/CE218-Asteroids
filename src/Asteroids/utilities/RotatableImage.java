@@ -8,16 +8,25 @@ public class RotatableImage implements Icon {
 
     private ImageIcon img;
     private double degrees;
+    private double scaleX;
+    private double scaleY;
 
     public RotatableImage(String fname)
     {
        img = new ImageIcon(fname);
        degrees = 0;
+       this.scaleX = this.scaleY = 1;
     }
 
     public void setRotate(double degrees)
     {
         this.degrees = this.degrees + degrees;
+    }
+
+    public void setScale(double x, double y)
+    {
+        this.scaleX = x;
+        this.scaleY = y;
     }
 
     @Override
@@ -27,9 +36,11 @@ public class RotatableImage implements Icon {
         int width = img.getIconWidth()/2;
         int height = img.getIconHeight()/2;
         g2.translate((getIconWidth() - img.getIconWidth()) / 2, (getIconHeight() - img.getIconHeight()) / 2);
-        g2.rotate(degrees, x + width, y + height );
+        g2.rotate(degrees, x + width, y + height);
+//        g2.scale(scaleX, scaleY);
         img.paintIcon(c, g2, x, y);
         g2.dispose();
+        scaleX = scaleY = 1;
     }
 
     @Override

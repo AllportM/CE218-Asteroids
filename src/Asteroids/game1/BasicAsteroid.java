@@ -118,18 +118,7 @@ public class BasicAsteroid implements Refresh {
      *      Graphics2D, the jswing graphics object to draw unto
      */
     public void draw(Graphics2D g, Component c) {
-        //sets fill image
-//        TexturePaint tp = new TexturePaint(surface, new Rectangle((int) positionalVec.x - RADIUS,
-//                (int) positionalVec.y - RADIUS,50, 48));
-//        g.setPaint(tp);
-
-//        Icon huh = new ImageIcon("resources/astSurface.gif");
-//        int x = (int) positionalVec.x - (huh.getIconWidth() / 2);
-//        int y = (int) positionalVec.y - (huh.getIconHeight() / 2);
-//        huh.paintIcon(c, g, x, y);
         g.setColor(new Color(106, 23, 166));
-//        g.setColor(Color.BLUE);
-        // creates polygon/path of this asteroid given it's shape
         Path2D path = new Path2D.Double();
         path.moveTo(shape[0].x + positionalVec.x,shape[0].y + positionalVec.y);
         for (int i = 1; i < shape.length; i++)
@@ -148,14 +137,5 @@ public class BasicAsteroid implements Refresh {
         int y = (int) positionalVec.y - (img.getIconHeight() / 2);
         img.paintIcon(c, g, x, y);
         g.setClip(clip);
-//        Shape s = g.getClip();
-//        g.clip(path);
-//        g.setColor(Color.red);
-//        for (Vector2D vec: texture)
-//        {
-//            g.fillOval((int) (vec.x + positionalVec.x), (int) (vec.y + positionalVec.y),
-//                    2, 2);
-//        }
-//        g.setClip(s);
     }
 }
