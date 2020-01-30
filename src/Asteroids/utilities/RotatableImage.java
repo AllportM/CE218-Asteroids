@@ -26,8 +26,6 @@ public class RotatableImage implements Icon {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         int width = img.getIconWidth()/2;
         int height = img.getIconHeight()/2;
-        AffineTransform at = new AffineTransform();
-        at.translate((getIconWidth() - img.getIconWidth()) / 2, (getIconHeight() - img.getIconHeight()) / 2);
         g2.translate((getIconWidth() - img.getIconWidth()) / 2, (getIconHeight() - img.getIconHeight()) / 2);
         g2.rotate(degrees, x + width, y + height );
         img.paintIcon(c, g2, x, y);

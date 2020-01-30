@@ -3,23 +3,10 @@ package Asteroids.game1;
 import Asteroids.utilities.Refresh;
 import Asteroids.utilities.RotatableImage;
 import Asteroids.utilities.Vector2D;
-import com.sun.imageio.plugins.common.ImageUtil;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import javax.xml.crypto.dsig.Transform;
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.Path2D;
-import java.awt.image.AffineTransformOp;
-import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.awt.image.WritableRaster;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 
 import static Asteroids.game1.Constants.*;
@@ -140,7 +127,7 @@ public class BasicAsteroid implements Refresh {
 //        int x = (int) positionalVec.x - (huh.getIconWidth() / 2);
 //        int y = (int) positionalVec.y - (huh.getIconHeight() / 2);
 //        huh.paintIcon(c, g, x, y);
-        g.setColor(new Color(0,0,0,0));
+        g.setColor(new Color(106, 23, 166));
 //        g.setColor(Color.BLUE);
         // creates polygon/path of this asteroid given it's shape
         Path2D path = new Path2D.Double();
@@ -152,7 +139,7 @@ public class BasicAsteroid implements Refresh {
         path.closePath();
         g.fill(path);
         // adds outline
-        BasicStroke stroke = new BasicStroke(2f);
+        BasicStroke stroke = new BasicStroke(5f);
         g.draw(new Area(stroke.createStrokedShape(path)));
 
         Shape clip = g.getClip();

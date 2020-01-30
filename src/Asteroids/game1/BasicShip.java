@@ -1,18 +1,11 @@
 package Asteroids.game1;
 
-import Asteroids.utilities.Action;
-import Asteroids.utilities.Refresh;
-import Asteroids.utilities.RotatableImage;
-import Asteroids.utilities.Vector2D;
-import javafx.scene.shape.Ellipse;
-import sun.print.ProxyGraphics2D;
+import Asteroids.utilities.*;
 
 import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Ellipse2D;
+import java.awt.geom.Area;
 import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
 
 import static Asteroids.game1.Constants.*;
 
@@ -34,8 +27,8 @@ public class BasicShip implements Refresh {
     // unit vefor representing angle by which ship rotated
     public Vector2D direction;
 
-    private Vector2D[] shapeBase;
-    private Shape oval;
+    private RotatableShape shapeBase;
+    private RotatableShape oval;
     private Vector2D shipRot;
 
     // controller for action
@@ -54,18 +47,30 @@ public class BasicShip implements Refresh {
 
     private void makeShape()
     {
-        shapeBase = new Vector2D[10];
-        shapeBase[0] = new Vector2D(-20, 20);
-        shapeBase[1] = new Vector2D(-20, 15);
-        shapeBase[2] = new Vector2D(-15, 5);
-        shapeBase[3] = new Vector2D(-5, 0);
-        shapeBase[4] = new Vector2D(5, 0);
-        shapeBase[5] = new Vector2D(15, 5);
-        shapeBase[6] = new Vector2D(20, 15);
-        shapeBase[7] = new Vector2D(20, 20);
-        shapeBase[8] = new Vector2D(0, 15);
-        shapeBase[9] = new Vector2D(-20, 20);
-        oval = new Ellipse2D.Double(-5, -20, 10, 40);
+        shapeBase = new RotatableShape(10);
+        shapeBase.addCoords(-20, 20);
+        shapeBase.addCoords(-20, 15);
+        shapeBase.addCoords(-15, 5);
+        shapeBase.addCoords(-5, 0);
+        shapeBase.addCoords(5, 0);
+        shapeBase.addCoords(15, 5);
+        shapeBase.addCoords(20, 15);
+        shapeBase.addCoords(20, 20);
+        shapeBase.addCoords(0, 15);
+        shapeBase.addCoords(-20, 20);
+        oval = new RotatableShape(30);
+        for (int i = -7; i < 8; i++)
+        {
+            double y = Math.sqrt(49 - i * i)*3;
+            oval.addCoords(i, y);
+        }
+        for (int i = 7; i >-8; i--)
+        {
+            double y = -Math.sqrt(49 - i * i)*3;
+            oval.addCoords(i, y);
+        }
+        System.out.println(oval);
+//        oval = new Ellipse2D.Double(-5, -20, 10, 40);
     }
 
     public void update()
@@ -74,7 +79,7 @@ public class BasicShip implements Refresh {
         direction.rotate(act.turn * STEER_RATE * DT);
         if (velocity.mag() < MAX_SPEED)
             velocity.add(Vector2D.polar(direction.angle(), (MAG_ACC * act.thrust * DT)));
-        if (velocity.mag() > 0)
+        if (velocity.mag() >= DRAG)
             velocity.subtract(Vector2D.polar(velocity.angle(), DRAG));
         position.add(velocity.x, velocity.y);
         position.wrap(FRAME_WIDTH, FRAME_HEIGHT);
@@ -82,13 +87,8 @@ public class BasicShip implements Refresh {
         // rotates ship upon change in angle from direction and ship Rot
         if (angle != 0)
         {
-            // rotates base
-            for (Vector2D vec: shapeBase)
-            {
-                vec.rotate(angle);
-            }
-            // rotates oval
-            oval = AffineTransform.getRotateInstance(angle).createTransformedShape(oval);
+            shapeBase.rotateShape(angle);
+            oval.rotateShape(angle);
             // updates shipRot
             shipRot.set(direction);
         }
@@ -97,27 +97,24 @@ public class BasicShip implements Refresh {
 
     public void draw(Graphics2D g, Component c)
     {
-        Path2D path = new Path2D.Double();
-        path.moveTo(shapeBase[0].x + position.x, shapeBase[0].y +position.y);
-        for (int i = 1; i < shapeBase.length; i++)
-        {
-            path.lineTo(shapeBase[i].x + position.x, shapeBase[i].y + position.y);
-        }
-        path.closePath();
-        g.setColor(COLOR);
-        g.draw(path);
-        // draws oval
-        AffineTransform temp = g.getTransform();
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g.translate(position.x, position.y);
-        g.draw(oval);
-        g.setTransform(temp);
         Shape clip = g.getClip();
-        int x = (int) position.x - (img.getIconWidth()/2);
-        int y = (int) position.y - (img.getIconHeight()/2);
-        g.setClip(oval);
+        int x = - (img.getIconWidth()/2);
+        int y = - (img.getIconHeight()/2);
+        Path2D base = shapeBase.getPolygon();
+//        g.setColor(new Color(23, 166, 116));
+//        BasicStroke stroke = new BasicStroke(3f);
+//        g.draw(new Area(stroke.createStrokedShape(base)));
+        g.setClip(base);
         img.paintIcon(c, g, x, y);
-        g.setClip(path);
+        g.setClip(clip);
+        // draws oval
+        Path2D ov = oval.getPolygon();
+//        g.draw(new Area(stroke.createStrokedShape(ov)));
+        g.setClip(ov);
         img.paintIcon(c, g, x, y);
+
         g.setClip(clip);
 //        g.fillOval((int) position.x - 10, (int) position.y - 10, 20, 20);
 //        g.drawLine((int) position.x, (int) position.y, (int) direction.x + (int) position.x,
