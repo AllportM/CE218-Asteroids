@@ -29,7 +29,8 @@ public class BasicView extends JComponent {
     public BasicView(BasicGame game)
     {
         this.game = game;
-        String path = "resources/background.jpg";
+//        String path = "resources/BackgroundEdited.gif";
+        String path = "resources/Background.gif";
         bg2 = new RotatableImage(path);
         try {
             bg = ImageIO.read(new File(path));
@@ -51,8 +52,12 @@ public class BasicView extends JComponent {
         Graphics2D g = (Graphics2D) g0;
         // paint the background
 //        g.drawImage(bg, 0, 0, null);
-        bg2.setScale(0.7, 0.7);
-        bg2.paintIcon(this, g, 0, 0);
+        bg2.setScale(0.3333, 0.333333);
+        /*
+         * to override rotatable images translate, set scale to 1/3 ad x/y args to width/6, height /64
+         * so that 0,0 point is top right of image
+         */
+        bg2.paintIcon(this, g, bg2.getIconWidth()/6, bg2.getIconHeight()/6);
         for (Refresh obj: game.gameObjects)
         {
             obj.draw(g, this);

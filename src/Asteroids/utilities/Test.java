@@ -1,7 +1,7 @@
 package Asteroids.utilities;
 
-import Asteroids.game1.BasicKeys;
-import Asteroids.game1.BasicShip;
+import Asteroids.game1.Keys;
+import Asteroids.game1.Ship;
 import Asteroids.game1.Constants;
 
 import javax.swing.*;
@@ -11,8 +11,8 @@ import static Asteroids.game1.Constants.DELAY;
 
 public class Test extends JComponent {
     RotatableImage rt = new RotatableImage("resources/ship1.gif");
-    BasicKeys k = new BasicKeys();
-    BasicShip ship = new BasicShip(k);
+    Keys k = new Keys();
+    Ship ship = new Ship(k);
     public Test()
     {
         addKeyListener(k);

@@ -4,9 +4,7 @@ import Asteroids.utilities.JEasyFrame;
 import Asteroids.utilities.Refresh;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 import static Asteroids.game1.Constants.DELAY;
 
@@ -18,7 +16,7 @@ public class BasicGame
 {
     public static final int N_INITIAL_ASTEROIDS = 20;
     public LinkedList<Refresh> gameObjects;
-    BasicKeys ctrl;
+    Keys ctrl;
 
     /**
      * No arg constructor, instantiates BasicAsteroids and adds to asteroids list
@@ -26,12 +24,12 @@ public class BasicGame
     public BasicGame()
     {
         gameObjects = new LinkedList<>();
-        ctrl = new BasicKeys();
+        ctrl = new Keys();
         for (int i = 0; i < N_INITIAL_ASTEROIDS; i++)
         {
             gameObjects.add(BasicAsteroid.makeRandomAsteroid());
         }
-        gameObjects.add(new BasicShip(ctrl));
+        gameObjects.add(new Ship(ctrl));
     }
 
     /**
