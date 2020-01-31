@@ -44,7 +44,7 @@ public class BasicShip implements Refresh {
         makeShape();
         shapeBase.setScale(1.5);
         oval.setScale(1.5);
-        img = new RotatableImage("resources/ship1.gif");
+        img = new RotatableImage("resources/ship2.gif");
     }
 
     /**
@@ -134,7 +134,7 @@ public class BasicShip implements Refresh {
         img.paintIcon(c, g1, (int) Math.round(position.x), (int) Math.round(position.y));
         g1.setClip(clip);
         g1.setClip(ov);
-        img.setScale(0.3, 1);
+        img.setScale(0.2, 0.8);
         img.paintIcon(c, g1, (int) Math.round(position.x), (int) Math.round(position.y));
         g1.dispose();
     }

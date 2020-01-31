@@ -41,6 +41,7 @@ public class BasicAsteroid implements Refresh {
         makeShapeCoords();
         shape.setScale(1.5);
         img = new RotatableImage("resources/astSurface2.gif");
+        img.setScale(0,0);
     }
 
     /**
@@ -130,7 +131,7 @@ public class BasicAsteroid implements Refresh {
 
         Shape clip = g1.getClip();
         g1.setClip(path);
-        img.setScale(2, 2);
+        img.setScale(0.7, 0.7);
         img.paintIcon(c, g1, (int) Math.round(positionalVec.x), (int) Math.round(positionalVec.y));
         g1.setClip(clip);
         g1.dispose();

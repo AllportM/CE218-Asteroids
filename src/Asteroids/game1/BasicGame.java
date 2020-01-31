@@ -80,12 +80,12 @@ public class BasicGame
         Thread thread = null;
         for (Refresh obj: gameObjects)
         {
-            Runnable task = () ->
-            {
+//            Runnable task = () ->
+//            {
                 obj.update();
-            };
-            thread = new Thread(task);
-            thread.start();
+//            };
+//            thread = new Thread(task);
+//            thread.start();
         }
     }
 }
