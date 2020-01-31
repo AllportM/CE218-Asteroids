@@ -2,6 +2,7 @@ package Asteroids.game1;
 
 import Asteroids.utilities.Refresh;
 import Asteroids.utilities.RotatableImage;
+import Asteroids.utilities.RotatableShape;
 import Asteroids.utilities.Vector2D;
 
 import java.awt.*;
@@ -21,8 +22,8 @@ public class BasicAsteroid implements Refresh {
 
     private RotatableImage img;
 
-    private Vector2D[] shape;
-    private LinkedList<Vector2D> texture;
+    private RotatableShape shape;
+//    private LinkedList<Vector2D> texture; // old rotating texture
 
     /**
      * Standard constructor for an asteroid
@@ -38,6 +39,7 @@ public class BasicAsteroid implements Refresh {
         RADIUS = rad;
         rotationalVec = (new Vector2D(velocityVec));
         makeShapeCoords();
+        shape.setScale(1.5);
         img = new RotatableImage("resources/astSurface2.gif");
     }
 
@@ -66,28 +68,30 @@ public class BasicAsteroid implements Refresh {
      */
     public void makeShapeCoords()
     {
-        // init arays
-        shape = new Vector2D[(RADIUS * 2) - (2* (RADIUS / 3))];
-        texture = new LinkedList<>();
-        int count = 0; // count for coordinates for 0-(2*radius)coordinates for x
-        int count2 = RADIUS - (RADIUS / 3); // count for coordinates (2*radius) - 0 coordinates for x starting at the
-                                            // end of above count
+        // init shape
+        shape = new RotatableShape((RADIUS * 2) - (2* (RADIUS / 3)));
+//        texture = new LinkedList<>();
 
-        // draws oval, slightly randomized y coord +/- 3pixels
+        // Adds coordinates for top half of circle, slightly randomized y coord +/- 3pixels
         for (int xCoord = -RADIUS; xCoord < RADIUS; xCoord+=3)
         {
             double x = xCoord;
             double y = (Math.random()*8-4) + Math.sqrt(RADIUS * RADIUS - xCoord * xCoord);
-            shape[count] = new Vector2D(x, y);
-            shape[count2] = new Vector2D(-x, -y);
-            count++;
-            count2++;
+            shape.pushCoords(x, y);
         }
 
-        for (int i = 0; i < 100; i++)
+        // Adds coordinates for bottom half of circle
+        for (int xCoord = -RADIUS; xCoord < RADIUS; xCoord+=3)
         {
-            texture.add(new Vector2D(Math.random()*50 - RADIUS, Math.random()*50-RADIUS));
+            double x = xCoord;
+            double y = (Math.random()*8-4) + Math.sqrt(RADIUS * RADIUS - xCoord * xCoord);
+            shape.pushCoords(-x, -y);
         }
+
+//        for (int i = 0; i < 100; i++)
+//        {
+//            texture.add(new Vector2D(Math.random()*50 - RADIUS, Math.random()*50-RADIUS));
+//        }
     }
 
     /**
@@ -99,11 +103,8 @@ public class BasicAsteroid implements Refresh {
         positionalVec.wrap(FRAME_WIDTH, FRAME_HEIGHT);
 
         final double angle = rotationalVec.angle() * 0.02;
-        // rotates the shape in a given direction related to its velocity and scaled
-        for (Vector2D vec: shape)
-        {
-            vec.rotate(angle);
-        }
+        // rotates the shape and image
+        shape.rotateShape(angle);
         img.setRotate(angle);
 //        for (Vector2D vec: texture)
 //        {
@@ -118,24 +119,20 @@ public class BasicAsteroid implements Refresh {
      *      Graphics2D, the jswing graphics object to draw unto
      */
     public void draw(Graphics2D g, Component c) {
-        g.setColor(new Color(106, 23, 166));
-        Path2D path = new Path2D.Double();
-        path.moveTo(shape[0].x + positionalVec.x,shape[0].y + positionalVec.y);
-        for (int i = 1; i < shape.length; i++)
-        {
-            path.lineTo(shape[i].x + positionalVec.x,shape[i].y + positionalVec.y);
-        }
-        path.closePath();
-        g.fill(path);
-        // adds outline
-        BasicStroke stroke = new BasicStroke(5f);
-        g.draw(new Area(stroke.createStrokedShape(path)));
+        Graphics2D g1 = (Graphics2D) g.create();
+        g1.setColor(new Color(106, 23, 166));
+        Path2D path = shape.getPath(positionalVec.x, positionalVec.y);
 
-        Shape clip = g.getClip();
-        g.setClip(path);
-        int x = (int) positionalVec.x - (img.getIconWidth() / 2);
-        int y = (int) positionalVec.y - (img.getIconHeight() / 2);
-        img.paintIcon(c, g, x, y);
-        g.setClip(clip);
+        // adds outline
+        BasicStroke stroke = new BasicStroke(7f);
+        g1.fill(new Area(stroke.createStrokedShape(path)));
+        g1.fill(path);
+
+        Shape clip = g1.getClip();
+        g1.setClip(path);
+        img.setScale(2, 2);
+        img.paintIcon(c, g1, (int) Math.round(positionalVec.x), (int) Math.round(positionalVec.y));
+        g1.setClip(clip);
+        g1.dispose();
     }
 }
