@@ -14,6 +14,7 @@ public abstract class GameObject implements Refresh {
     public Vector2D velocity;
     protected RotatableShape[] shapes;
     protected double RADIUS;
+    boolean alive;
     public GameObject(Vector2D position, Vector2D velocity, double RADIUS)
     {
         this.position = position;

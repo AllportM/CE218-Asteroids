@@ -26,14 +26,20 @@ public class RotatableImage implements Icon {
        this.scaleX = this.scaleY = 1;
     }
 
+    public static RotatableImage builder(String fname)
+    {
+        return new RotatableImage(fname);
+    }
+
     /**
      * setRotate's purpose is to increment/decrement angle of rotation by given degrees
      * @param degrees
      *      double, value of angle to be changed by
      */
-    public void setRotate(double degrees)
+    public RotatableImage setRotate(double degrees)
     {
         this.degrees = this.degrees + degrees;
+        return this;
     }
 
     /**

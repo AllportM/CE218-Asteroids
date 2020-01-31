@@ -28,12 +28,12 @@ public class Ship extends GameObject {
     private Controller ctrl;
 
     public boolean thrusting;
-//    public Bullet bullet;
+    public Bullet bullet;
 
     public Ship(Controller ctrl)
     {
         super(new Vector2D(FRAME_WIDTH / 2.0, FRAME_HEIGHT / 2.0),
-                new Vector2D(0, 0), 25*1.5);
+                new Vector2D(0, 0), 20*1.5);
         this.ctrl = ctrl;
         position = new Vector2D(FRAME_WIDTH / 2.0, FRAME_HEIGHT / 2.0);
         velocity = new Vector2D(0, 0);
@@ -51,6 +51,11 @@ public class Ship extends GameObject {
     public void mkBullet()
     {
 
+    }
+
+    public void emptyBullet()
+    {
+        this.bullet = null;
     }
 
     /**

@@ -30,7 +30,7 @@ public class Vector2D {
      * @param v
      *      Vector2D, object to copy instance variables from
      */
-    public  Vector2D(Vector2D v)
+    public Vector2D(Vector2D v)
     {
         this.x = v.x;
         this.y = v.y;
@@ -275,6 +275,11 @@ public class Vector2D {
         x = (x + w) % w;
         y = (y + h) % h;
         return this;
+    }
+
+    public Vector2D copy()
+    {
+        return new Vector2D(this);
     }
 
     public static Vector2D polar(double angle, double mag)
