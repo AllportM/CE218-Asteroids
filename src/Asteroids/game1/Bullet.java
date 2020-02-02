@@ -4,15 +4,15 @@ import Asteroids.utilities.RotatableImage;
 import Asteroids.utilities.Vector2D;
 
 import java.awt.*;
-
-import static Asteroids.game1.Constants.DT;
+import java.util.LinkedList;
 
 public class Bullet extends GameObject {
     private static Bullet bullet = null;
-    private double ttl = 1;
-    private int initSpd = 50;
-    private RotatableImage sprite;
-    private Ship ship;
+    private double ttl = 2;
+    private int initSpd = 600;
+    private RotatableImage sprite1;
+    private int width, height;
+    private double bulletTime;
 
     // bullets
 
@@ -20,22 +20,29 @@ public class Bullet extends GameObject {
         return bullet;
     }
 
-    private Bullet(Ship ship) {
+    public Bullet(Ship ship) {
         //calls super constructor with new copied and scaled position and velocity vector as args
-        super(ship.position.copy().addScaled(ship.position, 1.55), ship.velocity.copy().mult(50),
-                3);
-        sprite = RotatableImage.builder("resources/ship2.gif").setRotate(velocity.angle());
+        super(ship.position.copy(), ship.velocity.copy(),
+                2.5);
+        this.width = 10;
+        this.height = 80;
+        // sets velocity to ships + init speed
+        this.velocity = Vector2D.polar(ship.direction.angle(), (ship.velocity.mag() + initSpd));
+        // sets bullets position to 5mm outside of ships radius
+        this.position.add(Vector2D.polar(ship.direction.angle(), ship.RADIUS  + 45));
+        sprite1 = RotatableImage.builder("resources/LBullet1in.png");
+        sprite1.setRotate(ship.shipRot.angle() - Math.PI*1.5);
+        bulletTime = System.currentTimeMillis();
     }
 
     @Override
-    public void update()
-    {
+    public void update() {
         super.update();
-        ttl -= DT;
-        if (ttl <= 0)
+        // sets alive status if creation time - this time (seconds) > ttl
+        double time = System.currentTimeMillis();
+        if (time - bulletTime > ttl * 1000)
         {
             alive = false;
-            ship.emptyBullet();
         }
     }
 
@@ -46,8 +53,8 @@ public class Bullet extends GameObject {
     }
 
     @Override
-    public void draw(Graphics2D g, Component c)
+    public void draw(Graphics2D g)
     {
-        sprite.paintIcon(c, g, (int) position.x, (int) position.y);
+        sprite1.paintIcon(g, (int) position.x, (int) position.y);
     }
 }
