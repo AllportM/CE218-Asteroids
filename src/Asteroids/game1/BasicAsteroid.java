@@ -31,7 +31,7 @@ public class BasicAsteroid extends GameObject {
         rotationalVec = (new Vector2D(vx, vy));
         switch (rad)
         {
-            case 24:
+            case 20:
                 img = new RotatableImage(String.format("resources/Ast%d.png", (int) (Math.random() * 7) + 1));
                 img.setScale((double) 40 / img.getWidth(), (double) 48 / img.getHeight());
                 break;
