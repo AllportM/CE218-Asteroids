@@ -3,6 +3,7 @@ package Asteroids.utilities;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -79,13 +80,12 @@ public class RotatableImage{
         Graphics2D g2 = (Graphics2D) g.create();
         int width = img.getWidth()/2;
         int height = img.getHeight()/2;
-        g2.translate(-width * scaleX + x, -height * scaleY + y); // sets 0,0 point to center of image
-                        // scaled by given scale factor, then adjusts adds center of screen
-        g2.rotate(degrees, width * scaleX, height * scaleY);
-        g2.scale(scaleX, scaleY);
+        AffineTransform at = AffineTransform.getTranslateInstance(-width * scaleX + x, -height * scaleY + y);
+        at.rotate(degrees, width * scaleX, height * scaleY);
+        at.scale(scaleX, scaleY);
+        g2.setTransform(at);
         g2.drawImage(img, 0, 0, null);
         g2.dispose();
-        scaleX = scaleY = 1;
     }
 
     public int getWidth() {

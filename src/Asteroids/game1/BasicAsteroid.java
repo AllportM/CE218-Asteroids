@@ -31,15 +31,18 @@ public class BasicAsteroid extends GameObject {
         rotationalVec = (new Vector2D(vx, vy));
         switch (rad)
         {
-            case 12:
-                img = new RotatableImage("resources/AstSmall.png");
-                break;
-            case 18:
-                img = new RotatableImage("resources/AstMed.png");
-                break;
             case 24:
+                img = new RotatableImage(String.format("resources/Ast%d.png", (int) (Math.random() * 7) + 1));
+                img.setScale((double) 40 / img.getWidth(), (double) 48 / img.getHeight());
+                break;
+            case 33:
+                img = new RotatableImage(String.format("resources/Ast%d.png", (int) (Math.random() * 7) + 1));
+                img.setScale((double) 66 / img.getWidth(), (double) 66 / img.getHeight());
+                break;
+            case 42:
             default:
-                img = new RotatableImage("resources/AstLarge.png");
+                img = new RotatableImage(String.format("resources/Ast%d.png", (int) (Math.random() * 7) + 1));
+                img.setScale((double) 84 / img.getWidth(), (double) 84 / img.getHeight());
                 break;
         }
     }
@@ -56,7 +59,8 @@ public class BasicAsteroid extends GameObject {
      * @return
      */
     public static BasicAsteroid makeRandomAsteroid() {
-        int radius = (int) (Math.random() * 3 + 2) * 6; // random radius between 12-24 in increments of 6 (3 different
+        int[] radii = {20, 33, 42};
+        int radius = radii[(int) (Math.random() * 3)]; // random radius between 12-24 in increments of 6 (3 different
                                                         // sizes of asteroids)
         double x = Math.random() * FRAME_WIDTH;
         double y = Math.random() * FRAME_HEIGHT;
