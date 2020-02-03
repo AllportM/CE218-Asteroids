@@ -1,27 +1,27 @@
 package Asteroids.game1;
 
 import Asteroids.utilities.JEasyFrame;
-import Asteroids.utilities.Refresh;
 
 import java.awt.*;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import static Asteroids.game1.Constants.DELAY;
 
 /**
- * BasicGame's purpose is to instantiate the frame, view, and game containing main
+ * Game's purpose is to instantiate the frame, view, and game containing main
  * method, and act as the main Game Engine
  */
-public class BasicGame
+public class Game
 {
     public static final int N_INITIAL_ASTEROIDS = 20;
-    public LinkedList<Refresh> gameObjects;
+    public LinkedList<GameObject> gameObjects;
     Keys ctrl;
 
     /**
      * No arg constructor, instantiates BasicAsteroids and adds to asteroids list
      */
-    public BasicGame()
+    public Game()
     {
         gameObjects = new LinkedList<>();
         ctrl = new Keys();
@@ -39,7 +39,7 @@ public class BasicGame
      */
     public static void main(String[] args) throws Exception
     {
-        BasicGame game = new BasicGame();
+        Game game = new Game();
         BasicView view = new BasicView(game);
         new JEasyFrame(view, "Basic Game").addKeyListener(game.ctrl);
 //         below may improve game graphics at later date
@@ -75,15 +75,35 @@ public class BasicGame
      */
     public void update()
     {
-        Thread thread = null;
-        for (Refresh obj: gameObjects)
+//        Thread thread = null;
+        LinkedList<GameObject> alive = new LinkedList<>();
+        for (Iterator<GameObject> it = gameObjects.iterator(); it.hasNext();)
         {
+            GameObject obj = it.next();
+            if (obj instanceof Ship)
+            {
+                Ship shipObj = (Ship) obj;
+                if (shipObj.bullet != null)
+                {
+                    alive.add(shipObj.bullet);
+                    shipObj.bullet = null;
+                }
+            }
 //            Runnable task = () ->
 //            {
-                obj.update();
+            obj.update();
+            if (obj.alive)
+            {
+                alive.add(obj);
+            }
 //            };
 //            thread = new Thread(task);
 //            thread.start();
+        }
+        synchronized (Game.class)
+        {
+            gameObjects.clear();
+            gameObjects.addAll(alive);
         }
     }
 }

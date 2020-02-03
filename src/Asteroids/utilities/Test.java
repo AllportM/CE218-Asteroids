@@ -24,7 +24,7 @@ public class Test extends JComponent {
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(Color.WHITE);
         g2.fillRect(0, 0, getWidth(), getHeight());
-        ship.draw(g2, this);
+        ship.draw(g2);
     }
 
     public void update()

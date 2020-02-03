@@ -12,6 +12,6 @@ public enum Constants
     public static final int FRAME_WIDTH = 1280;
     public static final Dimension FRAME_SIZE = new Dimension(FRAME_WIDTH, FRAME_HEIGHT);
     // sleep time between two frames
-    public static final int DELAY = 17; // milliseconds
+    public static final int DELAY = 20; // milliseconds
     public static final double DT = DELAY / 1000.0; // seconds
 }

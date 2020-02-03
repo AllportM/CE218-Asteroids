@@ -19,14 +19,14 @@ public class BasicView extends JComponent {
     private final RotatableImage bg2;
     public static final Color BG_COLOR = Color.black; // colour for the background
 
-    private BasicGame game; // reference to the game instance
+    private Game game; // reference to the game instance
 
     /**
      * Standard instance constructore, initializes game reference
      * @param game
      *      instance of the game object
      */
-    public BasicView(BasicGame game)
+    public BasicView(Game game)
     {
         this.game = game;
 //        String path = "resources/BackgroundEdited.gif";
@@ -52,15 +52,18 @@ public class BasicView extends JComponent {
         Graphics2D g = (Graphics2D) g0;
         // paint the background
 //        g.drawImage(bg, 0, 0, null);
-        bg2.setScale(0, 0);
+        bg2.setScale(0.333333, 0.333333);
         /*
          * to override rotatable images translate, set scale to 1/3 ad x/y args to width/6, height /64
          * so that 0,0 point is top right of image
          */
-        bg2.paintIcon(this, g, bg2.getIconWidth()/6, bg2.getIconHeight()/6);
-        for (Refresh obj: game.gameObjects)
+        bg2.paintIcon(g, bg2.getWidth()/6, bg2.getHeight()/6);
+        synchronized (Game.class)
         {
-            obj.draw(g, this);
+            for (Refresh obj : game.gameObjects)
+            {
+                obj.draw(g);
+            }
         }
     }
 

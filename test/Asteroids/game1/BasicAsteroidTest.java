@@ -3,11 +3,10 @@ package Asteroids.game1;
 import org.junit.Before;
 import org.junit.Test;
 
-import static Asteroids.game1.Constants.*;
 import static org.junit.Assert.*;
 
 public class BasicAsteroidTest {
-    public static BasicGame game;
+    public static Game game;
 
     @Test
     public void testHyp()
@@ -18,7 +17,7 @@ public class BasicAsteroidTest {
     @Before
     public void BasicAsteroidTest()
     {
-        game = new BasicGame();
+        game = new Game();
     }
 
 //    @Test
