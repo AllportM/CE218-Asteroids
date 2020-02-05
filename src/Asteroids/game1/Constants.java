@@ -6,8 +6,8 @@ import java.awt.*;
  * Constant's purpose is to contain constant variables throughout the Asteroids packages
  */
 public enum Constants
-{
-    F;
+{;
+
     public static final int FRAME_HEIGHT = 840;
     public static final int FRAME_WIDTH = 1280;
     public static final Dimension FRAME_SIZE = new Dimension(FRAME_WIDTH, FRAME_HEIGHT);

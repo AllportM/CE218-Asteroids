@@ -8,7 +8,7 @@ import java.util.LinkedList;
 
 public class Bullet extends GameObject {
     private static Bullet bullet = null;
-    private double ttl = 2;
+    private double ttl = 1;
     private int initSpd = 600;
     private RotatableImage sprite1;
     private int width, height;
