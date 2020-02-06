@@ -65,6 +65,11 @@ public class Game
         {
             game.update();
             view.repaint();
+	    // makes games run smoothly on linux due to inefficient graphics scheduling?
+	    if (System.getProperty("os.name").equals("Linux"))
+	    {
+		Toolkit.getDefaultToolkit().sync();
+	    }
             Thread.sleep(DELAY);
         }
     }
