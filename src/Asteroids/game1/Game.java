@@ -14,7 +14,7 @@ import static Asteroids.game1.Constants.DELAY;
  */
 public class Game
 {
-    public static final int N_INITIAL_ASTEROIDS = 20;
+    public static final int N_INITIAL_ASTEROIDS = 15;
     public LinkedList<GameObject> gameObjects;
     Keys ctrl;
 
@@ -80,11 +80,24 @@ public class Game
      */
     public void update()
     {
-//        Thread thread = null;
+        // collision detection handling
+        for (int i = 0; i < gameObjects.size() -1; i++)
+        {
+            for (int j = i+1; j < gameObjects.size(); j++)
+            {
+                GameObject first = gameObjects.get(i);
+                GameObject second = gameObjects.get(j);
+                if (first.getClass() != second.getClass())
+                {
+                    first.collisionHandling(second);
+                }
+            }
+        }
         LinkedList<GameObject> alive = new LinkedList<>();
         for (Iterator<GameObject> it = gameObjects.iterator(); it.hasNext();)
         {
             GameObject obj = it.next();
+            // spawns bullet from ship if fires
             if (obj instanceof Ship)
             {
                 Ship shipObj = (Ship) obj;
@@ -97,9 +110,21 @@ public class Game
 //            Runnable task = () ->
 //            {
             obj.update();
+
+            // adds live objects to alive list in order to remove dead ones
             if (obj.alive)
             {
                 alive.add(obj);
+            }
+
+            // adds children asteroids to game after ast destroid
+            else if (obj.getClass() == BasicAsteroid.class && obj.RADIUS > 20)
+            {
+                BasicAsteroid obj1 = (BasicAsteroid) obj;
+                for (int i = 0; i < 3; i++)
+                {
+                    alive.add(obj1.child[i]);
+                }
             }
 //            };
 //            thread = new Thread(task);

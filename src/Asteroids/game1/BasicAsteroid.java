@@ -13,6 +13,7 @@ import static Asteroids.game1.Constants.*;
 public class BasicAsteroid extends GameObject {
     public static final double MAX_SPEED = 100; // maximum speed an asteroid can have
     private Vector2D rotationalVec;
+    public BasicAsteroid[] child = new BasicAsteroid[3];
 
     private RotatableImage img;
 
@@ -49,7 +50,27 @@ public class BasicAsteroid extends GameObject {
 
     public void hit()
     {
-
+        this.alive = false;
+        // creates 3 new child asteroids off 1 radius smaller then existing dead one
+        // with velocity equal to 1.5 times faster in a random angle
+        for (int i = 0; i < 3; i++) {
+            double randAngle = Math.toRadians(Math.random() * 360);
+            Vector2D newV = Vector2D.polar(randAngle, velocity.mag() * 1.2);
+            switch ((int) RADIUS)
+            {
+                case 20:
+                default:
+                    break;
+                case 33:
+                    child[i] = new BasicAsteroid(this.position.x, this.position.y,
+                            newV.x, newV.y, 20);
+                    break;
+                case 42:
+                    child[i] = new BasicAsteroid(this.position.x, this.position.y,
+                            newV.x, newV.y, 33);
+                    break;
+            }
+        }
     }
 
     /**

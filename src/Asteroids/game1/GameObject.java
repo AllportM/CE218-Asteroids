@@ -25,8 +25,7 @@ public abstract class GameObject implements Refresh {
 
     public boolean overlap(GameObject other)
     {
-        //TODO: simple overlap method
-        return false;
+        return (this.position.dist(other.position) < this.RADIUS + other.RADIUS);
     }
 
     public void collisionHandling(GameObject other)

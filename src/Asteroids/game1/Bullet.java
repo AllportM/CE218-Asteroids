@@ -49,7 +49,7 @@ public class Bullet extends GameObject {
     @Override
     public void hit()
     {
-
+        alive = false;
     }
 
     @Override
