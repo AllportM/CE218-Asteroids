@@ -19,6 +19,7 @@ public class Ship extends GameObject {
     private double bulletTime = 0;
     private final double scale = 1.5;
     private double thrust;
+    private int inv;
 
     // direction in which the nos of ship is pointing
     // direction thrust is applied
@@ -46,11 +47,13 @@ public class Ship extends GameObject {
         ship = new RotatableImage("resources/Ship.png");
         thrustImg = new RotatableImage("resources/ShipThrust.png");
         bulletTime = System.currentTimeMillis();
+        inv = 240;
     }
 
     public void hit()
     {
-
+        if (inv == 0)
+        this.alive = false;
     }
 
     public void mkBullet()
@@ -105,6 +108,8 @@ public class Ship extends GameObject {
             bulletTime = now;
             mkBullet();
         }
+
+        if (inv > 0) inv--; // decreases once evert 1/60th sec
     }
 
     /**
@@ -114,9 +119,12 @@ public class Ship extends GameObject {
      */
     public void draw(Graphics2D g)
     {
-        Graphics2D g2 = (Graphics2D) g.create();
-        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float) thrust));
-        thrustImg.paintIcon(g2, (int) Math.round(position.x), (int) Math.round(position.y));
-        ship.paintIcon(g, (int) Math.round(position.x), (int) Math.round(position.y));
+        if (inv % 15 > 0 || inv == 0)
+        {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float) thrust));
+            thrustImg.paintIcon(g2, (int) Math.round(position.x), (int) Math.round(position.y));
+            ship.paintIcon(g, (int) Math.round(position.x), (int) Math.round(position.y));
+        }
     }
 }
