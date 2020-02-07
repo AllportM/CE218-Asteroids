@@ -13,8 +13,6 @@ import static Asteroids.game1.Constants.*;
 public class BasicAsteroid extends GameObject {
     public static final double MAX_SPEED = 100; // maximum speed an asteroid can have
     private Vector2D rotationalVec;
-    public BasicAsteroid[] child = new BasicAsteroid[3];
-    public boolean killedByPlayer = false;
 
     private RotatableImage img;
 
@@ -31,47 +29,14 @@ public class BasicAsteroid extends GameObject {
     public BasicAsteroid(double x, double y, double vx, double vy, int rad) {
         super(new Vector2D(x, y), new Vector2D(vx, vy), rad);
         rotationalVec = (new Vector2D(vx, vy));
-        switch (rad)
-        {
-            case 20:
-                img = new RotatableImage(String.format("resources/Ast%d.png", (int) (Math.random() * 7) + 1));
-                img.setScale((double) 40 / img.getWidth(), (double) 48 / img.getHeight());
-                break;
-            case 33:
-                img = new RotatableImage(String.format("resources/Ast%d.png", (int) (Math.random() * 7) + 1));
-                img.setScale((double) 66 / img.getWidth(), (double) 66 / img.getHeight());
-                break;
-            case 42:
-            default:
-                img = new RotatableImage(String.format("resources/Ast%d.png", (int) (Math.random() * 7) + 1));
-                img.setScale((double) 84 / img.getWidth(), (double) 84 / img.getHeight());
-                break;
-        }
+        makeShape();
+        img = new RotatableImage("resources/astSurface2.gif");
+        img.setScale(0,0);
     }
 
     public void hit()
     {
-        this.alive = false;
-        // creates 3 new child asteroids off 1 radius smaller then existing dead one
-        // with velocity equal to 1.5 times faster in a random angle
-        for (int i = 0; i < 3; i++) {
-            double randAngle = Math.toRadians(Math.random() * 360);
-            Vector2D newV = Vector2D.polar(randAngle, velocity.mag() * 1.2);
-            switch ((int) RADIUS)
-            {
-                case 20:
-                default:
-                    break;
-                case 33:
-                    child[i] = new BasicAsteroid(this.position.x, this.position.y,
-                            newV.x, newV.y, 20);
-                    break;
-                case 42:
-                    child[i] = new BasicAsteroid(this.position.x, this.position.y,
-                            newV.x, newV.y, 33);
-                    break;
-            }
-        }
+
     }
 
     /**
@@ -81,8 +46,7 @@ public class BasicAsteroid extends GameObject {
      * @return
      */
     public static BasicAsteroid makeRandomAsteroid() {
-        int[] radii = {20, 33, 42};
-        int radius = radii[(int) (Math.random() * 3)]; // random radius between 12-24 in increments of 6 (3 different
+        int radius = (int) (Math.random() * 3 + 2) * 6; // random radius between 12-24 in increments of 6 (3 different
                                                         // sizes of asteroids)
         double x = Math.random() * FRAME_WIDTH;
         double y = Math.random() * FRAME_HEIGHT;
@@ -94,14 +58,57 @@ public class BasicAsteroid extends GameObject {
     }
 
     /**
+     * getShapeCord's purpose is to generate x/y coordinates for a slightly random shape given it's radius
+     * @return
+     *      int[][], [0][..] and [1][..] being randomly generated x and y coordinates respectively
+     */
+    public void makeShape()
+    {
+        // init shape
+        RotatableShape shape = new RotatableShape(((int) RADIUS * 2) - (2* ((int) RADIUS / 3)));
+//        texture = new LinkedList<>();
+
+        // Adds coordinates for top half of circle, slightly randomized y coord +/- 3pixels
+        for (int xCoord = (int) -RADIUS; xCoord < RADIUS; xCoord+=3)
+        {
+            double x = xCoord;
+            double y = (Math.random()*8-4) + Math.sqrt(RADIUS * RADIUS - xCoord * xCoord);
+            shape.pushCoords(x, y);
+        }
+
+        // Adds coordinates for bottom half of circle
+        for (int xCoord = (int) -RADIUS; xCoord < RADIUS; xCoord+=3)
+        {
+            double x = xCoord;
+            double y = (Math.random()*8-4) + Math.sqrt(RADIUS * RADIUS - xCoord * xCoord);
+            shape.pushCoords(-x, -y);
+        }
+        shape.setScale(1.5);
+        shapes = new RotatableShape[1];
+        shapes[0] = shape;
+//        for (int i = 0; i < 100; i++)
+//        {
+//            texture.add(new Vector2D(Math.random()*50 - RADIUS, Math.random()*50-RADIUS));
+//        }
+    }
+
+    /**
      * update's purpose is to update the asteroids position given it's velocity
      * and change in time DT
      */
     public void update() {
         super.update();
+//        position.add(velocity.x * DT, velocity.y * DT);
+//        position.wrap(FRAME_WIDTH, FRAME_HEIGHT);
+
         final double angle = rotationalVec.angle() * 0.02;
         // rotates the shape and image
+        shapes[0].rotateShape(angle);
         img.setRotate(angle);
+//        for (Vector2D vec: texture)
+//        {
+//            vec.rotate(-angle);
+//        }
     }
 
     /**
@@ -110,9 +117,21 @@ public class BasicAsteroid extends GameObject {
      * @param g
      *      Graphics2D, the jswing graphics object to draw unto
      */
-    public void draw(Graphics2D g) {
+    public void draw(Graphics2D g, Component c) {
         Graphics2D g1 = (Graphics2D) g.create();
-        img.paintIcon(g1, (int) Math.round(position.x), (int) Math.round(position.y));
+        g1.setColor(new Color(106, 23, 166));
+        Path2D path = shapes[0].getPath(position.x, position.y);
+
+        // adds outline
+        BasicStroke stroke = new BasicStroke(7f);
+        g1.fill(new Area(stroke.createStrokedShape(path)));
+        g1.fill(path);
+
+        Shape clip = g1.getClip();
+        g1.setClip(path);
+        img.setScale(0.7, 0.7);
+        img.paintIcon(c, g1, (int) Math.round(position.x), (int) Math.round(position.y));
+        g1.setClip(clip);
         g1.dispose();
     }
 

@@ -8,7 +8,7 @@ import java.util.LinkedList;
 
 public class Bullet extends GameObject {
     private static Bullet bullet = null;
-    private double ttl = 1;
+    private double ttl = 2;
     private int initSpd = 600;
     private RotatableImage sprite1;
     private int width, height;
@@ -49,12 +49,12 @@ public class Bullet extends GameObject {
     @Override
     public void hit()
     {
-        alive = false;
+
     }
 
     @Override
-    public void draw(Graphics2D g)
+    public void draw(Graphics2D g, Component c)
     {
-        sprite1.paintIcon(g, (int) position.x, (int) position.y);
+        sprite1.paintIcon(c, g, (int) position.x, (int) position.y);
     }
 }

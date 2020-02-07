@@ -1,20 +1,15 @@
 package Asteroids.utilities;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 /**
  * RotatableImage's purpose is to extend awt Icon class, overriding functionality to paint the image associated
  * with to an instance, and adding functionality to rotate and scale the image
  */
-public class RotatableImage{
+public class RotatableImage implements Icon {
 
-    public BufferedImage img;
+    private ImageIcon img; // core image to be painted
     private double degrees; // angle to be rotated by
     private double scaleX; // scaling factor on x component
     private double scaleY; // scaling factor on y component
@@ -26,13 +21,7 @@ public class RotatableImage{
      */
     public RotatableImage(String fname)
     {
-        try {
-            img = ImageIO.read(new File(fname));
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException(String.format("Failed to load Image '%s'", fname));
-        }
+       img = new ImageIcon(fname);
        degrees = 0;
        this.scaleX = this.scaleY = 1;
     }
@@ -69,6 +58,8 @@ public class RotatableImage{
     /**
      * paintIcon's purpose is to overrid the superclasses paint method, painting a scaled and rotated
      * image onto given graphics component
+     * @param c
+     *      JComponent, reference to the component to be painted on
      * @param g
      *      Graphics object, to be painted on
      * @param x
@@ -76,37 +67,41 @@ public class RotatableImage{
      * @param y
      *      int, y positional value for 0,0
      */
-    public void paintIcon(Graphics g, int x, int y) {
+    @Override
+    public void paintIcon(Component c, Graphics g, int x, int y) {
         Graphics2D g2 = (Graphics2D) g.create();
-        int width = img.getWidth()/2;
-        int height = img.getHeight()/2;
-        AffineTransform at = AffineTransform.getTranslateInstance(-width * scaleX + x, -height * scaleY + y);
-        at.rotate(degrees, width * scaleX, height * scaleY);
-        at.scale(scaleX, scaleY);
-        g2.setTransform(at);
-        g2.drawImage(img, 0, 0, null);
+        int width = img.getIconWidth()/2;
+        int height = img.getIconHeight()/2;
+        g2.translate(-width * scaleX + x, -height * scaleY + y); // sets 0,0 point to center of image
+                        // scaled by given scale factor, then adjusts adds center of screen
+        g2.rotate(degrees, width * scaleX, height * scaleY);
+        g2.scale(scaleX, scaleY);
+        img.paintIcon(c, g2, 0, 0);
         g2.dispose();
+        scaleX = scaleY = 1;
     }
 
-    public int getWidth() {
-        return img.getWidth();
+    @Override
+    public int getIconWidth() {
+        return img.getIconWidth();
     }
 
-    public int getHeight() {
-        return img.getHeight();
+    @Override
+    public int getIconHeight() {
+        return img.getIconHeight();
     }
 
     public double getRotatedWidth()
     {
         double sin = Math.sin(degrees);
         double cos = Math.cos(degrees);
-        return Math.round(getWidth() * cos - getHeight() * sin);
+        return Math.round(img.getIconWidth() * cos - img.getIconHeight() * sin);
     }
 
     public double getRotatedHeight()
     {
         double sin = Math.sin(degrees);
         double cos = Math.cos(degrees);
-        return (int) Math.round(getWidth() * sin + img.getHeight() * cos);
+        return (int) Math.round(img.getIconWidth() * sin + img.getIconHeight() * cos);
     }
 }

@@ -2,7 +2,6 @@ package Asteroids.game1;
 
 import Asteroids.utilities.Refresh;
 import Asteroids.utilities.RotatableImage;
-import Asteroids.game1.Constants.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -10,8 +9,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-
-import static Asteroids.game1.Constants.FRAME_WIDTH;
 
 /**
  * BasicView's purpose is to paint the main background view for the game
@@ -22,14 +19,14 @@ public class BasicView extends JComponent {
     private final RotatableImage bg2;
     public static final Color BG_COLOR = Color.black; // colour for the background
 
-    private Game game; // reference to the game instance
+    private BasicGame game; // reference to the game instance
 
     /**
      * Standard instance constructore, initializes game reference
      * @param game
      *      instance of the game object
      */
-    public BasicView(Game game)
+    public BasicView(BasicGame game)
     {
         this.game = game;
 //        String path = "resources/BackgroundEdited.gif";
@@ -55,26 +52,16 @@ public class BasicView extends JComponent {
         Graphics2D g = (Graphics2D) g0;
         // paint the background
 //        g.drawImage(bg, 0, 0, null);
-        bg2.setScale(0.333333, 0.333333);
+        bg2.setScale(1, 1);
         /*
          * to override rotatable images translate, set scale to 1/3 ad x/y args to width/6, height /64
          * so that 0,0 point is top right of image
          */
-        bg2.paintIcon(g, bg2.getWidth()/6, bg2.getHeight()/6);
-        synchronized (Game.class)
+        bg2.paintIcon(this, g, bg2.getIconWidth()/6, bg2.getIconHeight()/6);
+        for (Refresh obj: game.gameObjects)
         {
-            for (Refresh obj : game.gameObjects)
-            {
-                obj.draw(g);
-            }
+            obj.draw(g, this);
         }
-        g.setColor(Color.cyan);
-        g.setFont(new Font("Bahnschrift Light", Font.BOLD, 20));
-        String score = "Score: " + game.playerScore;
-        int fontW = g.getFontMetrics().stringWidth(score);
-        g.drawString(score, FRAME_WIDTH - fontW - 50, 20);
-        String lifes = "Lifes: " + game.lifes;
-        g.drawString(lifes, 0, 20);
     }
 
     @Override
