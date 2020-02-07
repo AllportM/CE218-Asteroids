@@ -14,6 +14,7 @@ public class BasicAsteroid extends GameObject {
     public static final double MAX_SPEED = 100; // maximum speed an asteroid can have
     private Vector2D rotationalVec;
     public BasicAsteroid[] child = new BasicAsteroid[3];
+    public boolean killedByPlayer = false;
 
     private RotatableImage img;
 

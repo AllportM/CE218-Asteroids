@@ -2,6 +2,7 @@ package Asteroids.game1;
 
 import Asteroids.utilities.Refresh;
 import Asteroids.utilities.RotatableImage;
+import Asteroids.game1.Constants.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -9,6 +10,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+
+import static Asteroids.game1.Constants.FRAME_WIDTH;
 
 /**
  * BasicView's purpose is to paint the main background view for the game
@@ -65,6 +68,13 @@ public class BasicView extends JComponent {
                 obj.draw(g);
             }
         }
+        g.setColor(Color.cyan);
+        g.setFont(new Font("Bahnschrift Light", Font.BOLD, 20));
+        String score = "Score: " + game.playerScore;
+        int fontW = g.getFontMetrics().stringWidth(score);
+        g.drawString(score, FRAME_WIDTH - fontW - 50, 20);
+        String lifes = "Lifes: " + game.lifes;
+        g.drawString(lifes, 0, 20);
     }
 
     @Override

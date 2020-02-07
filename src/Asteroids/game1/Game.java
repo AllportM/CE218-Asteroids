@@ -2,6 +2,7 @@ package Asteroids.game1;
 
 import Asteroids.utilities.JEasyFrame;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -14,7 +15,10 @@ import static Asteroids.game1.Constants.DELAY;
  */
 public class Game
 {
-    public static final int N_INITIAL_ASTEROIDS = 15;
+    private int lifeGen;
+    public int playerScore;
+    public int lifes;
+    public static final int N_INITIAL_ASTEROIDS = 10;
     public LinkedList<GameObject> gameObjects;
     Keys ctrl;
 
@@ -30,6 +34,9 @@ public class Game
             gameObjects.add(BasicAsteroid.makeRandomAsteroid());
         }
         gameObjects.add(new Ship(ctrl));
+        playerScore = 0;
+        lifes = 3;
+        lifeGen = 20000;
     }
 
     /**
@@ -117,19 +124,38 @@ public class Game
                 alive.add(obj);
             }
 
-            // adds children asteroids to game after ast destroid
-            else if (obj.getClass() == BasicAsteroid.class && obj.RADIUS > 20)
+            // sets data if item is an asteroid i.e score and children asteroids on death
+            else if (obj.getClass() == BasicAsteroid.class)
             {
                 BasicAsteroid obj1 = (BasicAsteroid) obj;
-                for (int i = 0; i < 3; i++)
+                // spawns children asteroids
+                if (obj.RADIUS > 20)
                 {
-                    alive.add(obj1.child[i]);
+                    for (int i = 0; i < 3; i++)
+                    {
+                        alive.add(obj1.child[i]);
+                    }
                 }
+                if (obj1.killedByPlayer)
+                {
+                    playerScore += 100;
+                }
+            }
+            else if( obj.getClass() == Ship.class && lifes > 0)
+            {
+                alive.add(new Ship(ctrl));
+                lifes--;
+            }
+            if (playerScore / lifeGen == 1)
+            {
+                lifes++;
+                lifeGen += 20000;
             }
 //            };
 //            thread = new Thread(task);
 //            thread.start();
         }
+
         synchronized (Game.class)
         {
             gameObjects.clear();

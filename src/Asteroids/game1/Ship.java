@@ -19,7 +19,7 @@ public class Ship extends GameObject {
     private double bulletTime = 0;
     private final double scale = 1.5;
     private double thrust;
-    private int inv;
+    public int inv;
 
     // direction in which the nos of ship is pointing
     // direction thrust is applied
