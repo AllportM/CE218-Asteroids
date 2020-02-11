@@ -1,12 +1,11 @@
 package Asteroids.game1;
 
 import Asteroids.utilities.RotatableImage;
-import Asteroids.utilities.RotatableShape;
 import Asteroids.utilities.Vector2D;
 
 import java.awt.*;
-import java.awt.geom.Area;
-import java.awt.geom.Path2D;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 
 import static Asteroids.game1.Constants.*;
 
@@ -31,6 +30,8 @@ public class BasicAsteroid extends GameObject {
     public BasicAsteroid(double x, double y, double vx, double vy, int rad) {
         super(new Vector2D(x, y), new Vector2D(vx, vy), rad);
         rotationalVec = (new Vector2D(vx, vy));
+
+        // sets sprite accordingly to radius of asteroid with random picture
         switch (rad)
         {
             case 20:
@@ -84,8 +85,8 @@ public class BasicAsteroid extends GameObject {
         int[] radii = {20, 33, 42};
         int radius = radii[(int) (Math.random() * 3)]; // random radius between 12-24 in increments of 6 (3 different
                                                         // sizes of asteroids)
-        double x = Math.random() * FRAME_WIDTH;
-        double y = Math.random() * FRAME_HEIGHT;
+        double x = Math.random() * WORLD_WIDTH;
+        double y = Math.random() * WORLD_HEIGHT;
         double vx = (Math.random() * MAX_SPEED * 2) - MAX_SPEED;
         double vy = (Math.random() * MAX_SPEED * 2) - MAX_SPEED;
 //        System.out.printf("posx= %3.2f, posy= %3.2f\nspeedx= %3.2f, speedy = %3.2f\n",
@@ -111,9 +112,8 @@ public class BasicAsteroid extends GameObject {
      *      Graphics2D, the jswing graphics object to draw unto
      */
     public void draw(Graphics2D g) {
-        Graphics2D g1 = (Graphics2D) g.create();
-        img.paintIcon(g1, (int) Math.round(position.x), (int) Math.round(position.y));
-        g1.dispose();
+
+        img.paintIcon(g, (int) position.x, (int) position.y);
     }
 
     @Override

@@ -1,11 +1,9 @@
 package Asteroids.game1;
 
 import Asteroids.utilities.Refresh;
-import Asteroids.utilities.RotatableShape;
 import Asteroids.utilities.Vector2D;
 
 import java.awt.*;
-import java.nio.BufferUnderflowException;
 
 import static Asteroids.game1.Constants.*;
 
@@ -31,8 +29,10 @@ public abstract class GameObject implements Refresh {
 
     public void collisionHandling(GameObject other)
     {
+        // ensures two objects are of differenct classes
         if (this.getClass() != other.getClass() && this.overlap(other))
         {
+
             if (this.getClass() == Ship.class && other.getClass() == BasicAsteroid.class)
             {
                 Ship obj = (Ship) this;
@@ -56,6 +56,9 @@ public abstract class GameObject implements Refresh {
                 this.hit();
                 other.hit();
             }
+
+            // sets killedByPlayer boolean on asteroid if either of the objects which destroyed asteroid were
+            // bullets owned by the player so that score can be incremented
             if (this.getClass() == BasicAsteroid.class && other.getClass() == Bullet.class)
             {
                 BasicAsteroid obj1 = (BasicAsteroid) this;
@@ -72,7 +75,7 @@ public abstract class GameObject implements Refresh {
     public void update()
     {
         position.addScaled(velocity, DT);
-        position.wrap(FRAME_WIDTH, FRAME_HEIGHT);
+        position.wrap(WORLD_WIDTH, WORLD_HEIGHT);
     }
     public abstract void draw(Graphics2D g);
 }

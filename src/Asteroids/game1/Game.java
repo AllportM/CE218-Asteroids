@@ -1,6 +1,7 @@
 package Asteroids.game1;
 
 import Asteroids.utilities.JEasyFrame;
+import Asteroids.utilities.ViewPort;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,9 +19,10 @@ public class Game
     private int lifeGen;
     public int playerScore;
     public int lifes;
-    public static final int N_INITIAL_ASTEROIDS = 10;
+    public static final int N_INITIAL_ASTEROIDS = 50;
     public LinkedList<GameObject> gameObjects;
     Keys ctrl;
+    ViewPort vp;
 
     /**
      * No arg constructor, instantiates BasicAsteroids and adds to asteroids list
@@ -36,7 +38,8 @@ public class Game
         gameObjects.add(new Ship(ctrl));
         playerScore = 0;
         lifes = 3;
-        lifeGen = 20000;
+        lifeGen = 10000;
+        vp = new ViewPort(0,0);
     }
 
     /**
@@ -113,6 +116,7 @@ public class Game
                     alive.add(shipObj.bullet);
                     shipObj.bullet = null;
                 }
+                vp.update(shipObj);
             }
 //            Runnable task = () ->
 //            {
@@ -149,7 +153,7 @@ public class Game
             if (playerScore / lifeGen == 1)
             {
                 lifes++;
-                lifeGen += 20000;
+                lifeGen += 10000;
             }
 //            };
 //            thread = new Thread(task);

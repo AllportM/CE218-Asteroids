@@ -15,9 +15,9 @@ import java.io.IOException;
 public class RotatableImage{
 
     public BufferedImage img;
-    private double degrees; // angle to be rotated by
-    private double scaleX; // scaling factor on x component
-    private double scaleY; // scaling factor on y component
+    public double degrees; // angle to be rotated by
+    public double scaleX; // scaling factor on x component
+    public double scaleY; // scaling factor on y component
 
     /**
      * Standard constructor associating image icon to filename argument
@@ -67,7 +67,7 @@ public class RotatableImage{
     }
 
     /**
-     * paintIcon's purpose is to overrid the superclasses paint method, painting a scaled and rotated
+     * paintIcon's purpose is to override the superclasses paint method, painting a scaled and rotated
      * image onto given graphics component
      * @param g
      *      Graphics object, to be painted on
@@ -76,16 +76,15 @@ public class RotatableImage{
      * @param y
      *      int, y positional value for 0,0
      */
-    public void paintIcon(Graphics g, int x, int y) {
-        Graphics2D g2 = (Graphics2D) g.create();
-        int width = img.getWidth()/2;
-        int height = img.getHeight()/2;
-        AffineTransform at = AffineTransform.getTranslateInstance(-width * scaleX + x, -height * scaleY + y);
-        at.rotate(degrees, width * scaleX, height * scaleY);
+    public void paintIcon(Graphics2D g, int x, int y) {
+        AffineTransform init = g.getTransform();
+        AffineTransform at = new AffineTransform();
+        at.rotate(degrees, 0,0);
         at.scale(scaleX, scaleY);
-        g2.setTransform(at);
-        g2.drawImage(img, 0, 0, null);
-        g2.dispose();
+        at.translate(-getWidth()/2, -getHeight()/2);
+        g.translate(x, y);
+        g.drawImage(img, at, null);
+        g.setTransform(init);
     }
 
     public int getWidth() {

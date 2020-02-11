@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+import static Asteroids.game1.Constants.FRAME_HEIGHT;
 import static Asteroids.game1.Constants.FRAME_WIDTH;
 
 /**
@@ -55,12 +56,15 @@ public class BasicView extends JComponent {
         Graphics2D g = (Graphics2D) g0;
         // paint the background
 //        g.drawImage(bg, 0, 0, null);
-        bg2.setScale(0.333333, 0.333333);
+//        bg2.setScale(0.333333, 0.333333);
         /*
          * to override rotatable images translate, set scale to 1/3 ad x/y args to width/6, height /64
          * so that 0,0 point is top right of image
          */
-        bg2.paintIcon(g, bg2.getWidth()/6, bg2.getHeight()/6);
+
+
+        g.translate(game.vp.getX(), game.vp.getY());
+        g.drawImage(bg, 0,0, null);
         synchronized (Game.class)
         {
             for (Refresh obj : game.gameObjects)
@@ -68,13 +72,14 @@ public class BasicView extends JComponent {
                 obj.draw(g);
             }
         }
-        g.setColor(Color.cyan);
-        g.setFont(new Font("Bahnschrift Light", Font.BOLD, 20));
-        String score = "Score: " + game.playerScore;
-        int fontW = g.getFontMetrics().stringWidth(score);
-        g.drawString(score, FRAME_WIDTH - fontW - 50, 20);
-        String lifes = "Lifes: " + game.lifes;
-        g.drawString(lifes, 0, 20);
+        g.translate(-game.vp.getX(), -game.vp.getY());
+//        g.setColor(Color.cyan);
+//        g.setFont(new Font("Bahnschrift Light", Font.BOLD, 20));
+//        String score = "Score: " + game.playerScore;
+//        int fontW = g.getFontMetrics().stringWidth(score);
+//        g.drawString(score, FRAME_WIDTH - fontW - 50, 20);
+//        String lifes = "Lifes: " + game.lifes;
+//        g.drawString(lifes, 0, 20);
     }
 
     @Override

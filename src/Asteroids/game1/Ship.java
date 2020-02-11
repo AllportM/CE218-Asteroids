@@ -3,6 +3,7 @@ package Asteroids.game1;
 import Asteroids.utilities.*;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.Path2D;
 
@@ -10,9 +11,9 @@ import static Asteroids.game1.Constants.*;
 
 public class Ship extends GameObject {
 
-    public static final double MAX_SPEED = 300;
-    public static final double STEER_RATE = 2 * Math.PI; // rotational velocity in radians per second
-    public static final double MAG_ACC = 600; // accelleration when thrust is applied
+    public static final double MAX_SPEED = 500;
+    public static final double STEER_RATE = 3 * Math.PI; // rotational velocity in radians per second
+    public static final double MAG_ACC = 800; // accelleration when thrust is applied
     public static final double DRAG = 5; // constant speed loss factor
     public static final Color COLOR = Color.cyan;
     private double fireRate = 2;
@@ -37,11 +38,9 @@ public class Ship extends GameObject {
 
     public Ship(Controller ctrl)
     {
-        super(new Vector2D(FRAME_WIDTH / 2.0, FRAME_HEIGHT / 2.0),
+        super(new Vector2D(WORLD_WIDTH / 2.0, WORLD_HEIGHT / 2.0),
                 new Vector2D(0, 0), 20*1.5);
         this.ctrl = ctrl;
-        position = new Vector2D(FRAME_WIDTH / 2.0, FRAME_HEIGHT / 2.0);
-        velocity = new Vector2D(0, 0);
         direction = new Vector2D(0, -20);
         shipRot = new Vector2D(direction);
         ship = new RotatableImage("resources/Ship.png");
@@ -121,9 +120,10 @@ public class Ship extends GameObject {
     {
         if (inv % 15 > 0 || inv == 0)
         {
-            Graphics2D g2 = (Graphics2D) g.create();
-            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float) thrust));
-            thrustImg.paintIcon(g2, (int) Math.round(position.x), (int) Math.round(position.y));
+            Composite init = g.getComposite();
+            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float) thrust));
+            thrustImg.paintIcon(g, (int) Math.round(position.x), (int) Math.round(position.y));
+            g.setComposite(init);
             ship.paintIcon(g, (int) Math.round(position.x), (int) Math.round(position.y));
         }
     }
