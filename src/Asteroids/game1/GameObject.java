@@ -33,7 +33,7 @@ public abstract class GameObject implements Refresh {
         if (this.getClass() != other.getClass() && this.overlap(other))
         {
 
-            if (this.getClass() == Ship.class && other.getClass() == BasicAsteroid.class)
+            if (this.getClass() == Ship.class && other.getClass() == Asteroid.class)
             {
                 Ship obj = (Ship) this;
                 if (!(obj.inv > 0))
@@ -42,7 +42,7 @@ public abstract class GameObject implements Refresh {
                     obj.hit();
                 }
             }
-            else if (this.getClass() == BasicAsteroid.class && other.getClass() == Ship.class)
+            else if (this.getClass() == Asteroid.class && other.getClass() == Ship.class)
             {
                 Ship obj = (Ship) other;
                 if (!(obj.inv > 0))
@@ -59,14 +59,14 @@ public abstract class GameObject implements Refresh {
 
             // sets killedByPlayer boolean on asteroid if either of the objects which destroyed asteroid were
             // bullets owned by the player so that score can be incremented
-            if (this.getClass() == BasicAsteroid.class && other.getClass() == Bullet.class)
+            if (this.getClass() == Asteroid.class && other.getClass() == Bullet.class)
             {
-                BasicAsteroid obj1 = (BasicAsteroid) this;
+                Asteroid obj1 = (Asteroid) this;
                 obj1.killedByPlayer = true;
             }
-            else if (this.getClass() == Bullet.class && other.getClass() == BasicAsteroid.class)
+            else if (this.getClass() == Bullet.class && other.getClass() == Asteroid.class)
             {
-                BasicAsteroid obj1 = (BasicAsteroid) other;
+                Asteroid obj1 = (Asteroid) other;
                 obj1.killedByPlayer = true;
             }
         }

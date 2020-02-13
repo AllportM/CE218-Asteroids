@@ -1,21 +1,22 @@
 package Asteroids.game1;
 
 import Asteroids.utilities.RotatableImage;
+import Asteroids.utilities.RotatableShape;
+import Asteroids.utilities.Sprite;
 import Asteroids.utilities.Vector2D;
 
 import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
 
 import static Asteroids.game1.Constants.*;
 
-public class BasicAsteroid extends GameObject {
+public class Asteroid extends GameObject {
     public static final double MAX_SPEED = 100; // maximum speed an asteroid can have
     private Vector2D rotationalVec;
-    public BasicAsteroid[] child = new BasicAsteroid[3];
+    public Asteroid[] child = new Asteroid[3];
     public boolean killedByPlayer = false;
 
     private RotatableImage img;
+    private Sprite sp;
 
 //    private LinkedList<Vector2D> texture; // old rotating texture
 
@@ -27,10 +28,9 @@ public class BasicAsteroid extends GameObject {
      * @param vx
      * @param vy Velocity values to instantiate an asteroid with
      */
-    public BasicAsteroid(double x, double y, double vx, double vy, int rad) {
+    public Asteroid(double x, double y, double vx, double vy, int rad) {
         super(new Vector2D(x, y), new Vector2D(vx, vy), rad);
         rotationalVec = (new Vector2D(vx, vy));
-
         // sets sprite accordingly to radius of asteroid with random picture
         switch (rad)
         {
@@ -64,11 +64,11 @@ public class BasicAsteroid extends GameObject {
                 default:
                     break;
                 case 33:
-                    child[i] = new BasicAsteroid(this.position.x, this.position.y,
+                    child[i] = new Asteroid(this.position.x, this.position.y,
                             newV.x, newV.y, 20);
                     break;
                 case 42:
-                    child[i] = new BasicAsteroid(this.position.x, this.position.y,
+                    child[i] = new Asteroid(this.position.x, this.position.y,
                             newV.x, newV.y, 33);
                     break;
             }
@@ -81,7 +81,7 @@ public class BasicAsteroid extends GameObject {
      *
      * @return
      */
-    public static BasicAsteroid makeRandomAsteroid() {
+    public static Asteroid makeRandomAsteroid() {
         int[] radii = {20, 33, 42};
         int radius = radii[(int) (Math.random() * 3)]; // random radius between 12-24 in increments of 6 (3 different
                                                         // sizes of asteroids)
@@ -91,7 +91,40 @@ public class BasicAsteroid extends GameObject {
         double vy = (Math.random() * MAX_SPEED * 2) - MAX_SPEED;
 //        System.out.printf("posx= %3.2f, posy= %3.2f\nspeedx= %3.2f, speedy = %3.2f\n",
 //                x, y, vx, vy);
-        return new BasicAsteroid(x, y, vx, vy, radius);
+        return new Asteroid(x, y, vx, vy, radius);
+    }
+
+    /**
+     * getShapeCord's purpose is to generate x/y coordinates for a slightly random shape given it's radius
+     * @return
+     *      int[][], [0][..] and [1][..] being randomly generated x and y coordinates respectively
+     */
+    public RotatableShape makeShape()
+    {
+        // init shape
+        RotatableShape shape = new RotatableShape(((int) RADIUS * 2) - (2* ((int) RADIUS / 3)));
+//        texture = new LinkedList<>();
+
+        // Adds coordinates for top half of circle, slightly randomized y coord +/- 3pixels
+        for (int xCoord = (int) -RADIUS; xCoord < RADIUS; xCoord+=3)
+        {
+            double x = xCoord;
+            double y = (Math.random()*8-4) + Math.sqrt(RADIUS * RADIUS - xCoord * xCoord);
+            shape.pushCoords(x, y);
+        }
+
+        // Adds coordinates for bottom half of circle
+        for (int xCoord = (int) -RADIUS; xCoord < RADIUS; xCoord+=3)
+        {
+            double x = xCoord;
+            double y = (Math.random()*8-4) + Math.sqrt(RADIUS * RADIUS - xCoord * xCoord);
+            shape.pushCoords(-x, -y);
+        }
+        return shape;
+//        for (int i = 0; i < 100; i++)
+//        {
+//            texture.add(new Vector2D(Math.random()*50 - RADIUS, Math.random()*50-RADIUS));
+//        }
     }
 
     /**
