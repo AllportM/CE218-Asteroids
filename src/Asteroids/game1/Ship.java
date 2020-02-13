@@ -54,29 +54,30 @@ public class Ship extends GameObject {
         , genShape());
     }
 
-    public RotatableShape genShape()
+    public Path2D genShape()
     {
-        RotatableShape shape = new RotatableShape(20);
-        shape.pushCoords(4, 64);
-        shape.pushCoords(4, 54);
-        shape.pushCoords(11, 40);
-        shape.pushCoords(21, 35);
-        shape.pushCoords(24, 35);
-        shape.pushCoords(24, 23);
-        shape.pushCoords(26, 11);
-        shape.pushCoords(32, 2);
-        shape.pushCoords(36, 2);
-        shape.pushCoords(41, 11);
-        shape.pushCoords(44, 21);
-        shape.pushCoords(44, 35);
-        shape.pushCoords(55, 40);
-        shape.pushCoords(64, 54);
-        shape.pushCoords(64, 64);
-        shape.pushCoords(41, 58);
-        shape.pushCoords(37, 64);
-        shape.pushCoords(31, 64);
-        shape.pushCoords(27, 58);
-        shape.pushCoords(4, 64);
+        Path2D shape = new Path2D.Double();
+//        RotatableShape shape = new RotatableShape(20);
+        shape.moveTo(4 - RADIUS, 64 - RADIUS);
+        shape.lineTo(4- RADIUS, 54- RADIUS);
+        shape.lineTo(11 - RADIUS, 40 - RADIUS);
+        shape.lineTo(21 - RADIUS, 35 - RADIUS);
+        shape.lineTo(24 - RADIUS, 35 - RADIUS);
+        shape.lineTo(24 - RADIUS, 23 - RADIUS);
+        shape.lineTo(26 - RADIUS, 11 - RADIUS);
+        shape.lineTo(32 - RADIUS, 2 - RADIUS);
+        shape.lineTo(36 - RADIUS, 2 - RADIUS);
+        shape.lineTo(41 - RADIUS, 11 - RADIUS);
+        shape.lineTo(44 - RADIUS, 21 - RADIUS);
+        shape.lineTo(44 - RADIUS, 35 - RADIUS);
+        shape.lineTo(55 - RADIUS, 40 - RADIUS);
+        shape.lineTo(64 - RADIUS, 54 - RADIUS);
+        shape.lineTo(64 - RADIUS, 64 - RADIUS);
+        shape.lineTo(41 - RADIUS, 58 - RADIUS);
+        shape.lineTo(37 - RADIUS, 64 - RADIUS);
+        shape.lineTo(31 - RADIUS, 64 - RADIUS);
+        shape.lineTo(27 - RADIUS, 58 - RADIUS);
+        shape.lineTo(4 - RADIUS, 64 - RADIUS);
         return shape;
     }
 

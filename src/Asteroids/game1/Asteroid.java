@@ -1,11 +1,9 @@
 package Asteroids.game1;
 
-import Asteroids.utilities.RotatableImage;
-import Asteroids.utilities.RotatableShape;
-import Asteroids.utilities.Sprite;
-import Asteroids.utilities.Vector2D;
+import Asteroids.utilities.*;
 
 import java.awt.*;
+import java.awt.geom.Path2D;
 
 import static Asteroids.game1.Constants.*;
 
@@ -31,21 +29,25 @@ public class Asteroid extends GameObject {
     public Asteroid(double x, double y, double vx, double vy, int rad) {
         super(new Vector2D(x, y), new Vector2D(vx, vy), rad);
         rotationalVec = (new Vector2D(vx, vy));
+        String text = "asttext" + (int) (Math.random() * 9) + ".png";
         // sets sprite accordingly to radius of asteroid with random picture
         switch (rad)
         {
             case 20:
                 img = new RotatableImage(String.format("resources/Ast%d.png", (int) (Math.random() * 7) + 1));
                 img.setScale((double) 40 / img.getWidth(), (double) 48 / img.getHeight());
+                sp = new Sprite(position, rotationalVec, 40, 40, ImgManag.getImage(text), makeShape());
                 break;
             case 33:
                 img = new RotatableImage(String.format("resources/Ast%d.png", (int) (Math.random() * 7) + 1));
                 img.setScale((double) 66 / img.getWidth(), (double) 66 / img.getHeight());
+                sp = new Sprite(position, rotationalVec, 66, 66, ImgManag.getImage(text), makeShape());
                 break;
             case 42:
             default:
                 img = new RotatableImage(String.format("resources/Ast%d.png", (int) (Math.random() * 7) + 1));
                 img.setScale((double) 84 / img.getWidth(), (double) 84 / img.getHeight());
+                sp = new Sprite(position, rotationalVec, 82, 82, ImgManag.getImage(text), makeShape());
                 break;
         }
     }
@@ -99,26 +101,24 @@ public class Asteroid extends GameObject {
      * @return
      *      int[][], [0][..] and [1][..] being randomly generated x and y coordinates respectively
      */
-    public RotatableShape makeShape()
+    public Path2D makeShape()
     {
+        Path2D shape = new Path2D.Double();
+        shape.moveTo(RADIUS, (Math.random()*8-4) + Math.sqrt(RADIUS * RADIUS - RADIUS * RADIUS));
         // init shape
-        RotatableShape shape = new RotatableShape(((int) RADIUS * 2) - (2* ((int) RADIUS / 3)));
+//        RotatableShape shape = new RotatableShape(((int) RADIUS * 2) - (2* ((int) RADIUS / 3)));
 //        texture = new LinkedList<>();
 
         // Adds coordinates for top half of circle, slightly randomized y coord +/- 3pixels
-        for (int xCoord = (int) -RADIUS; xCoord < RADIUS; xCoord+=3)
+        for (int xCoord = (int) -RADIUS + 3; xCoord < RADIUS; xCoord+=3)
         {
-            double x = xCoord;
-            double y = (Math.random()*8-4) + Math.sqrt(RADIUS * RADIUS - xCoord * xCoord);
-            shape.pushCoords(x, y);
+            shape.lineTo(xCoord + RADIUS, (Math.random()*8-4) + Math.sqrt(RADIUS * RADIUS - xCoord * xCoord) + RADIUS);
         }
 
         // Adds coordinates for bottom half of circle
         for (int xCoord = (int) -RADIUS; xCoord < RADIUS; xCoord+=3)
         {
-            double x = xCoord;
-            double y = (Math.random()*8-4) + Math.sqrt(RADIUS * RADIUS - xCoord * xCoord);
-            shape.pushCoords(-x, -y);
+            shape.lineTo(-xCoord + RADIUS, -((Math.random()*8-4) + Math.sqrt(RADIUS * RADIUS - xCoord * xCoord) + RADIUS));
         }
         return shape;
 //        for (int i = 0; i < 100; i++)
@@ -133,6 +133,7 @@ public class Asteroid extends GameObject {
      */
     public void update() {
         super.update();
+        rotationalVec.rotate(0.01);
         final double angle = rotationalVec.angle() * 0.02;
         // rotates the shape and image
         img.setRotate(angle);
@@ -145,8 +146,9 @@ public class Asteroid extends GameObject {
      *      Graphics2D, the jswing graphics object to draw unto
      */
     public void draw(Graphics2D g) {
-
+        g.setColor(new Color(106, 23, 166));
         img.paintIcon(g, (int) position.x, (int) position.y);
+        sp.paintWithShape(g);
     }
 
     @Override
