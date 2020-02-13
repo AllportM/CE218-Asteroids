@@ -1,8 +1,9 @@
 package Asteroids.game1;
 
+import Asteroids.utilities.ImgManag;
 import Asteroids.utilities.JEasyFrame;
+import Asteroids.utilities.ViewPort;
 
-import javax.swing.*;
 import java.awt.*;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -18,25 +19,29 @@ public class Game
     private int lifeGen;
     public int playerScore;
     public int lifes;
-    public static final int N_INITIAL_ASTEROIDS = 10;
+    public static final int N_INITIAL_ASTEROIDS = 50;
     public LinkedList<GameObject> gameObjects;
     Keys ctrl;
+    static ViewPort vp;
 
     /**
      * No arg constructor, instantiates BasicAsteroids and adds to asteroids list
      */
     public Game()
     {
+        ImgManag.init();
         gameObjects = new LinkedList<>();
         ctrl = new Keys();
         for (int i = 0; i < N_INITIAL_ASTEROIDS; i++)
         {
-            gameObjects.add(BasicAsteroid.makeRandomAsteroid());
+            gameObjects.add(Asteroid.makeRandomAsteroid());
         }
-        gameObjects.add(new Ship(ctrl));
+        Ship ps = new Ship(ctrl);
+        gameObjects.add(ps);
         playerScore = 0;
         lifes = 3;
-        lifeGen = 20000;
+        lifeGen = 10000;
+        vp = new ViewPort(0,0, ps);
     }
 
     /**
@@ -87,7 +92,7 @@ public class Game
      */
     public void update()
     {
-        // collision detection handling
+//         collision detection handling
         for (int i = 0; i < gameObjects.size() -1; i++)
         {
             for (int j = i+1; j < gameObjects.size(); j++)
@@ -113,6 +118,7 @@ public class Game
                     alive.add(shipObj.bullet);
                     shipObj.bullet = null;
                 }
+                vp.update(shipObj);
             }
 //            Runnable task = () ->
 //            {
@@ -124,10 +130,11 @@ public class Game
                 alive.add(obj);
             }
 
+            /*** following clauses are for if object is dead***/
             // sets data if item is an asteroid i.e score and children asteroids on death
-            else if (obj.getClass() == BasicAsteroid.class)
+            else if (obj.getClass() == Asteroid.class)
             {
-                BasicAsteroid obj1 = (BasicAsteroid) obj;
+                Asteroid obj1 = (Asteroid) obj;
                 // spawns children asteroids
                 if (obj.RADIUS > 20)
                 {
@@ -143,13 +150,16 @@ public class Game
             }
             else if( obj.getClass() == Ship.class && lifes > 0)
             {
-                alive.add(new Ship(ctrl));
+                // adds new ship to game if player has lives and updates viewport
+                Ship newPs = new Ship(ctrl);
+                alive.add(newPs);
+                vp.setShip(newPs);
                 lifes--;
             }
             if (playerScore / lifeGen == 1)
             {
                 lifes++;
-                lifeGen += 20000;
+                lifeGen += 10000;
             }
 //            };
 //            thread = new Thread(task);

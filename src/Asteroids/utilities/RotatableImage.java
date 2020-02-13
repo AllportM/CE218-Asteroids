@@ -1,18 +1,23 @@
 package Asteroids.utilities;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * RotatableImage's purpose is to extend awt Icon class, overriding functionality to paint the image associated
  * with to an instance, and adding functionality to rotate and scale the image
  */
-public class RotatableImage implements Icon {
+public class RotatableImage{
 
-    private ImageIcon img; // core image to be painted
-    private double degrees; // angle to be rotated by
-    private double scaleX; // scaling factor on x component
-    private double scaleY; // scaling factor on y component
+    public BufferedImage img;
+    public double degrees; // angle to be rotated by
+    public double scaleX; // scaling factor on x component
+    public double scaleY; // scaling factor on y component
 
     /**
      * Standard constructor associating image icon to filename argument
@@ -21,7 +26,13 @@ public class RotatableImage implements Icon {
      */
     public RotatableImage(String fname)
     {
-       img = new ImageIcon(fname);
+        try {
+            img = ImageIO.read(new File(fname));
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException(String.format("Failed to load Image '%s'", fname));
+        }
        degrees = 0;
        this.scaleX = this.scaleY = 1;
     }
@@ -56,10 +67,8 @@ public class RotatableImage implements Icon {
     }
 
     /**
-     * paintIcon's purpose is to overrid the superclasses paint method, painting a scaled and rotated
+     * paintIcon's purpose is to override the superclasses paint method, painting a scaled and rotated
      * image onto given graphics component
-     * @param c
-     *      JComponent, reference to the component to be painted on
      * @param g
      *      Graphics object, to be painted on
      * @param x
@@ -67,41 +76,36 @@ public class RotatableImage implements Icon {
      * @param y
      *      int, y positional value for 0,0
      */
-    @Override
-    public void paintIcon(Component c, Graphics g, int x, int y) {
-        Graphics2D g2 = (Graphics2D) g.create();
-        int width = img.getIconWidth()/2;
-        int height = img.getIconHeight()/2;
-        g2.translate(-width * scaleX + x, -height * scaleY + y); // sets 0,0 point to center of image
-                        // scaled by given scale factor, then adjusts adds center of screen
-        g2.rotate(degrees, width * scaleX, height * scaleY);
-        g2.scale(scaleX, scaleY);
-        img.paintIcon(c, g2, 0, 0);
-        g2.dispose();
-        scaleX = scaleY = 1;
+    public void paintIcon(Graphics2D g, int x, int y) {
+        AffineTransform init = g.getTransform();
+        AffineTransform at = new AffineTransform();
+        at.rotate(degrees, 0,0);
+        at.scale(scaleX, scaleY);
+        at.translate(-getWidth()/2, -getHeight()/2);
+        g.translate(x, y);
+        g.drawImage(img, at, null);
+        g.setTransform(init);
     }
 
-    @Override
-    public int getIconWidth() {
-        return img.getIconWidth();
+    public int getWidth() {
+        return img.getWidth();
     }
 
-    @Override
-    public int getIconHeight() {
-        return img.getIconHeight();
+    public int getHeight() {
+        return img.getHeight();
     }
 
     public double getRotatedWidth()
     {
         double sin = Math.sin(degrees);
         double cos = Math.cos(degrees);
-        return Math.round(img.getIconWidth() * cos - img.getIconHeight() * sin);
+        return Math.round(getWidth() * cos - getHeight() * sin);
     }
 
     public double getRotatedHeight()
     {
         double sin = Math.sin(degrees);
         double cos = Math.cos(degrees);
-        return (int) Math.round(img.getIconWidth() * sin + img.getIconHeight() * cos);
+        return (int) Math.round(getWidth() * sin + img.getHeight() * cos);
     }
 }
