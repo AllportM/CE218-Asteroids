@@ -61,22 +61,4 @@ public class Sprite {
         g.drawImage(img, at, null);
         g.setTransform(init);
     }
-
-    public void paintWithShape(Graphics2D g)
-    {
-        BufferedImage rotated = new BufferedImage(img.getWidth(), img.getHeight(), img.getType());
-        AffineTransform init = g.getTransform();
-        Shape initClip = g.getClip();
-        Graphics2D imgG = (Graphics2D) rotated.getGraphics();
-        AffineTransform at = new AffineTransform();
-        at.rotate(direction.angle() + 0.5 * Math.PI, img.getWidth()/2,img.getHeight()/2);
-//        at.translate(-img.getWidth()/2, -img.getHeight()/2);
-        imgG.setTransform(at);
-//        BasicStroke stroke = new BasicStroke(2f);
-        imgG.setClip(shape);
-//        imgG.fill(new Area(stroke.createStrokedShape(shape)));
-        imgG.drawImage(img, 0, 0, null);
-        g.drawImage(rotated, (int) position.x - img.getWidth()/2, (int) position.y - img.getHeight()/2, null);
-        g.setClip(initClip);
-    }
 }

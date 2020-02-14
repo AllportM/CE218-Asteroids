@@ -1,12 +1,13 @@
 package Asteroids.game1;
 
-import Asteroids.utilities.Refresh;
 import Asteroids.utilities.RotatableImage;
-import Asteroids.game1.Constants.*;
+import com.sun.corba.se.impl.orbutil.closure.Constant;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -62,24 +63,35 @@ public class BasicView extends JComponent {
          * so that 0,0 point is top right of image
          */
 
-
+//        BufferedImage miniMap = new BufferedImage(FRAME_WIDTH, FRAME_WIDTH, bg.getType());
+//        Graphics2D miniG = (Graphics2D) miniMap.getGraphics();
+//        AffineTransform miniAt = new AffineTransform();
+//        miniAt.translate(game.vp.getX(), game.vp.getY());
+//        miniG.setTransform(miniAt);
         g.translate(game.vp.getX(), game.vp.getY());
         g.drawImage(bg, 0,0, null);
         synchronized (Game.class)
         {
-            for (Refresh obj : game.gameObjects)
+            for (GameObject obj : game.gameObjects)
             {
-                obj.draw(g);
+                    obj.draw(g);
+//                    miniG.setColor(Color.RED);
+//                    miniG.draw(new Rectangle((int) obj.position.x - 5, (int) obj.position.y - 5, 10, 10));
             }
         }
         g.translate(-game.vp.getX(), -game.vp.getY());
+//        Shape initClip = g.getClip();
+//        g.setClip(new Ellipse2D.Double(0,0,300,300));
+//        g.scale((float)300/FRAME_WIDTH, (float) 300 / FRAME_HEIGHT);
+//        g.drawImage(miniMap, 0, 0, null);
+//        g.setClip(initClip);
 //        g.setColor(Color.cyan);
-//        g.setFont(new Font("Bahnschrift Light", Font.BOLD, 20));
-//        String score = "Score: " + game.playerScore;
-//        int fontW = g.getFontMetrics().stringWidth(score);
-//        g.drawString(score, FRAME_WIDTH - fontW - 50, 20);
-//        String lifes = "Lifes: " + game.lifes;
-//        g.drawString(lifes, 0, 20);
+        g.setFont(new Font("Bahnschrift Light", Font.BOLD, 20));
+        String score = "Score: " + game.playerScore;
+        int fontW = g.getFontMetrics().stringWidth(score);
+        g.drawString(score, FRAME_WIDTH - fontW - 50, 20);
+        String lifes = "Lifes: " + game.lifes;
+        g.drawString(lifes, 0, 20);
     }
 
     @Override

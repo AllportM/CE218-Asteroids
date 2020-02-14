@@ -95,7 +95,7 @@ public class Ship extends GameObject {
 
     public void mkBullet()
     {
-        bullet = new Bullet(this);
+        bullet = new Bullet(this, new Vector2D(direction));
     }
 
     /**

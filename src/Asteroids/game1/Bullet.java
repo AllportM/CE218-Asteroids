@@ -1,6 +1,8 @@
 package Asteroids.game1;
 
+import Asteroids.utilities.ImgManag;
 import Asteroids.utilities.RotatableImage;
+import Asteroids.utilities.Sprite;
 import Asteroids.utilities.Vector2D;
 
 import java.awt.*;
@@ -11,8 +13,10 @@ public class Bullet extends GameObject {
     private double ttl = 1;
     private int initSpd = 600;
     private RotatableImage sprite1;
+    private Sprite sp;
     private int width, height;
     private double bulletTime;
+    private Vector2D direction;
 
     // bullets
 
@@ -20,16 +24,18 @@ public class Bullet extends GameObject {
         return bullet;
     }
 
-    public Bullet(Ship ship) {
+    public Bullet(Ship ship, Vector2D direction) {
         //calls super constructor with new copied and scaled position and velocity vector as args
         super(ship.position.copy(), ship.velocity.copy(),
                 2.5);
         this.width = 10;
         this.height = 80;
+        this.direction = direction;
         // sets velocity to ships + init speed
         this.velocity = Vector2D.polar(ship.direction.angle(), (ship.velocity.mag() + initSpd));
         // sets bullets position to 5mm outside of ships radius
         this.position.add(Vector2D.polar(ship.direction.angle(), ship.RADIUS  + 45));
+        sp = new Sprite(position, direction, width, height, ImgManag.getImage("LBullet1in.png"));
         sprite1 = RotatableImage.builder("resources/LBullet1in.png");
         sprite1.setRotate(ship.shipRot.angle() - Math.PI*1.5);
         bulletTime = System.currentTimeMillis();
@@ -55,6 +61,6 @@ public class Bullet extends GameObject {
     @Override
     public void draw(Graphics2D g)
     {
-        sprite1.paintIcon(g, (int) position.x, (int) position.y);
+        sp.paint(g);
     }
 }

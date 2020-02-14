@@ -4,7 +4,10 @@ import Asteroids.utilities.ImgManag;
 import Asteroids.utilities.JEasyFrame;
 import Asteroids.utilities.ViewPort;
 
+import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -20,6 +23,8 @@ public class Game
     public int playerScore;
     public int lifes;
     public static final int N_INITIAL_ASTEROIDS = 50;
+    public static long startOfGame;
+    public boolean isEnd = false;
     public LinkedList<GameObject> gameObjects;
     Keys ctrl;
     static ViewPort vp;
@@ -55,34 +60,38 @@ public class Game
         BasicView view = new BasicView(game);
         new JEasyFrame(view, "Basic Game").addKeyListener(game.ctrl);
 //         below may improve game graphics at later date
-        Graphics2D g = (Graphics2D) view.getGraphics();
-        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        g.setRenderingHint(RenderingHints.KEY_DITHERING,
-                RenderingHints.VALUE_DITHER_ENABLE);
-        g.setRenderingHint(RenderingHints.KEY_RENDERING,
-                RenderingHints.VALUE_RENDER_QUALITY);
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
-        g.setRenderingHint(RenderingHints.KEY_TEXT_LCD_CONTRAST, 100);
-        g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
-                RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-        g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION,
-                RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
-        g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING,
-                RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-        g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,
-                RenderingHints.VALUE_STROKE_PURE);
-        while (true)
-        {
+//        Graphics2D g = (Graphics2D) view.getGraphics();
+//        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+//                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+//        g.setRenderingHint(RenderingHints.KEY_DITHERING,
+//                RenderingHints.VALUE_DITHER_ENABLE);
+//        g.setRenderingHint(RenderingHints.KEY_RENDERING,
+//                RenderingHints.VALUE_RENDER_QUALITY);
+//        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+//                RenderingHints.VALUE_ANTIALIAS_ON);
+//        g.setRenderingHint(RenderingHints.KEY_TEXT_LCD_CONTRAST, 100);
+//        g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
+//                RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+//        g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION,
+//                RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+//        g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING,
+//                RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+//        g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,
+//                RenderingHints.VALUE_STROKE_PURE);
+        Timer repaintTimer = new Timer(Constants.DELAY, new
+                ActionListener(){public void actionPerformed(ActionEvent ev) {
+                    view.repaint();}});
+        repaintTimer.start();
+        game.startOfGame = System.currentTimeMillis();
+        int missedFrames = 0;
+        while (!game.isEnd) {
+            long t0 = System.currentTimeMillis();
             game.update();
-            view.repaint();
-	    // makes games run smoothly on linux due to inefficient graphics scheduling?
-	    if (System.getProperty("os.name").equals("Linux"))
-	    {
-		Toolkit.getDefaultToolkit().sync();
-	    }
-            Thread.sleep(DELAY);
+            long t1 = System.currentTimeMillis();
+            long timeout = Constants.DELAY - (t1 - t0);
+            if (timeout > 0)
+                Thread.sleep(timeout);
+            else missedFrames++;
         }
     }
 

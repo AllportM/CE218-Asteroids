@@ -1,13 +1,12 @@
 package Asteroids.game1;
 
-import Asteroids.utilities.Refresh;
 import Asteroids.utilities.Vector2D;
 
 import java.awt.*;
 
 import static Asteroids.game1.Constants.*;
 
-public abstract class GameObject implements Refresh {
+public abstract class GameObject{
 
     public Vector2D position;
     public Vector2D velocity;

@@ -29,27 +29,9 @@ public class Asteroid extends GameObject {
     public Asteroid(double x, double y, double vx, double vy, int rad) {
         super(new Vector2D(x, y), new Vector2D(vx, vy), rad);
         rotationalVec = (new Vector2D(vx, vy));
-        String text = "asttext" + (int) (Math.random() * 9) + ".png";
+        String text = String.format("Ast%d.png", (int) (Math.random() * 7) + 1);
         // sets sprite accordingly to radius of asteroid with random picture
-        switch (rad)
-        {
-            case 20:
-                img = new RotatableImage(String.format("resources/Ast%d.png", (int) (Math.random() * 7) + 1));
-                img.setScale((double) 40 / img.getWidth(), (double) 48 / img.getHeight());
-                sp = new Sprite(position, rotationalVec, 40, 40, ImgManag.getImage(text), makeShape());
-                break;
-            case 33:
-                img = new RotatableImage(String.format("resources/Ast%d.png", (int) (Math.random() * 7) + 1));
-                img.setScale((double) 66 / img.getWidth(), (double) 66 / img.getHeight());
-                sp = new Sprite(position, rotationalVec, 66, 66, ImgManag.getImage(text), makeShape());
-                break;
-            case 42:
-            default:
-                img = new RotatableImage(String.format("resources/Ast%d.png", (int) (Math.random() * 7) + 1));
-                img.setScale((double) 84 / img.getWidth(), (double) 84 / img.getHeight());
-                sp = new Sprite(position, rotationalVec, 82, 82, ImgManag.getImage(text), makeShape());
-                break;
-        }
+        sp = new Sprite(position, rotationalVec, rad*2, rad*2, ImgManag.getImage(text));
     }
 
     public void hit()
@@ -97,46 +79,12 @@ public class Asteroid extends GameObject {
     }
 
     /**
-     * getShapeCord's purpose is to generate x/y coordinates for a slightly random shape given it's radius
-     * @return
-     *      int[][], [0][..] and [1][..] being randomly generated x and y coordinates respectively
-     */
-    public Path2D makeShape()
-    {
-        Path2D shape = new Path2D.Double();
-        shape.moveTo(RADIUS, (Math.random()*8-4) + Math.sqrt(RADIUS * RADIUS - RADIUS * RADIUS));
-        // init shape
-//        RotatableShape shape = new RotatableShape(((int) RADIUS * 2) - (2* ((int) RADIUS / 3)));
-//        texture = new LinkedList<>();
-
-        // Adds coordinates for top half of circle, slightly randomized y coord +/- 3pixels
-        for (int xCoord = (int) -RADIUS + 3; xCoord < RADIUS; xCoord+=3)
-        {
-            shape.lineTo(xCoord + RADIUS, (Math.random()*8-4) + Math.sqrt(RADIUS * RADIUS - xCoord * xCoord) + RADIUS);
-        }
-
-        // Adds coordinates for bottom half of circle
-        for (int xCoord = (int) -RADIUS; xCoord < RADIUS; xCoord+=3)
-        {
-            shape.lineTo(-xCoord + RADIUS, -((Math.random()*8-4) + Math.sqrt(RADIUS * RADIUS - xCoord * xCoord) + RADIUS));
-        }
-        return shape;
-//        for (int i = 0; i < 100; i++)
-//        {
-//            texture.add(new Vector2D(Math.random()*50 - RADIUS, Math.random()*50-RADIUS));
-//        }
-    }
-
-    /**
      * update's purpose is to update the asteroids position given it's velocity
      * and change in time DT
      */
     public void update() {
         super.update();
         rotationalVec.rotate(0.01);
-        final double angle = rotationalVec.angle() * 0.02;
-        // rotates the shape and image
-        img.setRotate(angle);
     }
 
     /**
@@ -146,9 +94,7 @@ public class Asteroid extends GameObject {
      *      Graphics2D, the jswing graphics object to draw unto
      */
     public void draw(Graphics2D g) {
-        g.setColor(new Color(106, 23, 166));
-        img.paintIcon(g, (int) position.x, (int) position.y);
-        sp.paintWithShape(g);
+        sp.paint(g);
     }
 
     @Override
