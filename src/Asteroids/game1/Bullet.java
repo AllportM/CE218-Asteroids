@@ -11,6 +11,7 @@ public class Bullet extends GameObject {
     private double ttl = 1;
     private int initSpd = 600;
     private Sprite sp;
+    private Sprite sp2;
     private int width, height;
     private double bulletTime;
     private Vector2D direction;
@@ -33,6 +34,7 @@ public class Bullet extends GameObject {
         // sets bullets position to 5mm outside of ships radius
         this.position.add(Vector2D.polar(ship.direction.angle(), ship.RADIUS  + 45));
         sp = new Sprite(position, direction, width, height, ImgManag.getImage("LBullet1in.png"));
+        sp2 = new Sprite(position, direction, width, height, ImgManag.getImage("Untitled-5.png"));
         bulletTime = System.currentTimeMillis();
     }
 
@@ -57,5 +59,6 @@ public class Bullet extends GameObject {
     public void draw(Graphics2D g)
     {
         sp.paint(g);
+        sp2.paint(g);
     }
 }

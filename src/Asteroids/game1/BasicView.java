@@ -20,7 +20,7 @@ public class BasicView extends JComponent {
     private Game game; // reference to the game instance
 
     /**
-     * Standard instance constructore, initializes game reference
+     * Standard instance constructor, initializes game reference
      * @param game
      *      instance of the game object
      */
@@ -53,36 +53,41 @@ public class BasicView extends JComponent {
          the 'image' is drawn onto the actual game graphics.
          */
         // Creates affine transform for minimap and inits minimap variables
+
+        // paint onto minimap here (doodey circles)
+//        miniG.setColor(Color.RED);
+//        miniG.fill(new Ellipse2D.Double(0, 0, minimapW,minimapH));
+        // creates a new image and uses its graphics to draw objects onto this image
+        BufferedImage miniMap = new BufferedImage(FRAME_WIDTH, FRAME_WIDTH, bg.getType());
+        Graphics2D miniG = (Graphics2D) miniMap.getGraphics();
         float minimapW = 300;
         float minimapH = 300;
-        float radarRange = 8;
+        float radarRange = 10;
         AffineTransform miniAt = new AffineTransform();
         miniAt.translate(minimapW/2, minimapH/2);
         miniAt.scale(1/radarRange, 1/radarRange);
         miniAt.translate(game.vp.getX() - FRAME_WIDTH/2, game.vp.getY()
                 - FRAME_HEIGHT/2);
-        // paint onto minimap here (doodey circles)
+        miniG.setColor(new Color(31,0,97));
+        miniG.fill(new Rectangle(0, 0, FRAME_WIDTH, FRAME_HEIGHT));
+        miniG.setTransform(miniAt);
 
-        // creates a new image and uses its graphics to draw objects onto this image
-
-        synchronized (Game.class) {
-            for (GameObject obj : game.gameObjects) {
+        synchronized (Game.class)
+        {
+            for (GameObject obj : game.gameObjects)
+            {
                 g.setTransform(viewPort);
                 obj.draw(g);
                 g.setColor(Color.RED);
+                obj.draw(miniG);
             }
-            g.setTransform(initG);
-            g.setColor(Color.BLACK);
-            g.fill(new Ellipse2D.Double(0, 0, minimapW, minimapH));
-            g.setClip(new Ellipse2D.Double(0, 0, minimapW, minimapH));
-            g.setTransform(miniAt);
-            for (GameObject obj : game.gameObjects) {
-                obj.draw(g);
-            }
-
-            g.setClip(initClip);
-            g.setTransform(initG);
         }
+        g.setTransform(initG);
+
+
+        g.setClip(new Ellipse2D.Double(0, 0, minimapW,minimapH));
+        g.drawImage(miniMap, 0, 0, null);
+        g.setClip(initClip);
 
 
 //        AffineTransform minimapToView = new AffineTransform();
