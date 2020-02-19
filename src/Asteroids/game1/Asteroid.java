@@ -12,8 +12,6 @@ public class Asteroid extends GameObject {
     private Vector2D rotationalVec;
     public Asteroid[] child = new Asteroid[3];
     public boolean killedByPlayer = false;
-
-    private RotatableImage img;
     private Sprite sp;
 
 //    private LinkedList<Vector2D> texture; // old rotating texture

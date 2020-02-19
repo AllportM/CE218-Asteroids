@@ -1,18 +1,15 @@
 package Asteroids.game1;
 
 import Asteroids.utilities.ImgManag;
-import Asteroids.utilities.RotatableImage;
 import Asteroids.utilities.Sprite;
 import Asteroids.utilities.Vector2D;
 
 import java.awt.*;
-import java.util.LinkedList;
 
 public class Bullet extends GameObject {
     private static Bullet bullet = null;
     private double ttl = 1;
     private int initSpd = 600;
-    private RotatableImage sprite1;
     private Sprite sp;
     private int width, height;
     private double bulletTime;
@@ -36,8 +33,6 @@ public class Bullet extends GameObject {
         // sets bullets position to 5mm outside of ships radius
         this.position.add(Vector2D.polar(ship.direction.angle(), ship.RADIUS  + 45));
         sp = new Sprite(position, direction, width, height, ImgManag.getImage("LBullet1in.png"));
-        sprite1 = RotatableImage.builder("resources/LBullet1in.png");
-        sprite1.setRotate(ship.shipRot.angle() - Math.PI*1.5);
         bulletTime = System.currentTimeMillis();
     }
 

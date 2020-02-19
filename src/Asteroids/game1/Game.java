@@ -27,7 +27,7 @@ public class Game
     public boolean isEnd = false;
     public LinkedList<GameObject> gameObjects;
     Keys ctrl;
-    static ViewPort vp;
+    public static ViewPort vp;
 
     /**
      * No arg constructor, instantiates BasicAsteroids and adds to asteroids list
@@ -35,6 +35,9 @@ public class Game
     public Game()
     {
         ImgManag.init();
+        playerScore = 0;
+        lifes = 3;
+        lifeGen = 10000;
         gameObjects = new LinkedList<>();
         ctrl = new Keys();
         for (int i = 0; i < N_INITIAL_ASTEROIDS; i++)
@@ -43,9 +46,6 @@ public class Game
         }
         Ship ps = new Ship(ctrl);
         gameObjects.add(ps);
-        playerScore = 0;
-        lifes = 3;
-        lifeGen = 10000;
         vp = new ViewPort(0,0, ps);
     }
 

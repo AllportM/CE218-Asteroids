@@ -30,8 +30,6 @@ public class Ship extends GameObject {
     public Vector2D shipRot;
     private Sprite mainShip;
     private Sprite thrustSp;
-    private RotatableImage ship; // texture for ship
-    private RotatableImage thrustImg;
 
     // controller for action
     private Controller ctrl;
@@ -44,8 +42,6 @@ public class Ship extends GameObject {
         this.ctrl = ctrl;
         direction = new Vector2D(0, -20);
         shipRot = new Vector2D(direction);
-        ship = new RotatableImage("resources/Ship.png");
-        thrustImg = new RotatableImage("resources/ShipThrust.png");
         bulletTime = System.currentTimeMillis();
         applyInv(3);
         mainShip = new Sprite(position, direction, RADIUS * 2, RADIUS * 2, ImgManag.getImage("Ship.png")
@@ -142,13 +138,13 @@ public class Ship extends GameObject {
         // updates bulletTime and if fireRate's time has passed, 1/rate seconds, then ship can
         // fire another bullet
         long now = System.currentTimeMillis();
-        if (act.shoot && now - bulletTime >= 1000/fireRate)
+        if (act.shoot && now - bulletTime >= 1000f/fireRate)
         {
             bulletTime = now;
             mkBullet();
         }
 
-        if (inv > 0 && now - invTime >= 1000 / 0.5) {
+        if (inv > 0 && now - invTime >= 1000f / 0.5f) {
             System.out.println(now - invTime);
             inv = 0;
         }

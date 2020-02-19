@@ -1,5 +1,6 @@
 package Asteroids.utilities;
 
+import Asteroids.game1.Game;
 import com.sun.corba.se.impl.orbutil.graph.Graph;
 
 import javax.sound.sampled.Clip;
@@ -47,18 +48,25 @@ public class Sprite {
         BufferedImage scaled = new BufferedImage((int) (img.getWidth() * scalex),
                 (int) (img.getHeight() * scaley), img.getType());
         Graphics2D g = (Graphics2D) scaled.getGraphics();
-        g.scale(scalex, scaley);
+        AffineTransform initG = g.getTransform();
+        g.setTransform(AffineTransform.getScaleInstance(scalex, scaley));
+//        g.scale(scalex, scaley);
         g.drawImage(img, 0, 0, null);
+        g.setTransform(initG);
         img = scaled;
     }
 
     public void paint(Graphics2D g) {
         AffineTransform init = g.getTransform();
-        AffineTransform at = new AffineTransform();
-        at.rotate(direction.angle() + 0.5 * Math.PI, 0,0);
-        at.translate(-img.getWidth()/2, -img.getHeight()/2);
-        g.translate(position.x, position.y);
-        g.drawImage(img, at, null);
+        AffineTransform imgRotatedAT = new AffineTransform();
+        // sets images affine transform such that resultant image will be rotated about center point
+        imgRotatedAT.rotate(direction.angle() + 0.5 * Math.PI, 0,0);
+        imgRotatedAT.translate((float) -img.getWidth()/2, (float) -img.getHeight()/2);
+
+        // uses translate directly on graphics given affine transforms are not commutative and
+        // BasicView already applies a transform to fix to ship
+        g.translate((float) (position.x), (float) (position.y));
+        g.drawImage(img, imgRotatedAT, null);
         g.setTransform(init);
     }
 }
