@@ -78,9 +78,9 @@ public class Game
 //                RenderingHints.VALUE_COLOR_RENDER_QUALITY);
 //        g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,
 //                RenderingHints.VALUE_STROKE_PURE);
-        Timer repaintTimer = new Timer(Constants.DELAY, new
-                ActionListener(){public void actionPerformed(ActionEvent ev) {
-                    view.repaint();}});
+
+        // Game loop
+        Timer repaintTimer = new Timer(Constants.DELAY, e -> view.repaint());
         repaintTimer.start();
         game.startOfGame = System.currentTimeMillis();
         int missedFrames = 0;
@@ -101,7 +101,7 @@ public class Game
      */
     public void update()
     {
-//         collision detection handling
+        // collision detection handling
         for (int i = 0; i < gameObjects.size() -1; i++)
         {
             for (int j = i+1; j < gameObjects.size(); j++)
@@ -114,69 +114,68 @@ public class Game
                 }
             }
         }
-        LinkedList<GameObject> alive = new LinkedList<>();
-        for (Iterator<GameObject> it = gameObjects.iterator(); it.hasNext();)
-        {
-            GameObject obj = it.next();
-            // spawns bullet from ship if fires
-            if (obj instanceof Ship)
-            {
-                Ship shipObj = (Ship) obj;
-                if (shipObj.bullet != null)
-                {
-                    alive.add(shipObj.bullet);
-                    shipObj.bullet = null;
-                }
-                vp.update(shipObj);
-            }
-//            Runnable task = () ->
-//            {
-            obj.update();
 
-            // adds live objects to alive list in order to remove dead ones
-            if (obj.alive)
-            {
-                alive.add(obj);
-            }
-
-            /*** following clauses are for if object is dead***/
-            // sets data if item is an asteroid i.e score and children asteroids on death
-            else if (obj.getClass() == Asteroid.class)
-            {
-                Asteroid obj1 = (Asteroid) obj;
-                // spawns children asteroids
-                if (obj.RADIUS > 20)
-                {
-                    for (int i = 0; i < 3; i++)
-                    {
-                        alive.add(obj1.child[i]);
-                    }
-                }
-                if (obj1.killedByPlayer)
-                {
-                    playerScore += 100;
-                }
-            }
-            else if( obj.getClass() == Ship.class && lifes > 0)
-            {
-                // adds new ship to game if player has lives and updates viewport
-                Ship newPs = new Ship(ctrl);
-                alive.add(newPs);
-                vp.setShip(newPs);
-                lifes--;
-            }
-            if (playerScore / lifeGen == 1)
-            {
-                lifes++;
-                lifeGen += 10000;
-            }
-//            };
-//            thread = new Thread(task);
-//            thread.start();
-        }
 
         synchronized (Game.class)
         {
+            LinkedList<GameObject> alive = new LinkedList<>();
+            for (Iterator<GameObject> it = gameObjects.iterator(); it.hasNext();)
+            {
+                GameObject obj = it.next();
+                // spawns bullet from ship if fires
+                if (obj instanceof Ship)
+                {
+                    Ship shipObj = (Ship) obj;
+                    if (shipObj.bullet != null)
+                    {
+                        alive.add(shipObj.bullet);
+                        shipObj.bullet = null;
+                    }
+                    vp.update(shipObj);
+                }
+                obj.update();
+
+                // adds live objects to alive list in order to remove dead ones
+                if (obj.alive)
+                {
+                    alive.add(obj);
+                }
+
+                /*** following clauses are for if object is dead***/
+                // sets data if item is an asteroid i.e score and children asteroids on death
+                else if (obj.getClass() == Asteroid.class)
+                {
+                    Asteroid obj1 = (Asteroid) obj;
+                    // spawns children asteroids
+                    if (obj.RADIUS > 20)
+                    {
+                        for (int i = 0; i < 3; i++)
+                        {
+                            alive.add(obj1.child[i]);
+                        }
+                    }
+                    if (obj1.killedByPlayer)
+                    {
+                        playerScore += 100;
+                    }
+                }
+                else if( obj.getClass() == Ship.class && lifes > 0)
+                {
+                    // adds new ship to game if player has lives and updates viewport
+                    Ship newPs = new Ship(ctrl);
+                    alive.add(newPs);
+                    vp.setShip(newPs);
+                    lifes--;
+                }
+                if (playerScore / lifeGen == 1)
+                {
+                    lifes++;
+                    lifeGen += 10000;
+                }
+    //            };
+    //            thread = new Thread(task);
+    //            thread.start();
+            }
             gameObjects.clear();
             gameObjects.addAll(alive);
         }

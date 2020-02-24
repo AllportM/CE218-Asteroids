@@ -65,7 +65,9 @@ public class Sprite {
 
         // uses translate directly on graphics given affine transforms are not commutative and
         // BasicView already applies a transform to fix to ship
-        g.translate((float) (position.x), (float) (position.y));
+        AffineTransform gAt = g.getTransform();
+        gAt.translate((float) (position.x), (float) (position.y));
+        g.setTransform(gAt);
         g.drawImage(img, imgRotatedAT, null);
         g.setTransform(init);
     }

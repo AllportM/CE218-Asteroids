@@ -27,7 +27,6 @@ public class Ship extends GameObject {
     // direction thrust is applied
     // unit vefor representing angle by which ship rotated
     public Vector2D direction;
-    public Vector2D shipRot;
     private Sprite mainShip;
     private Sprite thrustSp;
 
@@ -41,7 +40,6 @@ public class Ship extends GameObject {
                 new Vector2D(0, 0), 34);
         this.ctrl = ctrl;
         direction = new Vector2D(0, -20);
-        shipRot = new Vector2D(direction);
         bulletTime = System.currentTimeMillis();
         applyInv(3);
         mainShip = new Sprite(position, direction, RADIUS * 2, RADIUS * 2, ImgManag.getImage("Ship.png")

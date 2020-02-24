@@ -8,8 +8,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 
-import static Asteroids.game1.Constants.FRAME_HEIGHT;
-import static Asteroids.game1.Constants.FRAME_WIDTH;
+import static Asteroids.game1.Constants.*;
 
 /**
  * BasicView's purpose is to paint the main background view for the game
@@ -38,42 +37,61 @@ public class BasicView extends JComponent {
     @Override
     public void paintComponent(Graphics g0)
     {
-        Graphics2D g = (Graphics2D) g0;
-        AffineTransform initG = g.getTransform();
-        Shape initClip = g.getClip();
-        Color initCol = g.getColor();
-        g.drawImage(bg, (int) game.vp.getX(), (int) game.vp.getY(), null);
-
-        // used to translate screen to top left of players position (
-        AffineTransform viewPort = new AffineTransform();
-        viewPort.translate((float) game.vp.getX(), (float) game.vp.getY());
-
-        /* following relates to minimap. This is achieved by creating a new image, attaining its
-         graphics object, and drawing objects directly onto that, and then after all is drawn
-         the 'image' is drawn onto the actual game graphics.
-         */
-        // Creates affine transform for minimap and inits minimap variables
-
-        // paint onto minimap here (doodey circles)
-//        miniG.setColor(Color.RED);
-//        miniG.fill(new Ellipse2D.Double(0, 0, minimapW,minimapH));
-        // creates a new image and uses its graphics to draw objects onto this image
-        BufferedImage miniMap = new BufferedImage(FRAME_WIDTH, FRAME_WIDTH, bg.getType());
-        Graphics2D miniG = (Graphics2D) miniMap.getGraphics();
-        float minimapW = 300;
-        float minimapH = 300;
-        float radarRange = 10;
-        AffineTransform miniAt = new AffineTransform();
-        miniAt.translate(minimapW/2, minimapH/2);
-        miniAt.scale(1/radarRange, 1/radarRange);
-        miniAt.translate(game.vp.getX() - FRAME_WIDTH/2, game.vp.getY()
-                - FRAME_HEIGHT/2);
-        miniG.setColor(new Color(31,0,97));
-        miniG.fill(new Rectangle(0, 0, FRAME_WIDTH, FRAME_HEIGHT));
-        miniG.setTransform(miniAt);
-
+        // whole drawing process synchronized so that all updates have been processed before
+        // any rendering commences (reduces any gittering from painting old positional values)
         synchronized (Game.class)
         {
+            Graphics2D g = (Graphics2D) g0;
+            AffineTransform initG = g.getTransform();
+            Shape initClip = g.getClip();
+            Color initCol = g.getColor();
+            g.drawImage(bg, (int) game.vp.getX(), (int) game.vp.getY(), null);
+
+            // used to translate screen to top left of players position (
+            AffineTransform viewPort = new AffineTransform();
+            viewPort.translate((float) game.vp.getX(), (float) game.vp.getY());
+            // Creates affine transform for minimap and inits minimap variables
+
+
+            /*
+             * Next block up until game object loop deals with minimap programming
+             */
+
+            //inits variables for positional values
+            double minimapW = 300;
+            double minimapH = 300;
+            double radarRange = 5;
+            AffineTransform miniAt = new AffineTransform();
+            // sets minimaps size in relation to visible space after scaling
+            BufferedImage miniMap = new BufferedImage(FRAME_WIDTH,
+                    FRAME_HEIGHT, bg.getType());
+            Graphics2D miniG = (Graphics2D) miniMap.getGraphics();
+
+            // draws edge of map indicators (lines) onto minimap before any rendering done
+            miniG.setColor(Color.RED);
+            for (int i = 0; i < FRAME_WIDTH; i += 20)
+            {
+                miniG.drawLine(0, i, i, 0);
+                miniG.drawLine(i, 0, 0, i);
+            }
+
+            // sets transform up to edge of visible screen from ship using viewport
+            miniAt = new AffineTransform();
+            miniG.setTransform(miniAt);
+            miniAt.translate(minimapW / 2, minimapH / 2);
+            miniAt.scale(1 / radarRange, 1 / radarRange);
+            miniAt.translate(game.vp.getX() - FRAME_WIDTH / 2, game.vp.getY()
+                    - FRAME_HEIGHT / 2);
+            miniG.setTransform(miniAt);
+
+            // fills visible screen background onto minimap
+            miniG.setColor(new Color(31, 0, 97));
+            miniG.fill(new Rectangle(0, 0, WORLD_WIDTH,
+                    WORLD_HEIGHT));
+
+
+            // draws game objects by calling draw methods onto both current graphics object and
+            // minimaps graphics objects
             for (GameObject obj : game.gameObjects)
             {
                 g.setTransform(viewPort);
@@ -81,33 +99,25 @@ public class BasicView extends JComponent {
                 g.setColor(Color.RED);
                 obj.draw(miniG);
             }
+            // resets transform on graphis
+            g.setTransform(initG);
+
+            // draws the minimap onto window
+            g.setClip(new Ellipse2D.Double(0, 0, minimapW, minimapH));
+            g.drawImage(miniMap, 0, 0, null);
+            g.setClip(initClip);
+
+            // draws scores and lifes
+            String score, lifes;
+            g.setColor(Color.cyan);
+            g.setFont(new Font("Bahnschrift Light", Font.BOLD, 20));
+            score = "Score: " + game.playerScore;
+            lifes = "Lifes: " + game.lifes;
+            int fontW = g.getFontMetrics().stringWidth(score);
+            g.drawString(score, FRAME_WIDTH - fontW - 50, 20);
+            g.drawString(lifes, 0, 20);
+            g.setColor(initCol);
         }
-        g.setTransform(initG);
-
-
-        g.setClip(new Ellipse2D.Double(0, 0, minimapW,minimapH));
-        g.drawImage(miniMap, 0, 0, null);
-        g.setClip(initClip);
-
-
-//        AffineTransform minimapToView = new AffineTransform();
-//        minimapToView.translate(FRAME_WIDTH/2 , FRAME_HEIGHT / 2);
-//        g.setTransform(minimapToView);
-//        g.drawImage(miniMap, 0, 0, null);
-//        g.setClip(initClip);
-//        g.setTransform(initG);
-
-        // draws scores and lifes
-        String score, lifes;
-        g.setColor(Color.cyan);
-        g.setFont(new Font("Bahnschrift Light", Font.BOLD, 20));
-        score = "Score: " + game.playerScore;
-        lifes = "Lifes: " + game.lifes;
-        int fontW = g.getFontMetrics().stringWidth(score);
-        g.drawString(score, FRAME_WIDTH - fontW - 50, 20);
-        g.drawString(lifes, 0, 20);
-        g.drawString("SUPSUP", 0 , 0);
-        g.setColor(initCol);
 
     }
 
