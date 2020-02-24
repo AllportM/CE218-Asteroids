@@ -147,7 +147,7 @@ public class Game
                 {
                     Asteroid obj1 = (Asteroid) obj;
                     // spawns children asteroids
-                    if (obj.RADIUS > 20)
+                    if (obj1.child[0] != null)
                     {
                         for (int i = 0; i < 3; i++)
                         {

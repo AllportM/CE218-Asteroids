@@ -17,7 +17,7 @@ public class Sprite {
     BufferedImage img;
     double width;
     double height;
-    private Path2D shape;
+    Path2D shape;
 
     public Sprite(Vector2D position, Vector2D direction, double width, double height, BufferedImage imname)
     {
@@ -41,7 +41,7 @@ public class Sprite {
         scaleImage();
     }
 
-    private void scaleImage()
+    void scaleImage()
     {
         double scalex = width / img.getWidth();
         double scaley = height / img.getHeight();
