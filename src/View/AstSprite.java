@@ -1,4 +1,6 @@
-package Asteroids.utilities;
+package View;
+
+import Model.Vector2D;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;

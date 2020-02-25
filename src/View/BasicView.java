@@ -1,6 +1,8 @@
-package Asteroids.game1;
+package View;
 
-import Asteroids.utilities.ImgManag;
+import Controller.Game;
+import Model.Constants;
+import Model.GameObject;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,7 +10,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 
-import static Asteroids.game1.Constants.*;
+import static Model.Constants.*;
 
 /**
  * BasicView's purpose is to paint the main background view for the game

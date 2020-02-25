@@ -1,10 +1,8 @@
-package Asteroids.game1;
-
-import Asteroids.utilities.Vector2D;
+package Model;
 
 import java.awt.*;
 
-import static Asteroids.game1.Constants.*;
+import static Model.Constants.*;
 
 public abstract class GameObject{
 
@@ -12,7 +10,7 @@ public abstract class GameObject{
     public Vector2D velocity;
     protected double RADIUS;
     public int[] grid;
-    boolean alive;
+    public boolean alive;
     public GameObject(Vector2D position, Vector2D velocity, double RADIUS)
     {
         this.position = position;

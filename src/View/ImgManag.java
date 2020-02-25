@@ -1,4 +1,4 @@
-package Asteroids.utilities;
+package View;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

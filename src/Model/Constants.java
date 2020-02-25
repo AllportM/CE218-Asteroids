@@ -1,4 +1,4 @@
-package Asteroids.game1;
+package Model;
 
 import java.awt.*;
 

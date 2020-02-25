@@ -1,17 +1,18 @@
-package Asteroids.game1;
+package Controller;
 
-import Asteroids.utilities.ImgManag;
-import Asteroids.utilities.JEasyFrame;
-import Asteroids.utilities.ViewPort;
+import View.BasicView;
+import Model.Constants;
+import View.ImgManag;
+import View.JEasyFrame;
+import Model.ViewPort;
+import Model.Asteroid;
+import Model.GameObject;
+import Model.Ship;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Iterator;
 import java.util.LinkedList;
-
-import static Asteroids.game1.Constants.DELAY;
 
 /**
  * Game's purpose is to instantiate the frame, view, and game containing main
@@ -131,7 +132,6 @@ public class Game
                         alive.add(shipObj.bullet);
                         shipObj.bullet = null;
                     }
-                    vp.update(shipObj);
                 }
                 obj.update();
 

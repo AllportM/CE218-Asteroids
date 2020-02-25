@@ -1,9 +1,9 @@
-package Asteroids.utilities;
+package Model;
 
-import Asteroids.game1.GameObject;
-import Asteroids.game1.Ship;
+import Model.GameObject;
+import Model.Ship;
 
-import static Asteroids.game1.Constants.*;
+import static Model.Constants.*;
 
 public class ViewPort {
     private double x, y;
@@ -16,7 +16,7 @@ public class ViewPort {
         this.ps = ps;
     }
 
-    public void update(GameObject ship)
+    public void update()
     {
         double x =  ps.position.x;
         double y =  ps.position.y;

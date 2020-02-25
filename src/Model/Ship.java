@@ -1,13 +1,16 @@
-package Asteroids.game1;
+package Model;
 
-import Asteroids.utilities.*;
+import Controller.Controller;
+import View.ImgManag;
+import View.Sprite;
+import Controller.Action;
+import Controller.Game;
+
 
 import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Area;
 import java.awt.geom.Path2D;
 
-import static Asteroids.game1.Constants.*;
+import static Model.Constants.*;
 
 public class Ship extends GameObject {
 
@@ -51,7 +54,6 @@ public class Ship extends GameObject {
     public Path2D genShape()
     {
         Path2D shape = new Path2D.Double();
-//        RotatableShape shape = new RotatableShape(20);
         shape.moveTo(4 - RADIUS, 64 - RADIUS);
         shape.lineTo(4- RADIUS, 54- RADIUS);
         shape.lineTo(11 - RADIUS, 40 - RADIUS);
@@ -98,6 +100,7 @@ public class Ship extends GameObject {
     public void update()
     {
         super.update();
+        Game.vp.update();
         Action act = ctrl.action();
 
         // updates ship's velocity values as a product of user action, acceleration, and change in time

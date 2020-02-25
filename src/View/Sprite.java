@@ -1,12 +1,9 @@
-package Asteroids.utilities;
+package View;
 
-import Asteroids.game1.Game;
-import com.sun.corba.se.impl.orbutil.graph.Graph;
+import Model.Vector2D;
 
-import javax.sound.sampled.Clip;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Area;
 import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 

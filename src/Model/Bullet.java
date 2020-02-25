@@ -1,8 +1,7 @@
-package Asteroids.game1;
+package Model;
 
-import Asteroids.utilities.ImgManag;
-import Asteroids.utilities.Sprite;
-import Asteroids.utilities.Vector2D;
+import View.ImgManag;
+import View.Sprite;
 
 import java.awt.*;
 

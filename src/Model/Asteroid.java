@@ -1,12 +1,14 @@
-package Asteroids.game1;
+package Model;
 
-import Asteroids.utilities.*;
+import View.AstSprite;
+import View.ImgManag;
+import View.Sprite;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
 
-import static Asteroids.game1.Constants.*;
+import static Model.Constants.*;
 
 public class Asteroid extends GameObject {
     public static final double MAX_SPEED = 100; // maximum speed an asteroid can have
@@ -40,7 +42,7 @@ public class Asteroid extends GameObject {
         // with velocity equal to 1.5 times faster in a random angle
         for (int i = 0; i < 3; i++) {
             double randAngle = Math.toRadians(Math.random() * 360);
-            Vector2D newV = Vector2D.polar(randAngle, velocity.mag() * 1.2);
+            Vector2D newV = Vector2D.polar(randAngle, velocity.mag() * (Math.random() + 1));
             switch ((int) RADIUS)
             {
                 case 25:
@@ -90,6 +92,7 @@ public class Asteroid extends GameObject {
         // a randomly generated polar quantity is produced with angles in range of 0-2*pi (0-360 deg)
         // in increments of RADIUS divided by 5, i.e how many points to draw. From this a randomly
         // generated magnitude or hypotenuse is generated, and converted into cartesian coordinates
+        // to create shape
         int mag = 2 * (int) (RADIUS / 3) + (int) (Math.random() * (RADIUS / 3));
         double angle = (Math.random() * (Math.PI * 2 / points));
         // first coord

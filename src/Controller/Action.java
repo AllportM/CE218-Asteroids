@@ -1,4 +1,4 @@
-package Asteroids.utilities;
+package Controller;
 
 public class Action {
     public int thrust = 0;
