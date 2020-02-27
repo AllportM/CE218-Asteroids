@@ -1,7 +1,6 @@
 package Model;
 
 import View.ImgManag;
-import View.Sprite;
 
 import java.awt.*;
 

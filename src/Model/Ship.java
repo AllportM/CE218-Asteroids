@@ -2,7 +2,6 @@ package Model;
 
 import Controller.Controller;
 import View.ImgManag;
-import View.Sprite;
 import Controller.Action;
 import Controller.Game;
 

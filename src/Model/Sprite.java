@@ -1,4 +1,4 @@
-package View;
+package Model;
 
 import Model.Vector2D;
 

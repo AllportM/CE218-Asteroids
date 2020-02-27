@@ -1,8 +1,5 @@
 package Model;
 
-import Model.GameObject;
-import Model.Ship;
-
 import static Model.Constants.*;
 
 public class ViewPort {

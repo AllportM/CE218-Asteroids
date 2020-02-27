@@ -47,7 +47,7 @@ public class BasicView extends JComponent {
             AffineTransform initG = g.getTransform();
             Shape initClip = g.getClip();
             Color initCol = g.getColor();
-            g.drawImage(bg, (int) game.vp.getX(), (int) game.vp.getY(), null);
+            g.drawImage(bg, (int) game.vp.getX()/2, (int) game.vp.getY()/2, null);
 
             // used to translate screen to top left of players position (
             AffineTransform viewPort = new AffineTransform();

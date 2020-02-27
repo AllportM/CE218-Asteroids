@@ -1,5 +1,6 @@
-package View;
+package Model;
 
+import Model.Sprite;
 import Model.Vector2D;
 
 import java.awt.*;
@@ -8,7 +9,7 @@ import java.awt.geom.Area;
 import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 
-public class AstSprite extends Sprite{
+public class AstSprite extends Sprite {
 
     public AstSprite(Vector2D position, Vector2D direction, double width, double height, BufferedImage imname
             , Path2D shape)

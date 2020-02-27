@@ -1,8 +1,6 @@
 package Model;
 
-import View.AstSprite;
 import View.ImgManag;
-import View.Sprite;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -50,11 +48,11 @@ public class Asteroid extends GameObject {
                     break;
                 case 40:
                     child[i] = new Asteroid(this.position.x, this.position.y,
-                            newV.x, newV.y, 20);
+                            newV.x, newV.y, 25);
                     break;
                 case 55:
                     child[i] = new Asteroid(this.position.x, this.position.y,
-                            newV.x, newV.y, 33);
+                            newV.x, newV.y, 40);
                     break;
             }
         }
