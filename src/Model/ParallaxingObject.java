@@ -1,5 +1,7 @@
 package Model;
 
+import Controller.Game;
+
 import java.awt.*;
 
 /**
@@ -10,9 +12,11 @@ import java.awt.*;
 abstract class ParallaxingObject implements Comparable<ParallaxingObject>{
     private static final double z1 = 1/2, z2 = 1/3, z3 = 1/4;
     private double speedMult;
-    private int zIndex;
+    private int zIndex, x, y;
+    double posx = x , posy = y;
 
-    public ParallaxingObject(int index)
+
+    public ParallaxingObject(int index, int x, int y)
     {
         zIndex = index;
         switch (index)
@@ -29,6 +33,14 @@ abstract class ParallaxingObject implements Comparable<ParallaxingObject>{
             default:
                 speedMult = 1;
         }
+        this.x = x;
+        this.y = y;
+    }
+
+    public void updatePos()
+    {
+        posx = x + Game.vp.getX();
+        posy = y + Game.vp.getY();
     }
 
     /**

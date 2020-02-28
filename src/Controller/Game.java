@@ -1,15 +1,12 @@
 package Controller;
 
+import Model.*;
 import View.BasicView;
-import Model.Constants;
 import View.ImgManag;
 import View.JEasyFrame;
-import Model.ViewPort;
-import Model.Asteroid;
-import Model.GameObject;
-import Model.Ship;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -19,17 +16,14 @@ import java.util.LinkedList;
  */
 public class Game
 {
-    private int lifeGen;
-    private JEasyFrame gui;
-    private BasicView view;
-    public int playerScore;
-    public int lifes;
     public static final int N_INITIAL_ASTEROIDS = 50;
     public static long startOfGame;
     public boolean isEnd = false;
     public LinkedList<GameObject> gameObjects;
     Keys ctrl;
     public static ViewPort vp;
+    BasicView view;
+    Player player;
 
     /**
      * No arg constructor, instantiates BasicAsteroids and adds to asteroids list
@@ -37,48 +31,17 @@ public class Game
     public Game()
     {
         ImgManag.init();
-        playerScore = 0;
-        lifes = 3;
-        lifeGen = 10000;
         gameObjects = new LinkedList<>();
         ctrl = new Keys();
         for (int i = 0; i < N_INITIAL_ASTEROIDS; i++)
         {
             gameObjects.add(Asteroid.makeRandomAsteroid());
         }
-        Ship ps = new Ship(ctrl);
+        player = new Player();
+        Ship ps = new Ship(ctrl, player);
+        player.setPlayerShip(ps);
         gameObjects.add(ps);
         vp = new ViewPort(0,0, ps);
-        initMainAst();
-    }
-
-    public void initMainAst()
-    {
-        view = new BasicView(this);
-        JEasyFrame frame = new JEasyFrame(view, "Basic Game");
-        frame.addKeyListener(ctrl);
-        gameLoop();
-    }
-
-    public void gameLoop()
-    {
-        Timer repaintTimer = new Timer(Constants.DELAY, e -> view.repaint());
-        repaintTimer.start();
-        this.startOfGame = System.currentTimeMillis();
-        int missedFrames = 0;
-        while (!this.isEnd) {
-            long t0 = System.currentTimeMillis();
-            this.update();
-            long t1 = System.currentTimeMillis();
-            long timeout = Constants.DELAY - (t1 - t0);
-            if (timeout > 0)
-                try
-                {
-                    Thread.sleep(timeout);
-                }
-            catch (InterruptedException ignore){}
-            else missedFrames++;
-        }
     }
 
     /**
@@ -89,6 +52,8 @@ public class Game
     public static void main(String[] args) throws Exception
     {
         Game game = new Game();
+        BasicView view = new BasicView(game);
+        new JEasyFrame(view, "Basic Game").addKeyListener(game.ctrl);
 //         below may improve game graphics at later date
 //        Graphics2D g = (Graphics2D) view.getGraphics();
 //        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
@@ -110,6 +75,19 @@ public class Game
 //                RenderingHints.VALUE_STROKE_PURE);
 
         // Game loop
+        Timer repaintTimer = new Timer(Constants.DELAY, e -> view.repaint());
+        repaintTimer.start();
+        game.startOfGame = System.currentTimeMillis();
+        int missedFrames = 0;
+        while (!game.isEnd) {
+            long t0 = System.currentTimeMillis();
+            game.update();
+            long t1 = System.currentTimeMillis();
+            long timeout = Constants.DELAY - (t1 - t0);
+            if (timeout > 0)
+                Thread.sleep(timeout);
+            else missedFrames++;
+        }
     }
 
     /**
@@ -172,21 +150,8 @@ public class Game
                     }
                     if (obj1.killedByPlayer)
                     {
-                        playerScore += 100;
+                        player.score += 100;
                     }
-                }
-                else if( obj.getClass() == Ship.class && lifes > 0)
-                {
-                    // adds new ship to game if player has lives and updates viewport
-                    Ship newPs = new Ship(ctrl);
-                    alive.add(newPs);
-                    vp.setShip(newPs);
-                    lifes--;
-                }
-                if (playerScore / lifeGen == 1)
-                {
-                    lifes++;
-                    lifeGen += 10000;
                 }
     //            };
     //            thread = new Thread(task);

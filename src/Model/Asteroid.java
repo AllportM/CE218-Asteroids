@@ -37,7 +37,7 @@ public class Asteroid extends GameObject {
     {
         this.alive = false;
         // creates 3 new child asteroids off 1 radius smaller then existing dead one
-        // with velocity equal to 1.5 times faster in a random angle
+        // with random velocity scaled greater than parent's with random directional angle
         for (int i = 0; i < 3; i++) {
             double randAngle = Math.toRadians(Math.random() * 360);
             Vector2D newV = Vector2D.polar(randAngle, velocity.mag() * (Math.random() + 1));

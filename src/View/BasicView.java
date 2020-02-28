@@ -3,6 +3,7 @@ package View;
 import Controller.Game;
 import Model.Constants;
 import Model.GameObject;
+import Model.Player;
 
 import javax.swing.*;
 import java.awt.*;
@@ -113,11 +114,11 @@ public class BasicView extends JComponent {
             String score, lifes;
             g.setColor(Color.cyan);
             g.setFont(new Font("Bahnschrift Light", Font.BOLD, 20));
-            score = "Score: " + game.playerScore;
-            lifes = "Lifes: " + game.lifes;
+            score = "Score: " + Player.score;
+//            lifes = "Health: " + game.lifes;
             int fontW = g.getFontMetrics().stringWidth(score);
             g.drawString(score, FRAME_WIDTH - fontW - 50, 20);
-            g.drawString(lifes, 0, 20);
+//            g.drawString(lifes, 0, 20);
             g.setColor(initCol);
         }
 

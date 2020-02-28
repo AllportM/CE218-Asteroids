@@ -13,34 +13,33 @@ import static Model.Constants.*;
 
 public class Ship extends GameObject {
 
-    public static final double MAX_SPEED = 300;
-    public static final double STEER_RATE = 2 * Math.PI; // rotational velocity in radians per second
-    public static final double MAG_ACC = 600; // accelleration when thrust is applied
-    public static final double DRAG = 5; // constant speed loss factor
-    public static final Color COLOR = Color.cyan;
-    private double fireRate = 2;
-    private double bulletTime;
-    private double invTime = 0;
-    private final double scale = 1.5;
-    private double thrust;
-    public int inv;
-
-    // direction in which the nos of ship is pointing
-    // direction thrust is applied
-    // unit vefor representing angle by which ship rotated
-    public Vector2D direction;
+    // vector and sprites
+    Vector2D direction;
     private Sprite mainShip;
     private Sprite thrustSp;
 
     // controller for action
     private Controller ctrl;
     public Bullet bullet;
+    private Player player;
 
-    public Ship(Controller ctrl)
+    private final double MAX_SPEED = 300 * player.shipSpeed;
+    private final double STEER_RATE = 2 * Math.PI * player.turnResp; // rotational velocity in radians per second
+    private final double MAG_ACC = 600 * player.shipAcc; // accelleration when thrust is applied
+    private final double DRAG = 5; // constant speed loss factor
+    public static final Color COLOR = Color.cyan;
+    private double fireRate = 2 * player.fireRate;
+    private double bulletTime;
+    private double invTime = 0;
+    private double thrust;
+    int inv;
+
+    public Ship(Controller ctrl, Player owner)
     {
         super(new Vector2D(WORLD_WIDTH / 2.0, WORLD_HEIGHT / 2.0),
                 new Vector2D(0, 0), 34);
         this.ctrl = ctrl;
+        this.player = owner;
         direction = new Vector2D(0, -20);
         bulletTime = System.currentTimeMillis();
         applyInv(3);
