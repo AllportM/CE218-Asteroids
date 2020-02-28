@@ -10,10 +10,10 @@ import java.awt.*;
  * sub classes will be required to implement
  */
 abstract class ParallaxingObject implements Comparable<ParallaxingObject>{
-    private static final double z1 = 1/2, z2 = 1/3, z3 = 1/4;
-    private double speedMult;
+    private static final double z1 = 1f/2f, z2 = 1f/3f, z3 = 1f/4f;
+    public double speedMult;
     private int zIndex, x, y;
-    double posx = x , posy = y;
+    double posx, posy;
 
 
     public ParallaxingObject(int index, int x, int y)
@@ -35,12 +35,6 @@ abstract class ParallaxingObject implements Comparable<ParallaxingObject>{
         }
         this.x = x;
         this.y = y;
-    }
-
-    public void updatePos()
-    {
-        posx = x + Game.vp.getX();
-        posy = y + Game.vp.getY();
     }
 
     /**

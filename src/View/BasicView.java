@@ -3,6 +3,7 @@ package View;
 import Controller.Game;
 import Model.Constants;
 import Model.GameObject;
+import Model.ParallaxingImage;
 import Model.Player;
 
 import javax.swing.*;
@@ -18,7 +19,7 @@ import static Model.Constants.*;
  */
 public class BasicView extends JComponent {
 
-    private final BufferedImage bg;
+    private final ParallaxingImage bg;
     private Game game; // reference to the game instance
 
     /**
@@ -28,7 +29,7 @@ public class BasicView extends JComponent {
      */
     public BasicView(Game game)
     {
-        bg = ImgManag.getImage("Background.png");
+        bg = new ParallaxingImage(1, 0, 0, "Background.png");
         this.game = game;
     }
 
@@ -48,7 +49,7 @@ public class BasicView extends JComponent {
             AffineTransform initG = g.getTransform();
             Shape initClip = g.getClip();
             Color initCol = g.getColor();
-            g.drawImage(bg, (int) game.vp.getX()/2, (int) game.vp.getY()/2, null);
+            bg.draw(g);
 
             // used to translate screen to top left of players position (
             AffineTransform viewPort = new AffineTransform();
@@ -67,7 +68,7 @@ public class BasicView extends JComponent {
             AffineTransform miniAt = new AffineTransform();
             // sets minimaps size in relation to visible space after scaling
             BufferedImage miniMap = new BufferedImage(FRAME_WIDTH,
-                    FRAME_HEIGHT, bg.getType());
+                    FRAME_HEIGHT, BufferedImage.TYPE_INT_ARGB);
             Graphics2D miniG = (Graphics2D) miniMap.getGraphics();
 
             // draws edge of map indicators (lines) onto minimap before any rendering done
