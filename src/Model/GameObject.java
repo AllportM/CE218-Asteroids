@@ -4,7 +4,7 @@ import java.awt.*;
 
 import static Model.Constants.*;
 
-public abstract class GameObject{
+public abstract class GameObject implements Drawable{
 
     public Vector2D position;
     public Vector2D velocity;
@@ -74,5 +74,6 @@ public abstract class GameObject{
         position.addScaled(velocity, DT);
         position.wrap(WORLD_WIDTH, WORLD_HEIGHT);
     }
+    @Override
     public abstract void draw(Graphics2D g);
 }

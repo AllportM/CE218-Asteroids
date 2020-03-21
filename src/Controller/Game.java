@@ -9,6 +9,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.TreeSet;
+
+import static Model.Constants.WORLD_HEIGHT;
+import static Model.Constants.WORLD_WIDTH;
 
 /**
  * Game's purpose is to instantiate the frame, view, and game containing main
@@ -20,6 +24,7 @@ public class Game
     public static long startOfGame;
     public boolean isEnd = false;
     public LinkedList<GameObject> gameObjects;
+    public TreeSet<ParallaxingObject> pObjs;
     Keys ctrl;
     public static ViewPort vp;
     BasicView view;
@@ -31,17 +36,46 @@ public class Game
     public Game()
     {
         ImgManag.init();
-        gameObjects = new LinkedList<>();
         ctrl = new Keys();
-        for (int i = 0; i < N_INITIAL_ASTEROIDS; i++)
-        {
-            gameObjects.add(Asteroid.makeRandomAsteroid());
-        }
+        gameObjects = new LinkedList<>();
+        pObjs = new TreeSet<>();
+
         player = new Player();
         Ship ps = new Ship(ctrl, player);
         player.setPlayerShip(ps);
         gameObjects.add(ps);
         vp = new ViewPort(0,0, ps);
+
+        int i;
+        int j;
+        for (i = 0; i < N_INITIAL_ASTEROIDS; i++)
+        {
+            gameObjects.add(Asteroid.makeRandomAsteroid());
+        }
+
+        for (i = 0; i < WORLD_HEIGHT * 0.4; i+= 100)
+        {
+            for (j = 0; j < WORLD_WIDTH * 0.4; j+=100)
+            {
+                // draws layer 2 stars
+                if (Math.random() > 0.7)
+                {
+                    pObjs.add(new ParallaxingStar(2, j + (int) (Math.random() * 101),i + (int) (Math.random() * 101)));
+                }
+                // draws layer 3 stars
+                if (Math.random() > 0.7)
+                {
+                    pObjs.add(new ParallaxingStar(3, j + (int) (Math.random() * 101),
+                            i + (int) (Math.random() * 101)));
+                }
+                // draws layer 4 stars
+//                if (Math.random() > 0.7)
+//                {
+//                    pObjs.add(new ParallaxingStar(4, j + (int) (Math.random() * 101),
+//                            i + (int) (Math.random() * 101)));
+//                }
+            }
+        }
     }
 
     /**
@@ -55,24 +89,24 @@ public class Game
         BasicView view = new BasicView(game);
         new JEasyFrame(view, "Basic Game").addKeyListener(game.ctrl);
 //         below may improve game graphics at later date
-//        Graphics2D g = (Graphics2D) view.getGraphics();
-//        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-//                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-//        g.setRenderingHint(RenderingHints.KEY_DITHERING,
-//                RenderingHints.VALUE_DITHER_ENABLE);
-//        g.setRenderingHint(RenderingHints.KEY_RENDERING,
-//                RenderingHints.VALUE_RENDER_QUALITY);
-//        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-//                RenderingHints.VALUE_ANTIALIAS_ON);
-//        g.setRenderingHint(RenderingHints.KEY_TEXT_LCD_CONTRAST, 100);
-//        g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
-//                RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-//        g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION,
-//                RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
-//        g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING,
-//                RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-//        g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,
-//                RenderingHints.VALUE_STROKE_PURE);
+        Graphics2D g = (Graphics2D) view.getGraphics();
+        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        g.setRenderingHint(RenderingHints.KEY_DITHERING,
+                RenderingHints.VALUE_DITHER_ENABLE);
+        g.setRenderingHint(RenderingHints.KEY_RENDERING,
+                RenderingHints.VALUE_RENDER_QUALITY);
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setRenderingHint(RenderingHints.KEY_TEXT_LCD_CONTRAST, 100);
+        g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
+                RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+        g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION,
+                RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+        g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING,
+                RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+        g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,
+                RenderingHints.VALUE_STROKE_PURE);
 
         // Game loop
         Timer repaintTimer = new Timer(Constants.DELAY, e -> view.repaint());
@@ -110,6 +144,12 @@ public class Game
             }
         }
 
+        // updates stars
+        for (ParallaxingObject obj : pObjs)
+        {
+            if (obj instanceof ParallaxingStar)
+                ((ParallaxingStar) obj).update();
+        }
 
         synchronized (Game.class)
         {

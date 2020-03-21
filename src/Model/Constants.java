@@ -9,8 +9,8 @@ public enum Constants
 {;
     public static final int FRAME_HEIGHT = 840;
     public static final int FRAME_WIDTH = 1280;
-    public static final int WORLD_WIDTH = FRAME_WIDTH * 3;
-    public static final int WORLD_HEIGHT = FRAME_HEIGHT * 3;
+    public static final int WORLD_HEIGHT = FRAME_HEIGHT * 5;
+    public static final int WORLD_WIDTH = FRAME_WIDTH * 5;
     public static final Dimension FRAME_SIZE = new Dimension(FRAME_WIDTH, FRAME_HEIGHT);
     // sleep time between two frames
     public static final int DELAY = 20; // milliseconds

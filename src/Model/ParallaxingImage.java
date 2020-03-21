@@ -13,11 +13,12 @@ public class ParallaxingImage extends ParallaxingObject {
     {
         super(index, x, y);
         im = ImgManag.getImage(imname);
+        System.out.println(speedMult);
     }
 
     @Override
     public void draw(Graphics2D g) {
-        System.out.println(speedMult);
-        g.drawImage(im, (int) (posx + (Game.vp.getX() * speedMult)), (int) (posy + (Game.vp.getY() * speedMult)), null);
+        int[] coords = getCoord();
+        g.drawImage(im, coords[0], coords[1], null);
     }
 }

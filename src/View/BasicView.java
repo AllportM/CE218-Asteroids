@@ -1,10 +1,7 @@
 package View;
 
 import Controller.Game;
-import Model.Constants;
-import Model.GameObject;
-import Model.ParallaxingImage;
-import Model.Player;
+import Model.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,7 +26,7 @@ public class BasicView extends JComponent {
      */
     public BasicView(Game game)
     {
-        bg = new ParallaxingImage(1, 0, 0, "Background.png");
+        bg = new ParallaxingImage(1, 0, 0, "BackgroundSmall.png");
         this.game = game;
     }
 
@@ -54,8 +51,6 @@ public class BasicView extends JComponent {
             // used to translate screen to top left of players position (
             AffineTransform viewPort = new AffineTransform();
             viewPort.translate((float) game.vp.getX(), (float) game.vp.getY());
-            // Creates affine transform for minimap and inits minimap variables
-
 
             /*
              * Next block up until game object loop deals with minimap programming
@@ -65,13 +60,15 @@ public class BasicView extends JComponent {
             double minimapW = 300;
             double minimapH = 300;
             double radarRange = 5;
-            AffineTransform miniAt = new AffineTransform();
+            AffineTransform miniAt;
             // sets minimaps size in relation to visible space after scaling
             BufferedImage miniMap = new BufferedImage(FRAME_WIDTH,
                     FRAME_HEIGHT, BufferedImage.TYPE_INT_ARGB);
             Graphics2D miniG = (Graphics2D) miniMap.getGraphics();
 
             // draws edge of map indicators (lines) onto minimap before any rendering done
+            miniG.setColor(Color.black);
+            miniG.fillRect(0,0,FRAME_WIDTH, FRAME_HEIGHT);
             miniG.setColor(Color.RED);
             for (int i = 0; i < FRAME_WIDTH; i += 20)
             {
@@ -94,6 +91,10 @@ public class BasicView extends JComponent {
                     WORLD_HEIGHT));
 
 
+            for (ParallaxingObject obj : game.pObjs)
+            {
+                obj.draw(g);
+            }
             // draws game objects by calling draw methods onto both current graphics object and
             // minimaps graphics objects
             for (GameObject obj : game.gameObjects)

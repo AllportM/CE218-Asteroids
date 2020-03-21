@@ -27,10 +27,12 @@ public class AstSprite extends Sprite {
         Graphics2D g = (Graphics2D) scaled.getGraphics();
         AffineTransform init = g.getTransform();
         Composite initComp = g.getComposite();
+        // sets background to transparent
         g.setComposite(AlphaComposite.Clear);
         g.setColor(new Color(0,0,0));
         g.fill(new Rectangle(0,0, img.getWidth(), img.getHeight()));
         g.setComposite(initComp);
+        // sets clip and fills background with textured pattern
         Shape initClip = g.getClip();
         g.setClip(shape);
         g.scale(scalex, scaley);
