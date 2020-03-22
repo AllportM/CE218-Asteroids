@@ -28,7 +28,7 @@ public class Game
     Keys ctrl;
     public static ViewPort vp;
     BasicView view;
-    Player player;
+    public Player player;
 
     /**
      * No arg constructor, instantiates BasicAsteroids and adds to asteroids list
@@ -41,7 +41,7 @@ public class Game
         pObjs = new TreeSet<>();
 
         player = new Player();
-        Ship ps = new Ship(ctrl, player);
+        Ship ps = new Ship(ctrl);
         player.setPlayerShip(ps);
         gameObjects.add(ps);
         vp = new ViewPort(0,0, ps);
@@ -52,6 +52,8 @@ public class Game
         {
             gameObjects.add(Asteroid.makeRandomAsteroid());
         }
+
+        pObjs.add(new ParallaxingImage(1, 0, 0, "BackgroundSmall2.png"));
 
         for (i = 0; i < WORLD_HEIGHT * 0.4; i+= 100)
         {
@@ -68,12 +70,12 @@ public class Game
                     pObjs.add(new ParallaxingStar(3, j + (int) (Math.random() * 101),
                             i + (int) (Math.random() * 101)));
                 }
-                // draws layer 4 stars
-//                if (Math.random() > 0.7)
-//                {
-//                    pObjs.add(new ParallaxingStar(4, j + (int) (Math.random() * 101),
-//                            i + (int) (Math.random() * 101)));
-//                }
+//                 draws layer 4 stars
+                if (Math.random() > 0.7)
+                {
+                    pObjs.add(new ParallaxingStar(4, j + (int) (Math.random() * 101),
+                            i + (int) (Math.random() * 101)));
+                }
             }
         }
     }

@@ -11,7 +11,7 @@ public class Player {
     public Player()
     {
         health = shipSpeed = shipAcc = fireRate = turnResp= 1.0;
-        radarRange = 1;
+        radarRange = 10;
         score = 0;
         health = 100;
     }

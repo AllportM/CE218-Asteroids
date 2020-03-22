@@ -16,7 +16,6 @@ import static Model.Constants.*;
  */
 public class BasicView extends JComponent {
 
-    private final ParallaxingImage bg;
     private Game game; // reference to the game instance
 
     /**
@@ -26,7 +25,6 @@ public class BasicView extends JComponent {
      */
     public BasicView(Game game)
     {
-        bg = new ParallaxingImage(1, 0, 0, "BackgroundSmall.png");
         this.game = game;
     }
 
@@ -46,7 +44,6 @@ public class BasicView extends JComponent {
             AffineTransform initG = g.getTransform();
             Shape initClip = g.getClip();
             Color initCol = g.getColor();
-            bg.draw(g);
 
             // used to translate screen to top left of players position (
             AffineTransform viewPort = new AffineTransform();
@@ -59,7 +56,7 @@ public class BasicView extends JComponent {
             //inits variables for positional values
             double minimapW = 300;
             double minimapH = 300;
-            double radarRange = 5;
+            double radarRange = game.player.radarRange;
             AffineTransform miniAt;
             // sets minimaps size in relation to visible space after scaling
             BufferedImage miniMap = new BufferedImage(FRAME_WIDTH,
@@ -116,7 +113,7 @@ public class BasicView extends JComponent {
             String score, lifes;
             g.setColor(Color.cyan);
             g.setFont(new Font("Bahnschrift Light", Font.BOLD, 20));
-            score = "Score: " + Player.score;
+            score = "Score: " + game.player.score;
 //            lifes = "Health: " + game.lifes;
             int fontW = g.getFontMetrics().stringWidth(score);
             g.drawString(score, FRAME_WIDTH - fontW - 50, 20);

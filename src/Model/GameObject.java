@@ -33,20 +33,13 @@ public abstract class GameObject implements Drawable{
             if (this.getClass() == Ship.class && other.getClass() == Asteroid.class)
             {
                 Ship obj = (Ship) this;
-                if (!(obj.inv > 0))
-                {
-                    this.hit();
-                    obj.hit();
-                }
+                this.hit();
+                obj.hit();
             }
             else if (this.getClass() == Asteroid.class && other.getClass() == Ship.class)
             {
-                Ship obj = (Ship) other;
-                if (!(obj.inv > 0))
-                {
-                    this.hit();
-                    other.hit();
-                }
+                this.hit();
+                other.hit();
             }
             else
             {
