@@ -1,81 +1,38 @@
 package Model;
 
-import Controller.Controller;
-import View.ImgManag;
 import Controller.Action;
+import Controller.Controller;
 import Controller.Game;
-
 
 import java.awt.*;
 import java.awt.geom.Path2D;
 
-import static Model.Constants.*;
+import static Model.Constants.DT;
 
-public class Ship extends GameObject {
-
-    // vector and sprites
-    Vector2D direction;
-    private Sprite mainShip;
-    private Sprite thrustSp;
-
-    // controller for action
-    private Controller ctrl;
+public abstract class Ship extends GameObject {
+    double MAX_SPEED;
+    double STEER_RATE; // rotational velocity in radians per second
+    double MAG_ACC; // accelleration when thrust is applied
+    double DRAG = 5; // constant speed loss factor
     public Bullet bullet;
+    Sprite mainShip;
+    Sprite thrustSp;
+    // controller for action
+    Controller ctrl;
+    double bulletTime;
+    // vector and sprites
+    double fireRate;
 
-    private final double MAX_SPEED = 300 * Player.shipSpeed;
-    private final double STEER_RATE = 2 * Math.PI * Player.turnResp; // rotational velocity in radians per second
-    private final double MAG_ACC = 600 * Player.shipAcc; // accelleration when thrust is applied
-    private final double DRAG = 5; // constant speed loss factor
-    public static final Color COLOR = Color.cyan;
-    private double fireRate = 2 * Player.fireRate;
-    private double bulletTime;
-    private double thrust;
-//    int inv;
-
-    public Ship(Controller ctrl)
-    {
-        super(new Vector2D(WORLD_WIDTH / 2.0, WORLD_HEIGHT / 2.0),
-                new Vector2D(0, 0), 34);
-        this.ctrl = ctrl;
+    public Ship(Vector2D position, Vector2D velocity, double RADIUS, Controller ctrl) {
+        super(position, velocity, RADIUS);
         direction = new Vector2D(0, -20);
+        direction.normalise();
+        this.ctrl = ctrl;
         bulletTime = System.currentTimeMillis();
-        mainShip = new Sprite(position, direction, RADIUS * 2, RADIUS * 2, ImgManag.getImage("Ship.png")
-        , genShape());
-        thrustSp = new Sprite(position, direction, RADIUS * 2+ 20, RADIUS * 2 + 60, ImgManag.getImage("ShipThrust.png")
-        , genShape());
     }
 
-    public Path2D genShape()
-    {
-        Path2D shape = new Path2D.Double();
-        shape.moveTo(4 - RADIUS, 64 - RADIUS);
-        shape.lineTo(4- RADIUS, 54- RADIUS);
-        shape.lineTo(11 - RADIUS, 40 - RADIUS);
-        shape.lineTo(21 - RADIUS, 35 - RADIUS);
-        shape.lineTo(24 - RADIUS, 35 - RADIUS);
-        shape.lineTo(24 - RADIUS, 23 - RADIUS);
-        shape.lineTo(26 - RADIUS, 11 - RADIUS);
-        shape.lineTo(32 - RADIUS, 2 - RADIUS);
-        shape.lineTo(36 - RADIUS, 2 - RADIUS);
-        shape.lineTo(41 - RADIUS, 11 - RADIUS);
-        shape.lineTo(44 - RADIUS, 21 - RADIUS);
-        shape.lineTo(44 - RADIUS, 35 - RADIUS);
-        shape.lineTo(55 - RADIUS, 40 - RADIUS);
-        shape.lineTo(64 - RADIUS, 54 - RADIUS);
-        shape.lineTo(64 - RADIUS, 64 - RADIUS);
-        shape.lineTo(41 - RADIUS, 58 - RADIUS);
-        shape.lineTo(37 - RADIUS, 64 - RADIUS);
-        shape.lineTo(31 - RADIUS, 64 - RADIUS);
-        shape.lineTo(27 - RADIUS, 58 - RADIUS);
-        shape.lineTo(4 - RADIUS, 64 - RADIUS);
-        return shape;
-    }
-
-//    public void applyInv(int duration)
-//    {
-//        invTime = System.currentTimeMillis();
-//        inv = duration;
-//    }
+    public abstract Path2D genShape();
+    public abstract boolean canHit(GameObject other);
 
     public void hit()
     {
@@ -87,7 +44,6 @@ public class Ship extends GameObject {
     {
         bullet = new Bullet(this, new Vector2D(direction));
     }
-
     /**
      * update's purpose is to update the ships vectors, and as a result rotates shapes
      */
@@ -99,7 +55,10 @@ public class Ship extends GameObject {
 
         // updates ship's velocity values as a product of user action, acceleration, and change in time
         // or deducts velocities magnitude by a scale of drag
-        if (velocity.mag() < MAX_SPEED)
+        if (velocity.mag() < MAX_SPEED && act.thrust > 0)
+            velocity.add(Vector2D.polar(direction.angle(), (MAG_ACC * act.thrust * DT)));
+        // moves at half speed if thrust negative i.e backwards
+        else if (velocity.mag() < MAX_SPEED / 2 && act.thrust < 0)
             velocity.add(Vector2D.polar(direction.angle(), (MAG_ACC * act.thrust * DT)));
         if (velocity.mag() >= DRAG)
             velocity.subtract(Vector2D.polar(velocity.angle(), DRAG));
@@ -118,17 +77,6 @@ public class Ship extends GameObject {
 //            ship.setRotate(angle);
 //            thrustImg.setRotate(angle);
 //        }
-
-        // updates thrust values so that opacity of thrust can be adjusted
-        // checks thrust is applied in a forward direction, if so update values, if not decrease values
-        if (act.thrust > 0 && thrust + DT <= 1)
-        {
-            thrust += DT;
-        }
-        else if (thrust - DT > 0)
-        {
-            thrust -= DT;
-        }
 
         // updates bulletTime and if fireRate's time has passed, 1/rate seconds, then ship can
         // fire another bullet
@@ -152,10 +100,6 @@ public class Ship extends GameObject {
      */
     public void draw(Graphics2D g)
     {
-        Composite init = g.getComposite();
-        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float) thrust));
-        thrustSp.paint(g);
-        g.setComposite(init);
         mainShip.paint(g);
 //        }
 

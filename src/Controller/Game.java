@@ -28,7 +28,7 @@ public class Game
     Keys ctrl;
     public static ViewPort vp;
     BasicView view;
-    public Player player;
+    public static Player player;
 
     /**
      * No arg constructor, instantiates BasicAsteroids and adds to asteroids list
@@ -39,19 +39,23 @@ public class Game
         ctrl = new Keys();
         gameObjects = new LinkedList<>();
         pObjs = new TreeSet<>();
-
         player = new Player();
-        Ship ps = new Ship(ctrl);
+        PlayerShip ps = new PlayerShip(ctrl);
         player.setPlayerShip(ps);
         gameObjects.add(ps);
         vp = new ViewPort(0,0, ps);
 
+        Vector2D playVect = ps.position.copy();
+        playVect.add(500,0);
+        gameObjects.add(new EnemyShip(new HlAiController(this, playVect), playVect));
+
+
         int i;
         int j;
-        for (i = 0; i < N_INITIAL_ASTEROIDS; i++)
-        {
-            gameObjects.add(Asteroid.makeRandomAsteroid());
-        }
+//        for (i = 0; i < N_INITIAL_ASTEROIDS; i++)
+//        {
+//            gameObjects.add(Asteroid.makeRandomAsteroid());
+//        }
 
         pObjs.add(new ParallaxingImage(1, 0, 0, "BackgroundSmall2.png"));
 

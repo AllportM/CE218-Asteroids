@@ -1,12 +1,10 @@
 package Model;
 
-import Controller.Controller;
-
 public class Player {
     // multipliers for attributes effecting player's stats
     public static int radarRange, score;
     public static double health, shipSpeed, shipAcc, fireRate, turnResp;
-    public Ship playerShip;
+    public PlayerShip playerShip;
 
     public Player()
     {
@@ -16,7 +14,7 @@ public class Player {
         health = 100;
     }
 
-    public void setPlayerShip(Ship playerShip) {
+    public void setPlayerShip(PlayerShip playerShip) {
         this.playerShip = playerShip;
     }
 }

@@ -4,9 +4,9 @@ import static Model.Constants.*;
 
 public class ViewPort {
     private double x, y;
-    Ship ps;
+    PlayerShip ps;
 
-    public ViewPort( double x, double y, Ship ps)
+    public ViewPort( double x, double y, PlayerShip ps)
     {
         this.x = x;
         this.y = y;
@@ -23,7 +23,7 @@ public class ViewPort {
                 (y < FRAME_HEIGHT/2f)? 0: -y  + FRAME_HEIGHT / 2f;
     }
 
-    public void setShip(Ship ps)
+    public void setShip(PlayerShip ps)
     {
         this.ps = ps;
     }

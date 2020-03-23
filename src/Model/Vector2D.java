@@ -1,5 +1,8 @@
 package Model;
 
+import static Model.Constants.WORLD_HEIGHT;
+import static Model.Constants.WORLD_WIDTH;
+
 public class Vector2D {
     public double x, y;
 
@@ -245,7 +248,7 @@ public class Vector2D {
 
     /**
      * dist's purpose is to calculate the length of the magnitude in different from a this vector from
-     * a given vectors
+     * a given vectors. In addition, calculates distance including factoring the world wrap
      * @param v
      *      Vector2D, the vector for distance to be calculated
      * @return
@@ -253,7 +256,17 @@ public class Vector2D {
      */
     public double dist(Vector2D v)
     {
-        return Math.hypot(v.x - x, v.y - y);
+        double dx = Math.abs(x - v.x);
+        double dy = Math.abs(y - v.y);
+        if (dx > WORLD_WIDTH / 2f)
+        {
+            dx = WORLD_WIDTH - dx;
+        }
+        if (dy > WORLD_HEIGHT / 2f)
+        {
+            dy = WORLD_HEIGHT - dy;
+        }
+        return Math.hypot(dx, dy);
     }
 
     /**
