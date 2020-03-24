@@ -8,6 +8,7 @@ import Controller.Controller;
 import Controller.HlAiController;
 
 public class EnemyShip extends Ship {
+    public boolean killedByPlayer = false;
 
     public EnemyShip(Controller ctrl, Vector2D pos)
     {
@@ -30,7 +31,9 @@ public class EnemyShip extends Ship {
 
     @Override
     public void hit(GameObject other) {
-
+        if (other instanceof PlayerShip)
+            killedByPlayer = true;
+        alive = false;
     }
 
     @Override
@@ -41,4 +44,8 @@ public class EnemyShip extends Ship {
         return shape;
     }
 
+    @Override
+    public void mkBullet() {
+        bullet = new EnemyBullet(this);
+    }
 }

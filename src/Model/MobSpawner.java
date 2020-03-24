@@ -4,6 +4,7 @@ import Controller.Game;
 import Controller.HlAiController;
 
 import java.awt.*;
+import java.awt.geom.Path2D;
 import java.util.ArrayList;
 
 public class MobSpawner extends GameObject{
@@ -32,8 +33,13 @@ public class MobSpawner extends GameObject{
     }
 
     @Override
-    public void hit() {
+    public void hit(GameObject other) {
 
+    }
+
+    @Override
+    public Path2D genShape() {
+        return null;
     }
 
     @Override

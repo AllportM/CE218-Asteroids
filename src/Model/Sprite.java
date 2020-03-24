@@ -72,4 +72,14 @@ public class Sprite {
         g.drawImage(img, imgRotatedAT, null);
         g.setTransform(init);
     }
+
+    public int getWidth()
+    {
+        return img.getWidth();
+    }
+
+    public int getHeight()
+    {
+        return img.getHeight();
+    }
 }

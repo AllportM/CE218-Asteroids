@@ -30,7 +30,7 @@ public class Asteroid extends GameObject {
         rotationalVec = (new Vector2D(vx, vy));
         String text = String.format("asttext%d.png", (int) (Math.random() * 9));
         // sets sprite accordingly to radius of asteroid with random picture
-        sp = new AstSprite(position, rotationalVec, rad*2, rad*2, ImgManag.getImage(text), makeShape());;
+        sp = new AstSprite(position, rotationalVec, rad*2, rad*2, ImgManag.getImage(text), genShape());
     }
 
     public void hit()
@@ -77,13 +77,24 @@ public class Asteroid extends GameObject {
         return new Asteroid(x, y, vx, vy, radius);
     }
 
+
+    @Override
+    public boolean canHit(GameObject other) {
+        return other instanceof Bullet || other instanceof PlayerShip;
+    }
+
+    @Override
+    public void hit(GameObject other) {
+
+    }
+
     /**
      * getShapeCord's purpose is to randomly generate circlish shape
      * @return
      *      int[][], [0][..] and [1][..] being randomly generated x and y coordinates respectively
      */
-    public Path2D makeShape()
-    {
+    @Override
+    public Path2D genShape() {
         Path2D shape = new Path2D.Double();
         int points = (int) RADIUS * 2  / 5;
 
@@ -105,12 +116,6 @@ public class Asteroid extends GameObject {
         shape.closePath();
         shape = (Path2D) shape.createTransformedShape(AffineTransform.getTranslateInstance(RADIUS, RADIUS));
         return shape;
-
-    }
-
-    @Override
-    public boolean canHit(GameObject other) {
-        return other instanceof Bullet || other instanceof PlayerShip;
     }
 
     /**

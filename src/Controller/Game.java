@@ -44,20 +44,20 @@ public class Game
         player.setPlayerShip(ps);
         gameObjects.add(ps);
         vp = new ViewPort(0,0, ps);
-
-        Vector2D playVect = ps.position.copy();
-        playVect.add(500,0);
         generateSpawners();
         generateStars();
-//        for (i = 0; i < N_INITIAL_ASTEROIDS; i++)
-//        {
-//            gameObjects.add(Asteroid.makeRandomAsteroid());
-//        }
-
-
+        generateAsteroids();
     }
 
-    public void generateSpawners()
+    private void generateAsteroids()
+    {
+        for (int i = 0; i < N_INITIAL_ASTEROIDS; i++)
+        {
+            gameObjects.add(Asteroid.makeRandomAsteroid());
+        }
+    }
+
+    private void generateSpawners()
     {
         ArrayList<MobSpawner> spawners = new ArrayList<>();
         int posx, posy;
@@ -282,7 +282,7 @@ public class Game
                     }
                     if (obj1.killedByPlayer)
                     {
-                        player.score += 100;
+                        Player.score += 100;
                     }
                 }
     //            };

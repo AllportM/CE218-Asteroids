@@ -5,33 +5,25 @@ import View.ImgManag;
 import java.awt.*;
 import java.awt.geom.Path2D;
 
-public class Bullet extends GameObject {
+public abstract class Bullet extends GameObject {
+    protected int initSpd = 600;
+    protected Sprite sp;
+    protected int width;
+    protected int height;
+    protected double bulletTime;
     private double ttl = 1;
-    private int initSpd = 600;
-    private Sprite sp;
-    private int width, height;
-    private double bulletTime;
-    public boolean firedByPlayer = false;
 
-    // bullets
-
-    public Bullet(Ship ship, Vector2D direction) {
-        super(ship.position.copy(), ship.velocity.copy(),
-                2.5);
-        if (ship instanceof PlayerShip)
-        {
-            firedByPlayer = true;
-        }
+    public Bullet(Vector2D position, Vector2D velocity, double RADIUS, Ship ship) {
+        super(position, velocity, RADIUS);
         this.width = 10;
         this.height = 80;
-        this.direction = direction;
+        bulletTime = System.currentTimeMillis();
+        this.direction = ship.direction.copy();
         // sets velocity to ships + init speed
         //TODO: change to
         this.velocity = Vector2D.polar(ship.direction.angle(), (ship.velocity.mag() + initSpd));
         // sets bullets position to 5mm outside of ships radius
-        this.position.add(Vector2D.polar(ship.direction.angle(), ship.RADIUS  + 45));
-        sp = new Sprite(position, direction, width, height, ImgManag.getImage("LBullet1in.png"));
-        bulletTime = System.currentTimeMillis();
+        this.position.add(Vector2D.polar(ship.direction.angle(), ship.RADIUS  + height/2 + 5));
     }
 
     @Override
@@ -45,9 +37,7 @@ public class Bullet extends GameObject {
     }
 
     @Override
-    public Path2D genShape() {
-        return null;
-    }
+    public abstract Path2D genShape();
 
     @Override
     public void update() {

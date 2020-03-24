@@ -29,6 +29,11 @@ public class PlayerShip extends Ship {
     }
 
     @Override
+    public void hit(GameObject other) {
+
+    }
+
+    @Override
     public Path2D genShape()
     {
         Path2D shape = new Path2D.Double();
@@ -53,6 +58,11 @@ public class PlayerShip extends Ship {
         shape.lineTo(27 - RADIUS, 58 - RADIUS);
         shape.lineTo(4 - RADIUS, 64 - RADIUS);
         return shape;
+    }
+
+    @Override
+    public void mkBullet() {
+        bullet = new PlayerBullet(this);
     }
 
 

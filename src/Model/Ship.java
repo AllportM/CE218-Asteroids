@@ -32,16 +32,8 @@ public abstract class Ship extends GameObject {
         thrust = 0;
     }
 
-    public void hit()
-    {
-//        if (inv <= 0)
-        this.alive = false;
-    }
+    public abstract void mkBullet();
 
-    public void mkBullet()
-    {
-        bullet = new Bullet(this, new Vector2D(direction));
-    }
     /**
      * update's purpose is to update the ships vectors, and as a result rotates shapes
      */

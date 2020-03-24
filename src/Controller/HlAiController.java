@@ -77,7 +77,7 @@ public class HlAiController implements Controller {
         {
             case SEEKSHOOT:
                 llcontrollerSS.action();
-                act = llcontrollerPat.action;
+                act = llcontrollerSS.action;
                 break;
             case AVOID:
                 act = llcontrolerAv.action();
