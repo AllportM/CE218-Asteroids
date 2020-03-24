@@ -108,6 +108,11 @@ public class Asteroid extends GameObject {
 
     }
 
+    @Override
+    public boolean canHit(GameObject other) {
+        return other instanceof Bullet || other instanceof PlayerShip;
+    }
+
     /**
      * update's purpose is to update the asteroids position given it's velocity
      * and change in time DT

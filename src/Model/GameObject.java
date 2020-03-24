@@ -1,6 +1,7 @@
 package Model;
 
 import java.awt.*;
+import java.awt.geom.Path2D;
 
 import static Model.Constants.*;
 
@@ -26,46 +27,53 @@ public abstract class GameObject implements Drawable{
 
     public void collisionHandling(GameObject other)
     {
-        // ensures two objects are of differenct classes
-        if (this.getClass() != other.getClass() && this.overlap(other))
+        if (this.canHit(other) && overlap(other))
         {
-
-            if (this.getClass() == PlayerShip.class && other.getClass() == Asteroid.class)
-            {
-                PlayerShip obj = (PlayerShip) this;
-                this.hit();
-                obj.hit();
-            }
-            else if (this.getClass() == Asteroid.class && other.getClass() == PlayerShip.class)
-            {
-                this.hit();
-                other.hit();
-            }
-            else
-            {
-                this.hit();
-                other.hit();
-            }
-
-            // sets killedByPlayer boolean on asteroid if either of the objects which destroyed asteroid were
-            // bullets owned by the player so that score can be incremented
-            if (this.getClass() == Asteroid.class && other.getClass() == Bullet.class)
-            {
-                Asteroid obj1 = (Asteroid) this;
-                Bullet obj2 = (Bullet) other;
-                if (obj2.firedByPlayer)
-                    obj1.killedByPlayer = true;
-            }
-            else if (this.getClass() == Bullet.class && other.getClass() == Asteroid.class)
-            {
-                Asteroid obj1 = (Asteroid) other;
-                Bullet obj2 = (Bullet) this;
-                if (obj2.firedByPlayer)
-                    obj1.killedByPlayer = true;
-            }
+            this.hit(other);
+            other.hit(this);
         }
+//        // ensures two objects are of differenct classes
+//        if (this.getClass() != other.getClass() && this.overlap(other))
+//        {
+//
+//            if (this.getClass() == PlayerShip.class && other.getClass() == Asteroid.class)
+//            {
+//                PlayerShip obj = (PlayerShip) this;
+//                this.hit();
+//                obj.hit();
+//            }
+//            else if (this.getClass() == Asteroid.class && other.getClass() == PlayerShip.class)
+//            {
+//                this.hit();
+//                other.hit();
+//            }
+//            else if (this.getClass() != MobSpawner.class && other.getClass() != MobSpawner.class)
+//            {
+//                this.hit();
+//                other.hit();
+//            }
+//
+//            // sets killedByPlayer boolean on asteroid if either of the objects which destroyed asteroid were
+//            // bullets owned by the player so that score can be incremented
+//            if (this.getClass() == Asteroid.class && other.getClass() == Bullet.class)
+//            {
+//                Asteroid obj1 = (Asteroid) this;
+//                Bullet obj2 = (Bullet) other;
+//                if (obj2.firedByPlayer)
+//                    obj1.killedByPlayer = true;
+//            }
+//            else if (this.getClass() == Bullet.class && other.getClass() == Asteroid.class)
+//            {
+//                Asteroid obj1 = (Asteroid) other;
+//                Bullet obj2 = (Bullet) this;
+//                if (obj2.firedByPlayer)
+//                    obj1.killedByPlayer = true;
+//            }
+//        }
     }
-    public abstract void hit();
+    public abstract boolean canHit(GameObject other);
+    public abstract void hit(GameObject other);
+    public abstract Path2D genShape();
     public void update()
     {
         position.addScaled(velocity, DT);

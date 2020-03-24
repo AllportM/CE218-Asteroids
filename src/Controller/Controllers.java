@@ -5,6 +5,9 @@ import Model.PlayerShip;
 import Model.Ship;
 import Model.Vector2D;
 
+import static Model.Constants.WORLD_HEIGHT;
+import static Model.Constants.WORLD_WIDTH;
+
 public class Controllers {
 
     /**
@@ -22,21 +25,16 @@ public class Controllers {
     {
         double distance = ship.position.dist(target.position);
         int fovDeg =0;
-        if (distance < 250)
+        if (distance < 400)
             fovDeg = 90;
-        else if (distance < 350)
-            fovDeg = 45;
         else if (distance < 500)
+            fovDeg = 45;
+        else if (distance < 600)
             fovDeg = 15;
         Vector2D between = target.position.copy().subtract(ship.position).normalise();
         if (fovDeg > 0)
             return Math.acos(ship.direction.dot(between)) < Math.toRadians(fovDeg);
         else return false;
-//        Vector2D between = target.position.copy().subtract(ship.position);
-//        if (fovDeg > 0)
-//            return ship.direction.angle(between) < Math.toRadians(fovDeg);
-//        else return false;
-//            System.out.println(Math.toDegrees(ship.direction.angle(between)));
     }
 
     public static GameObject getNearestPlayer(GameObject ship, Game game)
@@ -45,7 +43,7 @@ public class Controllers {
         GameObject nearestShip = null;
         for (GameObject obj: game.gameObjects)
         {
-            if (obj instanceof PlayerShip)
+            if (obj instanceof PlayerShip && obj.alive)
             {
                 double dist = ship.position.dist(obj.position);
                 if (dist < nearestDist)
@@ -75,5 +73,45 @@ public class Controllers {
             }
         }
         return nearestShip;
+    }
+
+    /**
+     * unwrappedPosTargets purpose is to calculate whether travelling towards the target within the worlds
+     * bounds is the shortest distance or whether utilizing the world wrap would be the shortest distance
+     * and return a new vector for the shortest means of travel for the owner.
+     *
+     * This is accomplished by first calculating the distance by subtracting the targets position vector from
+     * the owners, and if the distance is greater than half the worlds width then using the world wrap function
+     * would be the shortest means of travel
+     * @param owner
+     *      GameObject, the reference object to check
+     * @param target
+     *      GameObject, the target to check against
+     * @return
+     *      Vector2D, the new travel vector
+     */
+    public static Vector2D unwrappedPosTarg(GameObject owner, GameObject target)
+    {
+        Vector2D ownerPos = owner.position;
+        Vector2D targetPos = target.position;
+        Vector2D diff = targetPos.copy().subtract(ownerPos);
+        double x2 = targetPos.x;
+        double y2 = targetPos.y;
+        if (diff.x > WORLD_WIDTH / 2 || diff.x < -(WORLD_WIDTH / 2))
+        {
+            if (targetPos.x < WORLD_WIDTH / 2)
+                x2 = x2 + WORLD_WIDTH;
+            else
+                x2 = x2 - WORLD_WIDTH;
+        }
+        if (diff.y > WORLD_HEIGHT / 2 || diff.y < -(WORLD_HEIGHT / 2))
+        {
+            if (targetPos.y < WORLD_HEIGHT / 2)
+                y2 = y2 + WORLD_HEIGHT;
+            else
+                y2 = y2 - WORLD_HEIGHT;
+        }
+        Vector2D result = new Vector2D(x2, y2);
+        return result;
     }
 }

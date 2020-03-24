@@ -13,7 +13,6 @@ public class ParallaxingImage extends ParallaxingObject {
     {
         super(index, x, y);
         im = ImgManag.getImage(imname);
-        System.out.println(speedMult);
     }
 
     @Override

@@ -7,12 +7,12 @@ import View.JEasyFrame;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.TreeSet;
 
-import static Model.Constants.WORLD_HEIGHT;
-import static Model.Constants.WORLD_WIDTH;
+import static Model.Constants.*;
 
 /**
  * Game's purpose is to instantiate the frame, view, and game containing main
@@ -47,17 +47,102 @@ public class Game
 
         Vector2D playVect = ps.position.copy();
         playVect.add(500,0);
-        gameObjects.add(new EnemyShip(new HlAiController(this, playVect), playVect));
-
-
-        int i;
-        int j;
+        generateSpawners();
+        generateStars();
 //        for (i = 0; i < N_INITIAL_ASTEROIDS; i++)
 //        {
 //            gameObjects.add(Asteroid.makeRandomAsteroid());
 //        }
 
-        pObjs.add(new ParallaxingImage(1, 0, 0, "BackgroundSmall2.png"));
+
+    }
+
+    public void generateSpawners()
+    {
+        ArrayList<MobSpawner> spawners = new ArrayList<>();
+        int posx, posy;
+        int awayFromEdge = (int) MobSpawner.SPAWN_RADIUS + 50;
+        int spawnerdistance = 900;
+        boolean xInRange, uppperBoundlowerBound;
+        Vector2D spawnerPosition;
+        int mobstospawn = 9;
+//
+//        ArrayList<double[]> points = new ArrayList<>();
+//        double horiNodes = WORLD_WIDTH / (awayFromEdge * 3);
+//        double vertiNodes = WORLD_HEIGHT / (awayFromEdge * 3);
+//        System.out.println(horiNodes + ", " + vertiNodes);
+//        for (double i = WORLD_HEIGHT / vertiNodes; i <= WORLD_HEIGHT; i += WORLD_HEIGHT / vertiNodes)
+//        {
+//            for (double j = WORLD_WIDTH / horiNodes; j <= WORLD_WIDTH; j += WORLD_WIDTH / horiNodes)
+//            {
+//                System.out.println(i + ", " + j);
+//                if ((j  < WORLD_WIDTH / 2f - FRAME_WIDTH / 2f || j > WORLD_WIDTH / 2f + FRAME_WIDTH / 2f)
+//                    && (i < WORLD_HEIGHT / 2f - FRAME_HEIGHT / 2 || i > WORLD_HEIGHT / 2f - FRAME_HEIGHT / 2f))
+//                {
+//                    double[] point = {i / 2, j / 2};
+//                    points.add(point);
+//                }
+//            }
+//        }
+//        System.out.println(points.size());
+
+        while (spawners.size() !=  mobstospawn)
+        {
+            xInRange = Math.random() < 0.5;
+            uppperBoundlowerBound = Math.random() < 0.5;
+            // generates x/y coordinates that are around the outskirts of the screen outside of view from
+            // player viewport inset by awayFromEdge so that mobs shouldn't be visible on player spawn
+            if (xInRange)
+            {
+                posx = (int) (Math.random() * (WORLD_WIDTH - awayFromEdge * 2) + awayFromEdge);
+                int yRange = (int) (Math.random() * ((WORLD_HEIGHT / 2 - FRAME_HEIGHT / 2)
+                        - awayFromEdge * 2)) + awayFromEdge;
+                if (uppperBoundlowerBound)
+                    posy = yRange;
+                else
+                    posy = yRange + (WORLD_HEIGHT / 2 + FRAME_HEIGHT / 2);
+            }
+            else
+            {
+                posy = (int) (Math.random() * (WORLD_HEIGHT - awayFromEdge * 2) + awayFromEdge);
+                int xRange = (int) (Math.random() * ((WORLD_WIDTH / 2 - FRAME_WIDTH / 2)
+                        - awayFromEdge * 2)) + awayFromEdge;
+                if (uppperBoundlowerBound)
+                    posx = xRange;
+                else
+                    posx = xRange + (WORLD_WIDTH / 2 + FRAME_WIDTH / 2);
+            }
+
+            // checks if any existing spawners are too close, if not adds to spawners arraylist
+            spawnerPosition = new Vector2D(posx, posy);
+            boolean anyInDistance = false;
+            for (MobSpawner spawner: spawners)
+            {
+                if (spawner.position.distExcWW(spawnerPosition) < spawnerdistance)
+                {
+                    anyInDistance = true;
+                }
+            }
+            if (!(anyInDistance))
+            {
+                spawners.add(new MobSpawner(spawnerPosition, this));
+            }
+        }
+
+        // adds spawners to game objects
+        for (MobSpawner spawner: spawners)
+        {
+            gameObjects.addAll(spawner.ships);
+        }
+    }
+    /**
+     * geenerateStars purpose is to populate the pObjs array with procedurally generated parallaxing
+     * stars, and the background.
+     */
+    public void generateStars()
+    {
+        int i, j;
+        pObjs.add(new ParallaxingImage(1, 0, 0, "BackgroundSmall3.png"));
 
         for (i = 0; i < WORLD_HEIGHT * 0.4; i+= 100)
         {
@@ -66,7 +151,8 @@ public class Game
                 // draws layer 2 stars
                 if (Math.random() > 0.7)
                 {
-                    pObjs.add(new ParallaxingStar(2, j + (int) (Math.random() * 101),i + (int) (Math.random() * 101)));
+                    pObjs.add(new ParallaxingStar(2, j + (int) (Math.random() * 101),
+                            i + (int) (Math.random() * 101)));
                 }
                 // draws layer 3 stars
                 if (Math.random() > 0.7)

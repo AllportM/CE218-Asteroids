@@ -8,7 +8,6 @@ import java.awt.geom.Path2D;
 import static Model.Constants.*;
 
 public class PlayerShip extends Ship {
-    private double thrust;
 
     public PlayerShip(Controller ctrl)
     {
@@ -21,30 +20,12 @@ public class PlayerShip extends Ship {
         , genShape());
         thrustSp = new Sprite(position, direction, RADIUS * 2+ 20, RADIUS * 2 + 120, ImgManag.getImage("ShipThrust.png")
         , genShape());
-        thrust = 0;
         fireRate = 2 * Player.fireRate;
     }
 
     public boolean canHit(GameObject other)
     {
         return other instanceof Asteroid || other instanceof Bullet || other instanceof Ship;
-    }
-
-    @Override
-    public void update()
-    {
-        super.update();
-
-        // updates thrust values so that opacity of thrust can be adjusted
-        // checks thrust is applied in a forward direction, if so update values, if not decrease values
-        if (ctrl.action().thrust > 0 && thrust + DT <= 1)
-        {
-            thrust += DT;
-        }
-        else if (thrust - DT > 0)
-        {
-            thrust -= DT;
-        }
     }
 
     @Override
@@ -74,15 +55,6 @@ public class PlayerShip extends Ship {
         return shape;
     }
 
-    @Override
-    public void draw(Graphics2D g)
-    {
-        super.draw(g);
-        Composite init = g.getComposite();
-        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float) thrust));
-        thrustSp.paint(g);
-        g.setComposite(init);
-    }
 
 //    public void applyInv(int duration)
 //    {

@@ -5,7 +5,6 @@ import Controller.Controller;
 import Controller.Game;
 
 import java.awt.*;
-import java.awt.geom.Path2D;
 
 import static Model.Constants.DT;
 
@@ -14,6 +13,7 @@ public abstract class Ship extends GameObject {
     double STEER_RATE; // rotational velocity in radians per second
     double MAG_ACC; // accelleration when thrust is applied
     double DRAG = 5; // constant speed loss factor
+    double thrust;
     public Bullet bullet;
     Sprite mainShip;
     Sprite thrustSp;
@@ -29,10 +29,8 @@ public abstract class Ship extends GameObject {
         direction.normalise();
         this.ctrl = ctrl;
         bulletTime = System.currentTimeMillis();
+        thrust = 0;
     }
-
-    public abstract Path2D genShape();
-    public abstract boolean canHit(GameObject other);
 
     public void hit()
     {
@@ -87,6 +85,15 @@ public abstract class Ship extends GameObject {
             mkBullet();
         }
 
+        if (ctrl.action().thrust > 0 && thrust + DT <= 1)
+        {
+            thrust += DT;
+        }
+        else if (thrust - DT > 0)
+        {
+            thrust -= DT;
+        }
+
 //        if (inv > 0 && now - invTime >= 1000f / 0.5f) {
 //            System.out.println(now - invTime);
 //            inv = 0;
@@ -98,11 +105,14 @@ public abstract class Ship extends GameObject {
      * @param g
      *      Graphics2D object to be painted/drawn upon
      */
+    @Override
     public void draw(Graphics2D g)
     {
         mainShip.paint(g);
-//        }
-
-
+        Composite init = g.getComposite();
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
+                (float) (thrust * (Math.random() * 0.3 + 0.7))));
+        thrustSp.paint(g);
+        g.setComposite(init);
     }
 }

@@ -17,6 +17,8 @@ public class EnemyShip extends Ship {
         MAG_ACC = 600; // accelleration when thrust is applied
         mainShip = new Sprite(position, direction, RADIUS * 2, RADIUS * 2, ImgManag.getImage("EnemyrShip.png")
                 , genShape());
+        thrustSp = new Sprite(position, direction, RADIUS * 2, RADIUS * 2 + 30, ImgManag.getImage("EnemyShipThrust.png")
+                , genShape());
         ((HlAiController) ctrl).setOwner(this);
         fireRate = 1;
     }
@@ -24,6 +26,11 @@ public class EnemyShip extends Ship {
     public boolean canHit(GameObject other)
     {
         return  other instanceof Bullet || other instanceof PlayerShip;
+    }
+
+    @Override
+    public void hit(GameObject other) {
+
     }
 
     @Override

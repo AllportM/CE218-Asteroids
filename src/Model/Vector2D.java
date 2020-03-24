@@ -248,13 +248,26 @@ public class Vector2D {
 
     /**
      * dist's purpose is to calculate the length of the magnitude in different from a this vector from
-     * a given vectors. In addition, calculates distance including factoring the world wrap
+     * a given vectors
      * @param v
      *      Vector2D, the vector for distance to be calculated
      * @return
      *      double, the distance between the two objects
      */
     public double dist(Vector2D v)
+    {
+        return Math.hypot(v.x - x, v.y - y);
+    }
+
+    /**
+     * dist's purpose is to calculate the length of the magnitude in different from a this vector from
+     * a given vectors. In addition, calculates distance including factoring the world wrap
+     * @param v
+     *      Vector2D, the vector for distance to be calculated
+     * @return
+     *      double, the distance between the two objects
+     */
+    public double distExcWW(Vector2D v)
     {
         double dx = Math.abs(x - v.x);
         double dy = Math.abs(y - v.y);

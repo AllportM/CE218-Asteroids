@@ -1,6 +1,8 @@
 package Controller;
 
 import Model.GameObject;
+import Model.MobSpawner;
+import Model.PlayerShip;
 import Model.Vector2D;
 
 import static Model.Constants.*;
@@ -10,20 +12,24 @@ public class HlAiController implements Controller {
     private GameObject owner;
     SeekAndShoot llcontrollerSS;
     Avoid llcontrolerAv;
-    Vector2D startLocation;
+    Patrol llcontrollerPat;
+    private MobSpawner motherShip;
     private int action;
     private final static int SEEKSHOOT = 0, AVOID = 1, PATROL = 2;
-    private final static int RETREAT_DIST = (int) Math.sqrt(Math.pow(FRAME_WIDTH * 2, 2) + Math.pow(FRAME_HEIGHT * 2, 2));
+    private final static int RETREAT_DIST = FRAME_WIDTH * 2;
+    private final static int AVOID_DIST = 350;
 
-    public HlAiController(Game game, Vector2D startLocation)
+    public HlAiController(Game game, MobSpawner ms)
     {
         this.game = game;
-        this.startLocation = startLocation;
+        this.motherShip = ms;
     }
 
     public void setOwner(GameObject owner)
     {
         llcontrollerSS = new SeekAndShoot(owner);
+        llcontrolerAv = new Avoid(owner);
+        llcontrollerPat = new Patrol(owner, motherShip);
         this.owner = owner;
     }
 
@@ -31,9 +37,9 @@ public class HlAiController implements Controller {
     {
         action = PATROL;
         GameObject player = Controllers.getNearestPlayer(owner, game);
-        if (llcontrollerSS.target != null || Controllers.targetInFov(owner, player))
+        if (llcontrollerSS.target != null || (player != null && Controllers.targetInFov(owner, player)))
         {
-            if (!(owner.position.dist(startLocation) > RETREAT_DIST))
+            if (!(owner.position.distExcWW(motherShip.position) > RETREAT_DIST))
             {
                 llcontrollerSS.setTarget(player);
                 action = SEEKSHOOT;
@@ -41,13 +47,24 @@ public class HlAiController implements Controller {
             else
             {
                 action = PATROL;
+                llcontrollerSS.target = null;
             }
         }
 
-        GameObject nearestShip = Controllers.getNearestShip(owner, game);
-        double distCanTravel = owner.velocity.mag() * DT;
-        if (owner.position.dist(nearestShip.position) <= distCanTravel)
+        if (owner.position.dist(motherShip.position) > RETREAT_DIST)
         {
+            action = PATROL;
+            llcontrollerSS.target = null;
+        }
+
+        GameObject nearestShip = Controllers.getNearestShip(owner, game);
+        if (nearestShip != null && owner.position.distExcWW(nearestShip.position) <= AVOID_DIST)
+        {
+            if (nearestShip instanceof PlayerShip)
+            {
+                llcontrollerSS.setTarget(nearestShip);
+            }
+            llcontrolerAv.setTarget(nearestShip);
             action = AVOID;
         }
     }
@@ -60,14 +77,14 @@ public class HlAiController implements Controller {
         {
             case SEEKSHOOT:
                 llcontrollerSS.action();
-                act = llcontrollerSS.action;
+                act = llcontrollerPat.action;
                 break;
             case AVOID:
-                act = new Action();
+                act = llcontrolerAv.action();
                 break;
             case PATROL:
             default:
-                act = new Action();
+                act = llcontrollerPat.action();
                 break;
         }
         return act;
