@@ -7,7 +7,6 @@ import java.awt.geom.Path2D;
 
 public abstract class Bullet extends GameObject {
     protected int initSpd = 600;
-    protected Sprite sp;
     protected int width;
     protected int height;
     protected double bulletTime;
@@ -15,15 +14,13 @@ public abstract class Bullet extends GameObject {
 
     public Bullet(Vector2D position, Vector2D velocity, double RADIUS, Ship ship) {
         super(position, velocity, RADIUS);
-        this.width = 10;
-        this.height = 80;
         bulletTime = System.currentTimeMillis();
         this.direction = ship.direction.copy();
         // sets velocity to ships + init speed
         //TODO: change to
         this.velocity = Vector2D.polar(ship.direction.angle(), (ship.velocity.mag() + initSpd));
         // sets bullets position to 5mm outside of ships radius
-        this.position.add(Vector2D.polar(ship.direction.angle(), ship.RADIUS  + height/2 + 5));
+        this.position.add(Vector2D.polar(ship.direction.angle(), ship.RADIUS  + height/2 + 50));
     }
 
     @Override
@@ -54,5 +51,8 @@ public abstract class Bullet extends GameObject {
     public void draw(Graphics2D g)
     {
         sp.paint(g);
+        g.fill(sp.getTransformedShape());
+        System.out.println("Bullet pos" + position);
+        System.out.println("sp pos" + sp.position);
     }
 }

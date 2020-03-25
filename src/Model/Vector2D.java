@@ -259,6 +259,12 @@ public class Vector2D {
         return Math.hypot(v.x - x, v.y - y);
     }
 
+    public Vector2D proj(Vector2D d)
+    {
+        Vector2D result = new Vector2D(d);
+        result.mult(this.dot(d));
+        return result;
+    }
     /**
      * dist's purpose is to calculate the length of the magnitude in different from a this vector from
      * a given vectors. In addition, calculates distance including factoring the world wrap

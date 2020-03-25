@@ -16,7 +16,7 @@ public class PlayerShip extends Ship {
         MAX_SPEED = 300 * Player.shipSpeed;
         STEER_RATE = 2 * Math.PI * Player.turnResp; // rotational velocity in radians per second
         MAG_ACC = 600 * Player.shipAcc; // accelleration when thrust is applied
-        mainShip = new Sprite(position, direction, RADIUS * 2, RADIUS * 2, ImgManag.getImage("PlayerShip.png")
+        sp = new Sprite(position, direction, RADIUS * 2, RADIUS * 2, ImgManag.getImage("PlayerShip.png")
         , genShape());
         thrustSp = new Sprite(position, direction, RADIUS * 2+ 20, RADIUS * 2 + 120, ImgManag.getImage("ShipThrust.png")
         , genShape());
@@ -30,7 +30,7 @@ public class PlayerShip extends Ship {
 
     @Override
     public void hit(GameObject other) {
-
+        super.hit(other);
     }
 
     @Override

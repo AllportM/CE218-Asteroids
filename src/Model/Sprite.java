@@ -1,15 +1,10 @@
 package Model;
 
-import Controller.Game;
-import Model.Vector2D;
-
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 
-import static Model.Constants.WORLD_HEIGHT;
-import static Model.Constants.WORLD_WIDTH;
 
 public class Sprite {
 
@@ -81,5 +76,15 @@ public class Sprite {
     public int getHeight()
     {
         return img.getHeight();
+    }
+
+
+
+    public Shape getTransformedShape()
+    {
+        AffineTransform at = new AffineTransform();
+        at.translate(position.x, position.y);
+        at.rotate(direction.angle() + 0.5 * Math.PI, 0,0);
+        return shape.createTransformedShape(at);
     }
 }

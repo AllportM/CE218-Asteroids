@@ -15,7 +15,6 @@ public abstract class Ship extends GameObject {
     double DRAG = 5; // constant speed loss factor
     double thrust;
     public Bullet bullet;
-    Sprite mainShip;
     Sprite thrustSp;
     // controller for action
     Controller ctrl;
@@ -100,7 +99,7 @@ public abstract class Ship extends GameObject {
     @Override
     public void draw(Graphics2D g)
     {
-        mainShip.paint(g);
+        sp.paint(g);
         Composite init = g.getComposite();
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
                 (float) (thrust * (Math.random() * 0.3 + 0.7))));

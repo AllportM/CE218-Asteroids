@@ -16,7 +16,7 @@ public class EnemyShip extends Ship {
         MAX_SPEED = 300;
         STEER_RATE = 2; // rotational velocity in radians per second
         MAG_ACC = 600; // accelleration when thrust is applied
-        mainShip = new Sprite(position, direction, RADIUS * 2, RADIUS * 2, ImgManag.getImage("EnemyrShip.png")
+        sp = new Sprite(position, direction, RADIUS * 2, RADIUS * 2, ImgManag.getImage("EnemyrShip.png")
                 , genShape());
         thrustSp = new Sprite(position, direction, RADIUS * 2, RADIUS * 2 + 30, ImgManag.getImage("EnemyShipThrust.png")
                 , genShape());
@@ -31,6 +31,7 @@ public class EnemyShip extends Ship {
 
     @Override
     public void hit(GameObject other) {
+        super.hit(other);
         if (other instanceof PlayerShip)
             killedByPlayer = true;
         alive = false;

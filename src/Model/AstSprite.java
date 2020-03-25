@@ -22,26 +22,33 @@ public class AstSprite extends Sprite {
     {
         double scalex = width / img.getWidth();
         double scaley = height / img.getHeight();
-        BufferedImage scaled = new BufferedImage((int) (img.getWidth() * scalex) + 20,
-                (int) (img.getHeight() * scaley) + 20, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage scaled = new BufferedImage((int) (img.getWidth() * scalex),
+                (int) (img.getHeight() * scaley), BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = (Graphics2D) scaled.getGraphics();
         AffineTransform init = g.getTransform();
         Composite initComp = g.getComposite();
+        Shape initClip = g.getClip();
         // sets background to transparent
         g.setComposite(AlphaComposite.Clear);
         g.setColor(new Color(0,0,0));
         g.fill(new Rectangle(0,0, img.getWidth(), img.getHeight()));
         g.setComposite(initComp);
         // sets clip and fills background with textured pattern
-        Shape initClip = g.getClip();
-        g.setClip(shape);
-        g.scale(scalex, scaley);
+
+
+        // draws the asteroid onto new image utilizing shape, which requires translating given 0,0 is
+        // centered
+        AffineTransform shapeTransform = new AffineTransform();
+        shapeTransform.scale(img.getWidth() / width, img.getHeight() / height);
+        shapeTransform.translate(width/2, height/2);
+        Shape transformed = shape.createTransformedShape(shapeTransform);
+        g.setTransform(AffineTransform.getScaleInstance(scalex, scaley));
+        g.setClip(transformed);
         g.drawImage(img, 0, 0, null);
+        BasicStroke stroke = new BasicStroke(10f);
         g.setClip(initClip);
-        BasicStroke stroke = new BasicStroke(4f);
-        g.setTransform(init);
         g.setColor(new Color(106, 23, 166));
-        g.fill(new Area(stroke.createStrokedShape(shape)));
+        g.fill(new Area(stroke.createStrokedShape(transformed)));
         img = scaled;
     }
 }

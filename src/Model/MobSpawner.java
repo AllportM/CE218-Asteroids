@@ -39,7 +39,7 @@ public class MobSpawner extends GameObject{
 
     @Override
     public Path2D genShape() {
-        return null;
+        return new Path2D.Double();
     }
 
     @Override

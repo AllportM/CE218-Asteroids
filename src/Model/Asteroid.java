@@ -13,7 +13,6 @@ public class Asteroid extends GameObject {
     private Vector2D rotationalVec;
     public Asteroid[] child = new Asteroid[3];
     public boolean killedByPlayer = false;
-    private Sprite sp;
 
 //    private LinkedList<Vector2D> texture; // old rotating texture
 
@@ -114,7 +113,7 @@ public class Asteroid extends GameObject {
             shape.lineTo(Math.cos(angle) * mag, Math.sin(angle) * mag);
         }
         shape.closePath();
-        shape = (Path2D) shape.createTransformedShape(AffineTransform.getTranslateInstance(RADIUS, RADIUS));
+        shape.createTransformedShape(AffineTransform.getTranslateInstance(RADIUS, RADIUS));
         return shape;
     }
 
@@ -134,6 +133,8 @@ public class Asteroid extends GameObject {
      *      Graphics2D, the jswing graphics object to draw unto
      */
     public void draw(Graphics2D g) {
+
+        g.fill(sp.getTransformedShape());
         sp.paint(g);
     }
 
