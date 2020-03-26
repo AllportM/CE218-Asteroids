@@ -30,6 +30,7 @@ public abstract class Bullet extends GameObject {
 
     @Override
     public void hit(GameObject other) {
+        super.hit(other);
         alive = false;
     }
 
@@ -51,8 +52,5 @@ public abstract class Bullet extends GameObject {
     public void draw(Graphics2D g)
     {
         sp.paint(g);
-        g.fill(sp.getTransformedShape());
-        System.out.println("Bullet pos" + position);
-        System.out.println("sp pos" + sp.position);
     }
 }

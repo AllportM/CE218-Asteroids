@@ -1,6 +1,8 @@
 package Model;
 
+import Controller.Game;
 import View.ImgManag;
+import View.SoundsManag;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -13,6 +15,9 @@ public class Asteroid extends GameObject {
     private Vector2D rotationalVec;
     public Asteroid[] child = new Asteroid[3];
     public boolean killedByPlayer = false;
+    public int ttl; // how long before asteroid explodes, will be between 30-60 seconds as set in constructor
+    public long spawnTime;
+    private static final int LARGE = 55, MEDIUM = 40, SMALL = 25;
 
 //    private LinkedList<Vector2D> texture; // old rotating texture
 
@@ -30,11 +35,40 @@ public class Asteroid extends GameObject {
         String text = String.format("asttext%d.png", (int) (Math.random() * 9));
         // sets sprite accordingly to radius of asteroid with random picture
         sp = new AstSprite(position, rotationalVec, rad*2, rad*2, ImgManag.getImage(text), genShape());
+        ttl = ((int) (Math.random() * 30) + 30) * 1000;
+        spawnTime = System.currentTimeMillis();
     }
 
-    public void hit()
+    /**
+     * makeRandomAsteroid's main purpose it to create an asteroid with random positional
+     * and velocity values utilizing Math.random should positions not be within 10*playership radius
+     *
+     * @return
+     */
+    public static Asteroid makeRandomAsteroid() {
+        int[] radii = {SMALL, MEDIUM, LARGE};
+        int radius = radii[(int) (Math.random() * 3)]; // random radius between 12-24 in increments of 6 (3 different
+                                                        // sizes of asteroids)
+        GameObject player = Game.player.playerShip;
+        Vector2D playerPos = player.position;
+        double x, y;
+        Vector2D pos;
+        do
+        {
+            x = Math.random() * WORLD_WIDTH;
+            y = Math.random() * WORLD_HEIGHT;
+            pos = new Vector2D(x, y);
+        }
+        while (playerPos.dist(pos) < 500);
+        double vx = (Math.random() * MAX_SPEED * 2) - MAX_SPEED;
+        double vy = (Math.random() * MAX_SPEED * 2) - MAX_SPEED;
+//        System.out.printf("posx= %3.2f, posy= %3.2f\nspeedx= %3.2f, speedy = %3.2f\n",
+//                x, y, vx, vy);
+        return new Asteroid(x, y, vx, vy, radius);
+    }
+
+    private void spawnBabies()
     {
-        this.alive = false;
         // creates 3 new child asteroids off 1 radius smaller then existing dead one
         // with random velocity scaled greater than parent's with random directional angle
         for (int i = 0; i < 3; i++) {
@@ -42,38 +76,19 @@ public class Asteroid extends GameObject {
             Vector2D newV = Vector2D.polar(randAngle, velocity.mag() * (Math.random() + 1));
             switch ((int) RADIUS)
             {
-                case 25:
+                case MEDIUM:
+                    child[i] = new Asteroid(this.position.x, this.position.y,
+                            newV.x, newV.y, SMALL);
+                    break;
+                case LARGE:
+                    child[i] = new Asteroid(this.position.x, this.position.y,
+                            newV.x, newV.y, MEDIUM);
+                    break;
+                case SMALL:
                 default:
-                    break;
-                case 40:
-                    child[i] = new Asteroid(this.position.x, this.position.y,
-                            newV.x, newV.y, 25);
-                    break;
-                case 55:
-                    child[i] = new Asteroid(this.position.x, this.position.y,
-                            newV.x, newV.y, 40);
                     break;
             }
         }
-    }
-
-    /**
-     * makeRandomAsteroid's main purpose it to create an asteroid with random positional
-     * and velocity values utilizing Math.random
-     *
-     * @return
-     */
-    public static Asteroid makeRandomAsteroid() {
-        int[] radii = {25, 40, 55};
-        int radius = radii[(int) (Math.random() * 3)]; // random radius between 12-24 in increments of 6 (3 different
-                                                        // sizes of asteroids)
-        double x = Math.random() * WORLD_WIDTH;
-        double y = Math.random() * WORLD_HEIGHT;
-        double vx = (Math.random() * MAX_SPEED * 2) - MAX_SPEED;
-        double vy = (Math.random() * MAX_SPEED * 2) - MAX_SPEED;
-//        System.out.printf("posx= %3.2f, posy= %3.2f\nspeedx= %3.2f, speedy = %3.2f\n",
-//                x, y, vx, vy);
-        return new Asteroid(x, y, vx, vy, radius);
     }
 
 
@@ -84,7 +99,30 @@ public class Asteroid extends GameObject {
 
     @Override
     public void hit(GameObject other) {
-
+        super.hit(other);
+        alive = false;
+        spawnBabies();
+        if (other instanceof PlayerBullet)
+        {
+            killedByPlayer = true;
+        }
+        // plays explosion sound
+        if (position.dist(Game.player.playerShip.position) <= FRAME_WIDTH + 200)
+        {
+            switch ((int) RADIUS)
+            {
+                case MEDIUM:
+                    SoundsManag.medExp();
+                    break;
+                case LARGE:
+                    SoundsManag.largeExp();
+                    break;
+                case SMALL:
+                default:
+                    SoundsManag.smallExp();
+                    break;
+            }
+        }
     }
 
     /**
@@ -121,9 +159,15 @@ public class Asteroid extends GameObject {
      * update's purpose is to update the asteroids position given it's velocity
      * and change in time DT
      */
+    @Override
     public void update() {
         super.update();
         rotationalVec.rotate(0.01);
+        if (System.currentTimeMillis() - spawnTime >= ttl && RADIUS > SMALL)
+        {
+            alive = false;
+            spawnBabies();
+        }
     }
 
     /**
@@ -132,9 +176,10 @@ public class Asteroid extends GameObject {
      * @param g
      *      Graphics2D, the jswing graphics object to draw unto
      */
-    public void draw(Graphics2D g) {
+    @Override
+    public void draw(Graphics2D g)
+    {
 
-        g.fill(sp.getTransformedShape());
         sp.paint(g);
     }
 

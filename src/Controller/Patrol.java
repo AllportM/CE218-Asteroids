@@ -27,13 +27,13 @@ public class Patrol implements Controller {
             action.thrust = 0;
         if (owner.position.dist(mothership.position) > DISTANCE)
         {
-            Vector2D toTravel = Controllers.unwrappedPosTarg(owner, mothership);
+            Vector2D toTravel = ControllerHelperFuncts.unwrappedPosTarg(owner, mothership);
             Vector2D between2 = toTravel.copy().subtract(owner.position);
             double direct = owner.direction.angle(between2);
             // turns towards target
-            if (direct < 0.1)
+            if (direct < 0)
                 action.turn = -1;
-            else if (direct > 0.1)
+            else if (direct > 0)
                 action.turn = 1;
             else action.turn = 0;
         }

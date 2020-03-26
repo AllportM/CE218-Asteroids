@@ -17,6 +17,8 @@ import static Model.Constants.*;
 public class BasicView extends JComponent {
 
     private Game game; // reference to the game instance
+    public static final Font FONT = new Font("Bahnschrift Light", Font.BOLD, 20);
+    public static final Color FONT_COLOUR = Color.cyan;
 
     /**
      * Standard instance constructor, initializes game reference
@@ -38,6 +40,7 @@ public class BasicView extends JComponent {
     {
         // whole drawing process synchronized so that all updates have been processed before
         // any rendering commences (reduces any gittering from painting old positional values)
+        if (!(Game.isEnd))
         synchronized (Game.class)
         {
             Graphics2D g = (Graphics2D) g0;
@@ -105,19 +108,44 @@ public class BasicView extends JComponent {
             g.setTransform(initG);
 
             // draws the minimap onto window
-            g.setClip(new Ellipse2D.Double(0, 0, minimapW, minimapH));
-            g.drawImage(miniMap, 0, 0, null);
+            g.setClip(new Ellipse2D.Double(20, 20, minimapW, minimapH));
+            g.drawImage(miniMap, 20, 20, null);
             g.setClip(initClip);
 
+            g.drawImage(ImgManag.getImage("hud.png"), 0, 0, null);
+
             // draws scores and lifes
-            String score, lifes;
-            g.setColor(Color.cyan);
-            g.setFont(new Font("Bahnschrift Light", Font.BOLD, 20));
+            String score, destroyables, health;
+            g.setColor(FONT_COLOUR);
+            g.setFont(FONT);
             score = "Score: " + game.player.score;
-//            lifes = "Health: " + game.lifes;
-            int fontW = g.getFontMetrics().stringWidth(score);
-            g.drawString(score, FRAME_WIDTH - fontW - 50, 20);
-//            g.drawString(lifes, 0, 20);
+            health = "Health: " + Player.health + " / " + Player.maxHealth;
+            destroyables = "Ast/Mobs: " + Game.noOfDestroyables;
+            int fontW = FRAME_WIDTH - g.getFontMetrics().stringWidth(score) - 120;
+            g.drawString(score, fontW , 20);
+            g.drawString(health, fontW , 45 );
+            g.drawString(destroyables, fontW,  70);
+
+            String timerString;
+            //draws new level timer
+            if (Game.newLevelTimer != 0)
+            {
+                timerString = "New level in " + (5 - ((System.currentTimeMillis() - Game.newLevelTimer) / 1000));
+                fontW = FRAME_WIDTH/2 - g.getFontMetrics().stringWidth(timerString) / 2;
+                g.drawString(timerString, fontW, 45);
+            }
+
+            // draws death time
+            if (Game.playerDied != 0)
+            {
+                g.setColor(Color.red);
+                String deathMessage = "Defeated";
+                timerString = "Reset available in " + (5 - ((System.currentTimeMillis() - Game.playerDied) / 1000));
+                fontW = FRAME_WIDTH/2 - g.getFontMetrics().stringWidth(deathMessage)/2;
+                g.drawString(deathMessage, fontW, FRAME_HEIGHT/2);
+                fontW = FRAME_WIDTH/2 - g.getFontMetrics().stringWidth(timerString)/2;
+//                g.drawString(timerString, fontW, FRAME_HEIGHT/2 + 25);
+            }
             g.setColor(initCol);
         }
 

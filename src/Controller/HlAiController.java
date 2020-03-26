@@ -3,7 +3,6 @@ package Controller;
 import Model.GameObject;
 import Model.MobSpawner;
 import Model.PlayerShip;
-import Model.Vector2D;
 
 import static Model.Constants.*;
 
@@ -17,7 +16,7 @@ public class HlAiController implements Controller {
     private int action;
     private final static int SEEKSHOOT = 0, AVOID = 1, PATROL = 2;
     private final static int RETREAT_DIST = FRAME_WIDTH * 2;
-    private final static int AVOID_DIST = 350;
+    private final static int AVOID_DIST = 250;
 
     public HlAiController(Game game, MobSpawner ms)
     {
@@ -36,8 +35,8 @@ public class HlAiController implements Controller {
     public void makeDecision()
     {
         action = PATROL;
-        GameObject player = Controllers.getNearestPlayer(owner, game);
-        if (llcontrollerSS.target != null || (player != null && Controllers.targetInFov(owner, player)))
+        GameObject player = ControllerHelperFuncts.getNearestPlayer(owner, game);
+        if (llcontrollerSS.target != null || (player != null && ControllerHelperFuncts.targetInFov(owner, player)))
         {
             if (!(owner.position.distExcWW(motherShip.position) > RETREAT_DIST))
             {
@@ -57,7 +56,7 @@ public class HlAiController implements Controller {
             llcontrollerSS.target = null;
         }
 
-        GameObject nearestShip = Controllers.getNearestShip(owner, game);
+        GameObject nearestShip = ControllerHelperFuncts.getNearestShip(owner, game);
         if (nearestShip != null && owner.position.distExcWW(nearestShip.position) <= AVOID_DIST)
         {
             if (nearestShip instanceof PlayerShip)

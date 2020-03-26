@@ -45,7 +45,7 @@ public class AstSprite extends Sprite {
         g.setTransform(AffineTransform.getScaleInstance(scalex, scaley));
         g.setClip(transformed);
         g.drawImage(img, 0, 0, null);
-        BasicStroke stroke = new BasicStroke(10f);
+        BasicStroke stroke = new BasicStroke(5f);
         g.setClip(initClip);
         g.setColor(new Color(106, 23, 166));
         g.fill(new Area(stroke.createStrokedShape(transformed)));

@@ -24,7 +24,7 @@ public class PlayerBullet extends Bullet {
     @Override
     public Path2D genShape() {
         Path2D shape = new Path2D.Double();
-        shape.append(new Rectangle(0,0,width, height), true);
+        shape.append(new Rectangle(-width/2,-height/2,width, height), true);
         return shape;
     }
 

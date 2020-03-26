@@ -1,12 +1,11 @@
 package Controller;
 
 import Model.*;
-import View.BasicView;
 import View.ImgManag;
-import View.JEasyFrame;
+import View.MainUI;
+import View.SoundsManag;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -20,15 +19,24 @@ import static Model.Constants.*;
  */
 public class Game
 {
-    public static final int N_INITIAL_ASTEROIDS = 50;
+    private static final int N_INITIAL_ASTEROIDS = 30;
+    private static final int MIN_MOBS = 3;
+    private static final int MAX_MOBS = 15;
+    private static final int MOB_DIFF_FAC = 2;
+    private static final int MAX_ASTEROIDS = 102;
+    private static final int AST_DIFF_MULT = 3;
+         // max mobs reached in (15-3) * 2 levels, asteroids must reach 72 in 24 levels, 3 each new map
     public static long startOfGame;
-    public boolean isEnd = false;
+    public static int noOfDestroyables = 0;
+    public static boolean isEnd;
     public LinkedList<GameObject> gameObjects;
     public TreeSet<ParallaxingObject> pObjs;
-    Keys ctrl;
+    public Keys ctrl;
     public static ViewPort vp;
-    BasicView view;
+    public MainUI view;
     public static Player player;
+    public static long newLevelTimer;
+    public static long playerDied;
 
     /**
      * No arg constructor, instantiates BasicAsteroids and adds to asteroids list
@@ -37,21 +45,96 @@ public class Game
     {
         ImgManag.init();
         ctrl = new Keys();
+        initGame();
+        gameObjects = new LinkedList<>();
+        pObjs = new TreeSet<>();
+    }
+
+    public void initGame()
+    {
         gameObjects = new LinkedList<>();
         pObjs = new TreeSet<>();
         player = new Player();
-        PlayerShip ps = new PlayerShip(ctrl);
+        PlayerShip ps = new PlayerShip(ctrl, player);
         player.setPlayerShip(ps);
         gameObjects.add(ps);
         vp = new ViewPort(0,0, ps);
-        generateSpawners();
-        generateStars();
-        generateAsteroids();
+        isEnd = false;
+        newLevelTimer = 0;
+        player.resetPlayer();
+        playerDied = 0;
     }
 
+
+    public void newLevel()
+    {
+        synchronized (Game.class)
+        {
+            gameObjects = new LinkedList<>();
+            pObjs = new TreeSet<>();
+            gameObjects.add(player.playerShip);
+            generateStars();
+            generateSpawners();
+            generateAsteroids();
+//            Vector2D position = player.playerShip.position.copy();
+//            position.add(500, 0);
+//            MobSpawner mp = new MobSpawner(position, this);
+//            gameObjects.addAll(mp.ships);
+//            gameObjects.add(mp);
+            newLevelTimer = 0;
+        }
+    }
+
+    /**
+     * Main method incorporating game loop
+     * @param args
+     * @throws Exception
+     */
+    public static void main(String[] args) throws Exception
+    {
+        new MainUI();
+    }
+
+    public void gameLoop()
+    {
+        SoundsManag.startMusic();
+        Timer repaintTimer = new Timer(Constants.DELAY, e ->
+        {
+            view.repaint();
+        });
+        repaintTimer.start();
+        startOfGame = System.currentTimeMillis();
+        int missedFrames = 0;
+        while (!isEnd) {
+            long t0 = System.currentTimeMillis();
+            update();
+            long t1 = System.currentTimeMillis();
+            long timeout = Constants.DELAY - (t1 - t0);
+            if (timeout > 0)
+                try {
+                    Thread.sleep(timeout);
+                }
+                catch (InterruptedException ignore){}
+            else {
+                missedFrames++;
+                System.out.println(missedFrames);
+            }
+        }
+        repaintTimer.stop();
+        if (player.playerShip.alive)
+        {
+            SoundsManag.stopMusic();
+            Player.difficulty++;
+            view.newLevel();
+        }
+        else {
+            view.addButton();
+        }
+    }
     private void generateAsteroids()
     {
-        for (int i = 0; i < N_INITIAL_ASTEROIDS; i++)
+        int toSpawn = Math.min(N_INITIAL_ASTEROIDS + (AST_DIFF_MULT * (Player.difficulty - 1)), MAX_ASTEROIDS);
+        for (int i = 0; i < toSpawn; i++)
         {
             gameObjects.add(Asteroid.makeRandomAsteroid());
         }
@@ -65,27 +148,8 @@ public class Game
         int spawnerdistance = 900;
         boolean xInRange, uppperBoundlowerBound;
         Vector2D spawnerPosition;
-        int mobstospawn = 9;
-//
-//        ArrayList<double[]> points = new ArrayList<>();
-//        double horiNodes = WORLD_WIDTH / (awayFromEdge * 3);
-//        double vertiNodes = WORLD_HEIGHT / (awayFromEdge * 3);
-//        System.out.println(horiNodes + ", " + vertiNodes);
-//        for (double i = WORLD_HEIGHT / vertiNodes; i <= WORLD_HEIGHT; i += WORLD_HEIGHT / vertiNodes)
-//        {
-//            for (double j = WORLD_WIDTH / horiNodes; j <= WORLD_WIDTH; j += WORLD_WIDTH / horiNodes)
-//            {
-//                System.out.println(i + ", " + j);
-//                if ((j  < WORLD_WIDTH / 2f - FRAME_WIDTH / 2f || j > WORLD_WIDTH / 2f + FRAME_WIDTH / 2f)
-//                    && (i < WORLD_HEIGHT / 2f - FRAME_HEIGHT / 2 || i > WORLD_HEIGHT / 2f - FRAME_HEIGHT / 2f))
-//                {
-//                    double[] point = {i / 2, j / 2};
-//                    points.add(point);
-//                }
-//            }
-//        }
-//        System.out.println(points.size());
-
+        // every 3 levels mob spawners increase by 1
+        int mobstospawn = Math.min(Player.difficulty /MOB_DIFF_FAC + MIN_MOBS, MAX_MOBS);
         while (spawners.size() !=  mobstospawn)
         {
             xInRange = Math.random() < 0.5;
@@ -135,6 +199,7 @@ public class Game
             gameObjects.addAll(spawner.ships);
         }
     }
+
     /**
      * geenerateStars purpose is to populate the pObjs array with procedurally generated parallaxing
      * stars, and the background.
@@ -170,51 +235,6 @@ public class Game
         }
     }
 
-    /**
-     * Main method incorporating game loop
-     * @param args
-     * @throws Exception
-     */
-    public static void main(String[] args) throws Exception
-    {
-        Game game = new Game();
-        BasicView view = new BasicView(game);
-        new JEasyFrame(view, "Basic Game").addKeyListener(game.ctrl);
-//         below may improve game graphics at later date
-        Graphics2D g = (Graphics2D) view.getGraphics();
-        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        g.setRenderingHint(RenderingHints.KEY_DITHERING,
-                RenderingHints.VALUE_DITHER_ENABLE);
-        g.setRenderingHint(RenderingHints.KEY_RENDERING,
-                RenderingHints.VALUE_RENDER_QUALITY);
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
-        g.setRenderingHint(RenderingHints.KEY_TEXT_LCD_CONTRAST, 100);
-        g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
-                RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-        g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION,
-                RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
-        g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING,
-                RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-        g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,
-                RenderingHints.VALUE_STROKE_PURE);
-
-        // Game loop
-        Timer repaintTimer = new Timer(Constants.DELAY, e -> view.repaint());
-        repaintTimer.start();
-        game.startOfGame = System.currentTimeMillis();
-        int missedFrames = 0;
-        while (!game.isEnd) {
-            long t0 = System.currentTimeMillis();
-            game.update();
-            long t1 = System.currentTimeMillis();
-            long timeout = Constants.DELAY - (t1 - t0);
-            if (timeout > 0)
-                Thread.sleep(timeout);
-            else missedFrames++;
-        }
-    }
 
     /**
      * update's purpose is to set the positional and velocity values of game objects
@@ -245,6 +265,7 @@ public class Game
 
         synchronized (Game.class)
         {
+            noOfDestroyables = 0;
             LinkedList<GameObject> alive = new LinkedList<>();
             for (Iterator<GameObject> it = gameObjects.iterator(); it.hasNext();)
             {
@@ -264,6 +285,8 @@ public class Game
                 // adds live objects to alive list in order to remove dead ones
                 if (obj.alive)
                 {
+                    if (obj instanceof EnemyShip || obj instanceof Asteroid)
+                        noOfDestroyables += 1;
                     alive.add(obj);
                 }
 
@@ -285,12 +308,30 @@ public class Game
                         Player.score += 100;
                     }
                 }
-    //            };
-    //            thread = new Thread(task);
-    //            thread.start();
+                else if (obj instanceof EnemyShip && ((EnemyShip)obj).killedByPlayer)
+                {
+                    Player.score += 300;
+                    // 30% chance to drop an item
+                    if (Math.random() > 0.5)
+                        alive.add(new ItemPickup(obj));
+                }
             }
+
             gameObjects.clear();
             gameObjects.addAll(alive);
+
+            // handles end of level, setting timers counting down from 5 seconds
+            if (noOfDestroyables == 0 && newLevelTimer == 0 && player.playerShip.alive)
+                newLevelTimer = System.currentTimeMillis();
+            if (newLevelTimer != 0 && System.currentTimeMillis() - newLevelTimer >= 5000)
+                isEnd = true;
+
+            if (!player.playerShip.alive && playerDied == 0)
+            {
+                playerDied = System.currentTimeMillis();
+            }
+            if (playerDied != 0 && System.currentTimeMillis() - playerDied >= 5000)
+                isEnd = true;
         }
     }
 }

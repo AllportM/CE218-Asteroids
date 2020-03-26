@@ -9,18 +9,18 @@ import java.awt.*;
 import static Model.Constants.DT;
 
 public abstract class Ship extends GameObject {
-    double MAX_SPEED;
-    double STEER_RATE; // rotational velocity in radians per second
-    double MAG_ACC; // accelleration when thrust is applied
-    double DRAG = 5; // constant speed loss factor
-    double thrust;
+    private double DRAG = 5; // constant speed loss factor
+    private double thrust;
+    private double bulletTime;
     public Bullet bullet;
     Sprite thrustSp;
     // controller for action
-    Controller ctrl;
-    double bulletTime;
+    private Controller ctrl;
+    private Player p;
+    public static final double MAX_SPEED = 300, STEER_RATE = 2, MAG_ACC = 600, FIRE_RATE = 1.5;
+    public double mySpeed, mySteer, myAcc, myFire;
     // vector and sprites
-    double fireRate;
+
 
     public Ship(Vector2D position, Vector2D velocity, double RADIUS, Controller ctrl) {
         super(position, velocity, RADIUS);
@@ -29,6 +29,7 @@ public abstract class Ship extends GameObject {
         this.ctrl = ctrl;
         bulletTime = System.currentTimeMillis();
         thrust = 0;
+        p = new Player();
     }
 
     public abstract void mkBullet();
@@ -39,16 +40,15 @@ public abstract class Ship extends GameObject {
     public void update()
     {
         super.update();
-        Game.vp.update();
         Action act = ctrl.action();
 
         // updates ship's velocity values as a product of user action, acceleration, and change in time
         // or deducts velocities magnitude by a scale of drag
-        if (velocity.mag() < MAX_SPEED && act.thrust > 0)
-            velocity.add(Vector2D.polar(direction.angle(), (MAG_ACC * act.thrust * DT)));
+        if (velocity.mag() < mySpeed && act.thrust > 0)
+            velocity.add(Vector2D.polar(direction.angle(), (myAcc * act.thrust * DT)));
         // moves at half speed if thrust negative i.e backwards
-        else if (velocity.mag() < MAX_SPEED / 2 && act.thrust < 0)
-            velocity.add(Vector2D.polar(direction.angle(), (MAG_ACC * act.thrust * DT)));
+        else if (velocity.mag() < mySpeed / 2 && act.thrust < 0)
+            velocity.add(Vector2D.polar(direction.angle(), (myAcc * act.thrust * DT)));
         if (velocity.mag() >= DRAG)
             velocity.subtract(Vector2D.polar(velocity.angle(), DRAG));
         else velocity.set(0,0);
@@ -56,7 +56,7 @@ public abstract class Ship extends GameObject {
         // calcs if any rotation has been made
         // rotates ship upon change in angle from direction and ship Rot by calculating the
         // difference between updated direction and old shipRot value
-        direction.rotate(act.turn * STEER_RATE * DT);
+        direction.rotate(act.turn * mySteer * DT);
 
 /** depreciated **/
 //        double angle = shipRot.angle(direction);
@@ -67,10 +67,10 @@ public abstract class Ship extends GameObject {
 //            thrustImg.setRotate(angle);
 //        }
 
-        // updates bulletTime and if fireRate's time has passed, 1/rate seconds, then ship can
+        // updates bulletTime and if FIRE_RATE's time has passed, 1/rate seconds, then ship can
         // fire another bullet
         long now = System.currentTimeMillis();
-        if (act.shoot && now - bulletTime >= 1000f/fireRate)
+        if (act.shoot && now - bulletTime >= 1000f/ myFire)
         {
             bulletTime = now;
             mkBullet();

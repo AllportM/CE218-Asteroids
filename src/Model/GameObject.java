@@ -45,44 +45,6 @@ public abstract class GameObject implements Drawable{
             this.hit(other);
             other.hit(this);
         }
-//        // ensures two objects are of differenct classes
-//        if (this.getClass() != other.getClass() && this.overlap(other))
-//        {
-//
-//            if (this.getClass() == PlayerShip.class && other.getClass() == Asteroid.class)
-//            {
-//                PlayerShip obj = (PlayerShip) this;
-//                this.hit();
-//                obj.hit();
-//            }
-//            else if (this.getClass() == Asteroid.class && other.getClass() == PlayerShip.class)
-//            {
-//                this.hit();
-//                other.hit();
-//            }
-//            else if (this.getClass() != MobSpawner.class && other.getClass() != MobSpawner.class)
-//            {
-//                this.hit();
-//                other.hit();
-//            }
-//
-//            // sets killedByPlayer boolean on asteroid if either of the objects which destroyed asteroid were
-//            // bullets owned by the player so that score can be incremented
-//            if (this.getClass() == Asteroid.class && other.getClass() == Bullet.class)
-//            {
-//                Asteroid obj1 = (Asteroid) this;
-//                Bullet obj2 = (Bullet) other;
-//                if (obj2.firedByPlayer)
-//                    obj1.killedByPlayer = true;
-//            }
-//            else if (this.getClass() == Bullet.class && other.getClass() == Asteroid.class)
-//            {
-//                Asteroid obj1 = (Asteroid) other;
-//                Bullet obj2 = (Bullet) this;
-//                if (obj2.firedByPlayer)
-//                    obj1.killedByPlayer = true;
-//            }
-//        }
     }
     public abstract boolean canHit(GameObject other);
 
@@ -95,8 +57,8 @@ public abstract class GameObject implements Drawable{
         Vector2D vt = velocity.proj(tang);
         Vector2D voc = other.velocity.proj(coll);
         Vector2D vot = other.velocity.proj(tang);
-        velocity.set(vt).add(voc);
-        other.velocity.set(vot).add(vc);
+        velocity.set(vt).add(voc.mult(0.3));
+        other.velocity.set(vot).add(vc.mult(0.3));
     }
 
     public abstract Path2D genShape();

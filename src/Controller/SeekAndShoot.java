@@ -1,6 +1,7 @@
 package Controller;
 
 import Model.GameObject;
+import Model.Player;
 import Model.Vector2D;
 
 public class SeekAndShoot implements Controller {
@@ -22,7 +23,7 @@ public class SeekAndShoot implements Controller {
     {
         if (target == null)
             return action;
-        Vector2D toTravel = Controllers.unwrappedPosTarg(owner, target);
+        Vector2D toTravel = ControllerHelperFuncts.unwrappedPosTarg(owner, target);
 
         // gets angle difference between direction and ships position
         Vector2D between2 = toTravel.copy().subtract(owner.position);
@@ -34,8 +35,9 @@ public class SeekAndShoot implements Controller {
             action.turn = 1;
         else action.turn = 0;
 
-        // if target in fov of +/- 5 degree ship shoots
-        if (direct > Math.toRadians(-5) && direct < Math.toRadians(5) && owner.position.dist(target.position) < 400)
+        // if target in fov of +/- 5 degree ship shoots by a distance of 400-600 dependant upon difficulty
+        if (direct > Math.toRadians(Math.random()*1) && direct < Math.toRadians(5)
+                && owner.position.dist(target.position) < 400 + (Player.difficulty / 12) * 100)
             action.shoot = true;
         else
             action.shoot = false;
