@@ -5,26 +5,28 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 
-
+/**
+ * Sprites purpose is to store a gameobjects image, position, and direction, and provide functionality
+ * to paint an image onto a Graphics2D object
+ */
 public class Sprite {
 
-    Vector2D position;
-    Vector2D direction;
-    BufferedImage img;
-    double width;
-    double height;
-    Path2D shape;
+    Vector2D position; // position relative to world
+    Vector2D direction; // direction facing
+    BufferedImage img; // the image of this sprite
+    double width; // width of image
+    double height; // height of image
+    Path2D shape; // the shape, to be translated and rotated for collision detection based upon position and direction
 
-    public Sprite(Vector2D position, Vector2D direction, double width, double height, BufferedImage imname)
-    {
-        this.position = position;
-        this.direction = direction;
-        this.width = width;
-        this.height = height;
-        this.img = imname;
-        scaleImage();
-    }
-
+    /**
+     * Standard constructor for a sprite
+     * @param position
+     * @param direction
+     * @param width
+     * @param height
+     * @param imname
+     * @param shape
+     */
     public Sprite(Vector2D position, Vector2D direction, double width, double height, BufferedImage imname
     , Path2D shape)
     {
@@ -34,10 +36,13 @@ public class Sprite {
         this.height = height;
         this.img = imname;
         this.shape = shape;
-        scaleImage();
+        transformImage();
     }
 
-    void scaleImage()
+    /**
+     * transform image's purpose is to transform the image upon its construction to the new scale
+     */
+    void transformImage()
     {
         double scalex = width / img.getWidth();
         double scaley = height / img.getHeight();
@@ -52,6 +57,10 @@ public class Sprite {
         img = scaled;
     }
 
+    /**
+     * provides functionality to translate/rotate and draw this image upon the position and vector
+     * @param g
+     */
     public void paint(Graphics2D g) {
         AffineTransform init = g.getTransform();
         AffineTransform imgRotatedAT = new AffineTransform();
@@ -78,8 +87,11 @@ public class Sprite {
         return img.getHeight();
     }
 
-
-
+    /**
+     * transorms the shape upon the position and direction
+     * @return
+     *      transformed shape
+     */
     public Shape getTransformedShape()
     {
         AffineTransform at = new AffineTransform();

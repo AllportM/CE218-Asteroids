@@ -1,5 +1,8 @@
 package Model;
 
+/**
+ * Player's purpose is to hold player stat variables acessable throughout the game statically
+ */
 public class Player {
     // multipliers for attributes effecting player's stats
     public static int radarRange = 10, score = 0, difficulty = 1, health = 100, maxHealth = 100;
@@ -12,6 +15,9 @@ public class Player {
         this.playerShip = playerShip;
     }
 
+    /**
+     * resets stats back to default having been changed after item pickups in previous games
+     */
     public void resetPlayer()
     {
         shipSpeed = shipAcc = fireRate = turnResp = 1.0;

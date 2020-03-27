@@ -1,23 +1,31 @@
 package Model;
 
-import View.ImgManag;
-
 import java.awt.*;
 import java.awt.geom.Path2D;
 
+/**
+ * Bullets purpose is to provide standard functionality to be inheritted by both player and enemy bullets
+ * given both have different appearences
+ */
 public abstract class Bullet extends GameObject {
-    protected int initSpd = 600;
-    protected int width;
-    protected int height;
-    protected double bulletTime;
-    private double ttl = 1;
+    protected int initSpd = 600; // standard speed of a bullet
+    protected int width; // width of this bullet
+    protected int height; // height of this bullet
+    protected double bulletTime; // the time this bullet was spawned
+    private double ttl = 1; // time to live in seconds
 
+    /**
+     * Standard constructor
+     * @param position
+     * @param velocity
+     * @param RADIUS
+     * @param ship
+     */
     public Bullet(Vector2D position, Vector2D velocity, double RADIUS, Ship ship) {
         super(position, velocity, RADIUS);
         bulletTime = System.currentTimeMillis();
         this.direction = ship.direction.copy();
         // sets velocity to ships + init speed
-        //TODO: change to
         this.velocity = Vector2D.polar(ship.direction.angle(), (ship.velocity.mag() + initSpd));
         // sets bullets position to 5mm outside of ships radius
         this.position.add(Vector2D.polar(ship.direction.angle(), ship.RADIUS  + height/2 + 50));

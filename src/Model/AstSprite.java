@@ -1,24 +1,38 @@
 package Model;
 
-import Model.Sprite;
-import Model.Vector2D;
-
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 
+/**
+ * AstSprites purpose is to inherit Sprites functionality, but override the scale image method to construct a
+ * new image given this asteroids random shape
+ */
 public class AstSprite extends Sprite {
 
+    /**
+     * Standard constructor, passes through all as per supers constructor
+     * @param position
+     * @param direction
+     * @param width
+     * @param height
+     * @param imname
+     * @param shape
+     */
     public AstSprite(Vector2D position, Vector2D direction, double width, double height, BufferedImage imname
             , Path2D shape)
     {
         super(position, direction, width, height, imname, shape);
     }
 
+    /**
+     * overriden method which basically generates a whole new image by overlaying this instances shape
+     * onto a graphics object after transformation and then painting the texture associated to this sprite as an image
+     */
     @Override
-    void scaleImage()
+    void transformImage()
     {
         double scalex = width / img.getWidth();
         double scaley = height / img.getHeight();

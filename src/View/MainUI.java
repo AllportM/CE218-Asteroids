@@ -1,13 +1,10 @@
 package View;
 
 import Controller.Game;
-import Model.Player;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -68,6 +65,7 @@ public class MainUI extends JFrame
 
     public void addButton()
     {
+
         newGame.setVisible(true);
         gamePanel.comp.setVisible(false);
         gamePanel.removeAll();

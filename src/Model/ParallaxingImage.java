@@ -1,11 +1,13 @@
 package Model;
 
-import Controller.Game;
 import View.ImgManag;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+/**
+ * ParallaxingImage's purpose is to provide direct implementation of parallaxing objects draw method
+ */
 public class ParallaxingImage extends ParallaxingObject {
     BufferedImage im;
 

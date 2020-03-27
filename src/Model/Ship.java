@@ -8,35 +8,51 @@ import java.awt.*;
 
 import static Model.Constants.DT;
 
+/**
+ * Ships purpose is to provide most of the basic functionality of a shit, and declare abstract methods
+ * for player and enemy ships to directly implement
+ */
 public abstract class Ship extends GameObject {
     private double DRAG = 5; // constant speed loss factor
     private double thrust;
-    private double bulletTime;
-    public Bullet bullet;
-    Sprite thrustSp;
+    private double bulletTime; // time bullet spawned used to know when to fire next
+    public Bullet bullet; // bullet to fire used by Game to insert into gameobjs
+    Sprite thrustSp; // the main sprite for a ship, main image to paint
     // controller for action
     private Controller ctrl;
-    private Player p;
+    // constants used as a base for ships parameters
     public static final double MAX_SPEED = 300, STEER_RATE = 2, MAG_ACC = 600, FIRE_RATE = 1.5;
     public double mySpeed, mySteer, myAcc, myFire;
-    // vector and sprites
 
-
+    /**
+     * Standard constructor for a ship
+     * @param position
+     *      position vector
+     * @param velocity
+     *      velocity vector
+     * @param RADIUS
+     *      radius for a ship
+     * @param ctrl
+     *      controller for ta ship
+     */
     public Ship(Vector2D position, Vector2D velocity, double RADIUS, Controller ctrl) {
         super(position, velocity, RADIUS);
-        direction = new Vector2D(0, -20);
+        direction = new Vector2D(0, -20); // point forwards or up
         direction.normalise();
         this.ctrl = ctrl;
         bulletTime = System.currentTimeMillis();
         thrust = 0;
-        p = new Player();
     }
 
+    /**
+     * abstract method given both ships have different bullets
+     */
     public abstract void mkBullet();
 
     /**
      * update's purpose is to update the ships vectors, and as a result rotates shapes
      */
+    @Override
     public void update()
     {
         super.update();
@@ -58,15 +74,6 @@ public abstract class Ship extends GameObject {
         // difference between updated direction and old shipRot value
         direction.rotate(act.turn * mySteer * DT);
 
-/** depreciated **/
-//        double angle = shipRot.angle(direction);
-//        if (angle != 0)
-//        {
-//            shipRot.set(direction);
-//            ship.setRotate(angle);
-//            thrustImg.setRotate(angle);
-//        }
-
         // updates bulletTime and if FIRE_RATE's time has passed, 1/rate seconds, then ship can
         // fire another bullet
         long now = System.currentTimeMillis();
@@ -76,6 +83,7 @@ public abstract class Ship extends GameObject {
             mkBullet();
         }
 
+        // takes action for thrusting
         if (ctrl.action().thrust > 0 && thrust + DT <= 1)
         {
             thrust += DT;
@@ -84,11 +92,6 @@ public abstract class Ship extends GameObject {
         {
             thrust -= DT;
         }
-
-//        if (inv > 0 && now - invTime >= 1000f / 0.5f) {
-//            System.out.println(now - invTime);
-//            inv = 0;
-//        }
     }
 
     /**

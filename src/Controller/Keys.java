@@ -5,18 +5,32 @@ import View.SoundsManag;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
+/**
+ * Keys purpose is to provide an interface to the user and the ship by reacting to key presses in turn
+ * changing the state of the associated Action object which controls the playership
+ */
 public class Keys extends KeyAdapter implements Controller {
-    Action action;
+    Action action; // sends actions to the playership
+
+    /**
+     * no arg constructor instantiates the action member
+     */
     public Keys()
     {
         action = new Action();
     }
 
+    @Override
     public Action action()
     {
         return action;
     }
 
+    /**
+     * detects what key has been pressed and changes the state of the action
+     * @param e
+     *     KeyEvent, the event triggering the update
+     */
     @Override
     public void keyPressed(KeyEvent e)
     {
@@ -48,6 +62,10 @@ public class Keys extends KeyAdapter implements Controller {
         }
     }
 
+    /**
+     * detects which key has been released changing the state of the action
+     * @param e
+     */
     @Override
     public void keyReleased(KeyEvent e)
     {

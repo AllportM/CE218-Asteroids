@@ -1,5 +1,6 @@
 package Model;
 
+import Controller.Game;
 import View.BasicView;
 import View.ImgManag;
 import View.SoundsManag;
@@ -8,14 +9,24 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
 
+/**
+ * ItemPickups purpose is to provide functionality for an item drop, adjusting Players static member variables
+ * in order to increase its stats. Item type is randomly generated
+ */
 public class ItemPickup extends GameObject{
+    // constants identifiying which type of pickup
     public static final String SHIP_SPEED = "Speed Up", SHIP_ACC = "Acc Up", FIRE_RATE = "Fire Rate Up",
     HEAL = "Heal++", RADAR_RANGE = "Radar Up", HEALTH_UP = "Health Up", STEER_UP = "Steering Up";
-    private String id;
-    private static final int TEXT_TTL = 1000;
-    public boolean pickedup = false;
-    public long pickedUpTime;
+    private String id; // this specific item pickup
+    private static final int TEXT_TTL = 1000; // time to live for the text after the item has been picked up
+    public boolean pickedup = false; // whether the item has been picked up, so collision isnt made more than once
+    public long pickedUpTime; // the time picked up so that this object can be flagged as dead
 
+    /**
+     * Standard constructor
+     * @param droppedBy
+     *      GameObject, the object that dropped the item, used for the positional value
+     */
     public ItemPickup(GameObject droppedBy)
     {
         super(droppedBy.position, new Vector2D(0,0), 20);
@@ -28,6 +39,9 @@ public class ItemPickup extends GameObject{
         return other instanceof PlayerShip;
     }
 
+    /**
+     * used to set whether the object is dead
+     */
     @Override
     public void update()
     {
@@ -35,6 +49,11 @@ public class ItemPickup extends GameObject{
             this.alive = false;
     }
 
+    /**
+     * Randomly decides what item this instance will be, and given only ships can hit this we know
+     * the other object is a player ship
+     * @param other
+     */
     @Override
     public void hit(GameObject other)
     {
@@ -58,7 +77,8 @@ public class ItemPickup extends GameObject{
                     break;
                 case 3:
                     id = HEAL;
-                    Player.health += 20;
+                    if (Game.player.health < 100)
+                        Player.health += 20;
                     break;
                 case 5:
                     id = HEALTH_UP;
@@ -94,6 +114,10 @@ public class ItemPickup extends GameObject{
         return result;
     }
 
+    /**
+     * draws either the sprite for this object or text
+     * @param g
+     */
     @Override
     public void draw(Graphics2D g) {
         if (!pickedup)

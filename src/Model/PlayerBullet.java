@@ -3,10 +3,13 @@ package Model;
 import View.ImgManag;
 
 import java.awt.*;
-import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 
+/**
+ * Playerbullets purpose is to directly implement Bulets abstract methods unique to a player bullet with
+ * player bullets image
+ */
 public class PlayerBullet extends Bullet {
 
     // bullets

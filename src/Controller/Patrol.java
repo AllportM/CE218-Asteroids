@@ -4,12 +4,23 @@ import Model.GameObject;
 import Model.MobSpawner;
 import Model.Vector2D;
 
+/**
+ * Patrols purpose is to take action and steer the ship towards the mob spawner it belongs to if it is
+ * outside of a given distance
+ */
 public class Patrol implements Controller {
-    Action action;
-    GameObject owner;
-    GameObject mothership;
-    static final double DISTANCE = MobSpawner.SPAWN_RADIUS;
+    Action action; // action controller to maneuver ship upon actions behaviour
+    GameObject owner; // the ship this instance belongs to
+    GameObject mothership; // the mob spawner to which the ship belongs to
+    static final double DISTANCE = MobSpawner.SPAWN_RADIUS; // the distance to which the ship should be within
 
+    /**
+     * Default constructor associating member variables to args
+     * @param owner
+     *      GameObject, the ship this instance belongs to
+     * @param ms
+     *      GameObject, the mob spawner the ship belongs to
+     */
     public Patrol(GameObject owner, GameObject ms)
     {
         this.owner = owner;
@@ -17,9 +28,15 @@ public class Patrol implements Controller {
         action = new Action();
     }
 
+    /**
+     * actions purpose is to decide whether the ship is within the set distance from a mob spawner, if not
+     * steer the ship towards it, if so steer straight. This also dictates whether to accelerate from a default speed
+     * of 150
+     * @return
+     */
     @Override
     public Action action() {
-        if (owner.velocity.mag() < 150)
+        if (owner.velocity.mag() < HlAiController.MAX_SHIP_SPEED)
         {
             action.thrust = 1;
         }

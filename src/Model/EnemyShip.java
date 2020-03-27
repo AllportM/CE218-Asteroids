@@ -11,10 +11,19 @@ import Controller.Game;
 
 import static Model.Constants.FRAME_WIDTH;
 
+/**
+ * Enemy ships purpose is to implement abstract Ship method and instantiate variables unique to an enemy ship
+ */
 public class EnemyShip extends Ship {
-    public boolean killedByPlayer = false;
+    public boolean killedByPlayer = false; // used to determine whether to give player score
 
-    public EnemyShip(Controller ctrl, Vector2D pos)
+    /**
+     * Standard constructor for an enemy ship instantiating variables unique to enemy ship
+     * @param ctrl
+     *      Controller, HlAiController
+     * @param pos
+     */
+    public EnemyShip(HlAiController ctrl, Vector2D pos)
     {
         super(pos, new Vector2D(0, 0), 25, ctrl);
         sp = new Sprite(position, direction, RADIUS * 2, RADIUS * 2, ImgManag.getImage("EnemyrShip.png")
@@ -28,9 +37,11 @@ public class EnemyShip extends Ship {
         mySpeed = MAX_SPEED;
     }
 
+    @Override
     public boolean canHit(GameObject other)
     {
-        return  other instanceof Bullet || other instanceof PlayerShip;
+        return  other instanceof Bullet || other instanceof PlayerShip
+                || other instanceof EnemyShip;
     }
 
     @Override

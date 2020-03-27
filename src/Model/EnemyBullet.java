@@ -6,10 +6,15 @@ import java.awt.*;
 import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 
+/**
+ * EnemyBullets purpose is to implement Bullets abstract methods
+ */
 public class EnemyBullet extends Bullet {
 
-    // bullets
-
+    /**
+     * Standard constructor, instantiates member variables unique to this bullet i.e sprite image
+     * @param ship
+     */
     public EnemyBullet(Ship ship) {
         super(ship.position.copy(), ship.velocity.copy(),
                 2.5, ship);
@@ -20,6 +25,10 @@ public class EnemyBullet extends Bullet {
         genShape();
     }
 
+    /**
+     * Generates the shape for this bullet
+     * @return
+     */
     @Override
     public Path2D genShape() {
         Path2D shape = new Path2D.Double();

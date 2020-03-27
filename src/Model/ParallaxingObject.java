@@ -12,9 +12,9 @@ import static Model.Constants.*;
  * sub classes will be required to implement
  */
 public abstract class ParallaxingObject implements Comparable<ParallaxingObject>, Drawable{
-    private static final double z1 = 3200, z2 = z1 + 860, z3 = z2 + 860, z4 = z3 + 860;
-    public double speedMult;
-    public int zIndex, x, y;
+    private static final double z1 = 3200, z2 = z1 + 860, z3 = z2 + 860, z4 = z3 + 860; // z layer ratio
+    public double speedMult; // the speed this image will travel at
+    public int zIndex, x, y; // zindex for this object, identifies above z1, z2 etc
 
 
     ParallaxingObject(int index, int x, int y)

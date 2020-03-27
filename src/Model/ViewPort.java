@@ -2,9 +2,12 @@ package Model;
 
 import static Model.Constants.*;
 
+/**
+ * Viewports purpose is to provide a new 0,0 offset relative to the players position
+ */
 public class ViewPort {
-    private double x, y;
-    PlayerShip ps;
+    private double x, y; // the 0,0 position relative to players position
+    PlayerShip ps; // the playership to attain position vectore, could have used position vector but hey ho
 
     public ViewPort( double x, double y, PlayerShip ps)
     {
@@ -13,6 +16,9 @@ public class ViewPort {
         this.ps = ps;
     }
 
+    /**
+     * sets the new 0,0 position
+     */
     public void update()
     {
         double x =  ps.position.x;

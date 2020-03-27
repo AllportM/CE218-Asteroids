@@ -37,6 +37,16 @@ public class ControllerHelperFuncts {
         else return false;
     }
 
+    /**
+     * getNearestPlayer's purpose is to loop through all game objects and find the nearest PlayerShip
+     * from a given ship object
+     * @param ship
+     *      GameObject, the ship to use as point of origin
+     * @param game
+     *      Game, the game holding the gameObj list
+     * @return
+     *      GameObject, the nearest PlayerShip
+     */
     public static GameObject getNearestPlayer(GameObject ship, Game game)
     {
         double nearestDist = Double.MAX_VALUE;
@@ -56,6 +66,16 @@ public class ControllerHelperFuncts {
         return nearestShip;
     }
 
+    /**
+     * getNearestShip's purpose is to loop through all game objects and find the nearest Ship from a given
+     * Ship object
+     * @param ship
+     *      GameObject, the ship to use as point of origin
+     * @param game
+     *      Game, the game instance holding a list of gameObj's
+     * @return
+     *      GameObject, the nearest ship from the point of origin
+     */
     public static GameObject getNearestShip(GameObject ship, Game game)
     {
         double nearestDist = Double.MAX_VALUE;

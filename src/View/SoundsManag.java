@@ -14,6 +14,9 @@ import java.nio.file.Paths;
  * give permission for the re-use/distribution of their works, therefor, no referencing is required
  */
 
+/**
+ * SoundManager's purpose is to provide functionality to play sound streams
+ */
 public class SoundsManag {
 
     static int nMeBullet = 0, pBullet = 0, nSmallAst = 0, nMedAst = 0, nLargeAst = 0;

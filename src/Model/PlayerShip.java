@@ -28,11 +28,6 @@ public class PlayerShip extends Ship {
         mySpeed = MAX_SPEED;
     }
 
-    public boolean canHit(GameObject other)
-    {
-        return other instanceof Asteroid || other instanceof Bullet || other instanceof Ship || other instanceof ItemPickup;
-    }
-
     private void setDeath()
     {
         alive = false;
@@ -44,6 +39,12 @@ public class PlayerShip extends Ship {
         mySteer = STEER_RATE * Player.turnResp;
         myFire = FIRE_RATE * Player.fireRate;
         myAcc = MAG_ACC * Player.shipAcc;
+    }
+
+    @Override
+    public boolean canHit(GameObject other)
+    {
+        return other instanceof Asteroid || other instanceof Bullet || other instanceof Ship || other instanceof ItemPickup;
     }
 
     @Override
@@ -113,12 +114,4 @@ public class PlayerShip extends Ship {
         bullet = new PlayerBullet(this);
         SoundsManag.playerFire();
     }
-
-
-//    public void applyInv(int duration)
-//    {
-//        invTime = System.currentTimeMillis();
-//        inv = duration;
-//    }
-
 }
