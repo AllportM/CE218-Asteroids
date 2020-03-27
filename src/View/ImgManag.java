@@ -18,7 +18,7 @@ public class ImgManag {
             ",asttext6.png,asttext7.png,asttext8.png,BackgroundSmall3.png,EnemyrShip.png" +
             ",EnemyShipThrust.png,LaserBullet.png,LBullet1in.png,LButtet2in.png,pickup.png,PlayerShip.png" +
             ",ShipThrust.png,StarInner0.png,StarInner1.png,StarInner2.png,StarInner3.png,StarInner4.png,StarInner5.png" +
-            ",StarInner6.png,StarMain.png,hud.png";
+            ",StarInner6.png,StarMain.png,hud.png,bgingame.png";
     static HashMap<String, BufferedImage> images = new HashMap<>(); // stored images
 
     // puts image objects of the loaded strings into list

@@ -8,7 +8,7 @@ public class Player {
     public static int radarRange = 10, score = 0, difficulty = 1, health = 100, maxHealth = 100;
     public static double shipSpeed = 1.0, shipAcc = 1.0, fireRate = 1.0, turnResp = 1.0;
     public PlayerShip playerShip;
-    public String name = "";
+    public static String name = "";
     public int timtaken = 0;
 
     public void setPlayerShip(PlayerShip playerShip) {
@@ -23,6 +23,7 @@ public class Player {
         shipSpeed = shipAcc = fireRate = turnResp = 1.0;
         radarRange = 10;
         score = 0;
+        timtaken = 0;
         difficulty = 1;
         health = maxHealth = 100;
     }

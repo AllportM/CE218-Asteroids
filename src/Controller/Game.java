@@ -69,6 +69,7 @@ public class Game
         newLevelTimer = 0;
         player.resetPlayer();
         playerDied = 0;
+        startOfGame = System.currentTimeMillis();
     }
 
     /**
@@ -83,15 +84,15 @@ public class Game
             pObjs = new TreeSet<>();
             gameObjects.add(player.playerShip);
             generateStars();
-//            generateSpawners();
-//            generateAsteroids();
+            generateSpawners();
+            generateAsteroids();
 
 //             test code to make spawner
-            Vector2D position = player.playerShip.position.copy();
-            position.add(500, 0);
-            MobSpawner mp = new MobSpawner(position, this);
-            gameObjects.addAll(mp.ships);
-            gameObjects.add(mp);
+//            Vector2D position = player.playerShip.position.copy();
+//            position.add(500, 0);
+//            MobSpawner mp = new MobSpawner(position, this);
+//            gameObjects.addAll(mp.ships);
+//            gameObjects.add(mp);
             newLevelTimer = 0;
         }
     }
@@ -117,7 +118,6 @@ public class Game
             view.repaint();
         });
         repaintTimer.start();
-        startOfGame = System.currentTimeMillis();
         int missedFrames = 0;
         while (!isEnd) {
             long t0 = System.currentTimeMillis();
@@ -135,16 +135,16 @@ public class Game
             }
         }
         repaintTimer.stop();
-
         // end of game check for new level or player death
         if (player.playerShip.alive)
         {
             SoundsManag.stopMusic();
             Player.difficulty++;
-            view.newLevel();
+            view.startNewLevel();
         }
         else {
-            view.addButton();
+            player.timtaken = Math.toIntExact(System.currentTimeMillis() - startOfGame);
+            view.endGameScreen();
         }
     }
 

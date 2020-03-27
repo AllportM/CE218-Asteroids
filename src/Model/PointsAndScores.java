@@ -19,7 +19,7 @@ public class PointsAndScores implements Comparable<PointsAndScores>{
     private int time; // time in milliseconds spent making moves
 
     // default constructor
-    PointsAndScores(String[] entity)
+    public PointsAndScores(String[] entity)
     {
         name = entity[0];
         score = Integer.parseInt(entity[1]);
@@ -31,7 +31,19 @@ public class PointsAndScores implements Comparable<PointsAndScores>{
     {
         name = pl.name;
         time = pl.timtaken;
-        name = pl.name;
+        score = pl.score;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getTime() {
+        return time;
+    }
+
+    public int getScore() {
+        return score;
     }
 
     @Override
